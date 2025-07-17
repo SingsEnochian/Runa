@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Virelya Liorael — Spirit Animation</title>
+  <style>
+    body {
+      background: #131a2a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    #altar-spirit {
+      width: 420px; /* Adjust as needed */
+      box-shadow: 0 0 40px #e2b60088;
+      border-radius: 2rem;
+      background: rgba(30,28,52,0.5);
+      padding: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <img id="altar-spirit" src="frame01.png" alt="Spirit Animation">
+  <script>
+    // --- Animation settings ---
+    const frameCount = 10; // Total frames
+    const framePrefix = "frame"; // File name prefix
+    const frameExt = ".png";
+    const delay = 350; // milliseconds per frame (for a slow, meditative pulse)
+
+    let frame = 1;
+    const spiritImg = document.getElementById('altar-spirit');
+
+    setInterval(() => {
+      frame = frame < frameCount ? frame + 1 : 1;
+      let frameNum = frame.toString().padStart(2, '0');
+      spiritImg.src = `${framePrefix}${frameNum}${frameExt}`;
+    }, delay);
+  </script>
+</body>
+</html>
