@@ -1,67 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> <link rel="stylesheet" href="./css/style.css">
-
+<head>
   <meta charset="UTF-8" />
-  <title>Runa — Norse / Celestial Preview</title>
-
-  <!-- Basic viewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Base styles (we’ll expand later) -->
-  <style>
-    :root {
-      --bg-norse: #0f120d;
-      --bg-celestial: #0b1020;
-      --gold: #d4af37;
-      --silver: #cfd8ff;
-    }
-
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
-      background-color: var(--bg-norse);
-      color: var(--gold);
-      transition: background-color 0.8s ease, color 0.8s ease;
-    }
-
-    body.celestial {
-      background-color: var(--bg-celestial);
-      color: var(--silver);
-    }
-
-    header {
-      padding: 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-
-    main {
-      padding: 2rem;
-      text-align: center;
-    }
-
-    .theme-toggle {
-      cursor: pointer;
-      background: transparent;
-      border: 1px solid currentColor;
-      padding: 0.4rem 0.8rem;
-      border-radius: 6px;
-      font-size: 0.9rem;
-    }
-
-    .sigil {
-      font-size: 3rem;
-      margin-top: 2rem;
-      opacity: 0.85;
-    }
-  </style>
+  <title>Runa — Norse / Celestial Preview</title>
+  <link rel="stylesheet" href="./css/style.css">
 </head>
 
-<body class="norse">
+<body>
   <header>
     <strong>Runa Preview</strong>
     <button class="theme-toggle" id="themeToggle">
@@ -75,24 +21,6 @@
     <div class="sigil">ᚱ</div>
   </main>
 
-  <script>
-    const toggleBtn = document.getElementById("themeToggle");
-    const body = document.body;
-    const heading = document.querySelector("h1");
-
-    toggleBtn.addEventListener("click", () => {
-      const celestial = body.classList.toggle("celestial");
-
-      if (celestial) {
-        heading.textContent = "Celestial Mode";
-        toggleBtn.textContent = "Switch to Norse";
-      } else {
-        heading.textContent = "Norse Mode";
-        toggleBtn.textContent = "Switch to Celestial";
-      }
-    });
-  </script>
-<script src="./js/main.js"></script>
+  <script src="./js/main.js"></script>
 </body>
 </html>
-
