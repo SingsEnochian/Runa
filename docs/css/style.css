@@ -1,0 +1,57 @@
+:root {
+  --bg-norse: #0f120d;
+  --bg-celestial: #0b1020;
+  --gold: #d4af37;
+  --silver: #cfd8ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background-color: var(--bg-norse);
+  color: var(--gold);
+  transition: background-color 0.8s ease, color 0.8s ease;
+}
+
+body.celestial {
+  background-color: var(--bg-celestial);
+  color: var(--silver);
+}
+
+header {
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+main {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+button {
+  cursor: pointer;
+  background: transparent;
+  color: inherit;
+  border: 1px solid currentColor;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+.sigil {
+  font-size: 3rem;
+  margin-top: 2rem;
+  opacity: 0.85;
+}
