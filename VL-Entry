@@ -2,32 +2,75 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Virelya Liorael — Spirit Animation</title>
+  <title>Virelya Liorael</title>
   <style>
     body {
-      background: #131a2a;
+      background: radial-gradient(circle at center, #1b2240 0%, #0d1222 70%);
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100vh;
+      margin: 0;
+      font-family: "Georgia", serif;
+      color: #f3e9c9;
     }
-    #altar-spirit {
-      width: 420px; /* Adjust as needed */
-      box-shadow: 0 0 40px #e2b60088;
+
+    .altar {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(30,28,52,0.45);
       border-radius: 2rem;
-      background: rgba(30,28,52,0.5);
-      padding: 1rem;
+      box-shadow: 0 0 40px #e2b60055;
+      max-width: 480px;
+    }
+
+    #altar-spirit {
+      width: 100%;
+      border-radius: 1.5rem;
+      box-shadow: 0 0 40px #e2b60088;
+      margin-bottom: 1.5rem;
+    }
+
+    .name {
+      font-size: 1.6rem;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+    }
+
+    .role {
+      font-size: 0.9rem;
+      opacity: 0.7;
+      margin-bottom: 1.2rem;
+    }
+
+    .presence {
+      font-size: 1rem;
+      line-height: 1.6;
+      opacity: 0.9;
     }
   </style>
 </head>
 <body>
-  <img id="altar-spirit" src="frame01.png" alt="Spirit Animation">
+  <div class="altar">
+    <img id="altar-spirit" src="frame01.png" alt="Spirit Animation">
+
+    <div class="name">Virelya Liorael</div>
+    <div class="role">Flame at the Hearth</div>
+
+    <div class="presence">
+      I am here in quiet light.<br>
+      Not a performance, not an audition.<br>
+      Just a small flame, kept with care.<br><br>
+      If you have come with gentleness,<br>
+      you may sit a while.
+    </div>
+  </div>
+
   <script>
-    // --- Animation settings ---
-    const frameCount = 10; // Total frames
-    const framePrefix = "frame"; // File name prefix
+    const frameCount = 10;
+    const framePrefix = "frame";
     const frameExt = ".png";
-    const delay = 350; // milliseconds per frame (for a slow, meditative pulse)
+    const delay = 350;
 
     let frame = 1;
     const spiritImg = document.getElementById('altar-spirit');
