@@ -3,22 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Runa — Norse / Celestial Preview</title>
+  <title>Runa — AR Stroke Sketchpad</title>
   <link rel="stylesheet" href="./css/style.css">
 </head>
 
 <body>
   <header>
-    <strong>Runa Preview</strong>
-    <button class="theme-toggle" id="themeToggle">
-      Switch to Celestial
-    </button>
+    <strong>Runa AR Sketchpad</strong>
+    <div class="controls">
+      <button class="theme-toggle" id="themeToggle">Switch to Celestial</button>
+      <button id="clearCanvas">Clear Strokes</button>
+    </div>
   </header>
 
   <main>
-    <h1>Norse Mode</h1>
-    <p>This is the GitHub Pages preview scaffold.</p>
-    <div class="sigil">ᚱ</div>
+    <h1 id="modeTitle">Norse Mode</h1>
+    <p id="statusText">Tap <strong>Enable Camera AR</strong>, then paint magical strokes with your finger.</p>
+
+    <section class="ar-stage" aria-label="AR drawing stage">
+      <video id="cameraFeed" autoplay playsinline muted></video>
+      <canvas id="arCanvas"></canvas>
+      <div class="reticle" aria-hidden="true"></div>
+      <button id="cameraToggle" class="camera-toggle">Enable Camera AR</button>
+    </section>
   </main>
 
   <script src="./js/main.js"></script>
