@@ -10,15 +10,19 @@
 <body>
   <header>
     <strong>Runa Preview</strong>
-    <button class="theme-toggle" id="themeToggle">
+    <button class="theme-toggle" id="themeToggle" aria-live="polite">
       Switch to Celestial
     </button>
   </header>
 
   <main>
-    <h1>Norse Mode</h1>
-    <p>This is the GitHub Pages preview scaffold.</p>
-    <div class="sigil">ᚱ</div>
+    <section class="mode-card" aria-labelledby="modeHeading">
+      <p class="eyebrow">Interactive prototype</p>
+      <h1 id="modeHeading">Norse Mode</h1>
+      <p id="modeDescription">A grounded dark theme inspired by stone, iron, and firelight.</p>
+      <div class="sigil" aria-hidden="true">ᚱ</div>
+      <p class="hint">Tip: press <kbd>T</kbd> to toggle themes.</p>
+    </section>
   </main>
 
   <script src="./js/main.js"></script>

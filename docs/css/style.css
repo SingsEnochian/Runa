@@ -3,6 +3,8 @@
   --bg-celestial: #0b1020;
   --gold: #d4af37;
   --silver: #cfd8ff;
+  --panel-norse: rgba(212, 175, 55, 0.06);
+  --panel-celestial: rgba(207, 216, 255, 0.08);
 }
 
 * {
@@ -11,8 +13,8 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background-color: var(--bg-norse);
   color: var(--gold);
   transition: background-color 0.8s ease, color 0.8s ease;
@@ -28,12 +30,13 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 main {
   padding: 3rem 1.5rem;
-  text-align: center;
+  display: grid;
+  place-items: center;
 }
 
 button {
@@ -41,7 +44,7 @@ button {
   background: transparent;
   color: inherit;
   border: 1px solid currentColor;
-  padding: 0.4rem 0.9rem;
+  padding: 0.45rem 0.95rem;
   border-radius: 6px;
   font-size: 0.9rem;
 }
@@ -50,8 +53,66 @@ button:hover {
   opacity: 0.85;
 }
 
+button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.mode-card {
+  width: min(600px, 100%);
+  border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  background: var(--panel-norse);
+  backdrop-filter: blur(2px);
+  transition: background 0.8s ease, border-color 0.8s ease;
+}
+
+body.celestial .mode-card {
+  background: var(--panel-celestial);
+}
+
+.eyebrow {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  opacity: 0.8;
+  margin: 0;
+}
+
+h1 {
+  margin-bottom: 0.75rem;
+}
+
+#modeDescription {
+  margin: 0;
+  opacity: 0.9;
+}
+
 .sigil {
   font-size: 3rem;
   margin-top: 2rem;
   opacity: 0.85;
+}
+
+.hint {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+kbd {
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  padding: 0.05rem 0.35rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.85em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body,
+  .mode-card {
+    transition: none;
+  }
 }
