@@ -3,6 +3,7 @@
   --bg-celestial: #0b1020;
   --gold: #d4af37;
   --silver: #cfd8ff;
+  --panel: rgba(0, 0, 0, 0.35);
 }
 
 * {
@@ -11,11 +12,11 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background-color: var(--bg-norse);
   color: var(--gold);
   transition: background-color 0.8s ease, color 0.8s ease;
+  min-height: 100vh;
 }
 
 body.celestial {
@@ -28,11 +29,19 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.controls {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 main {
-  padding: 3rem 1.5rem;
+  padding: 1.2rem;
   text-align: center;
 }
 
@@ -50,8 +59,54 @@ button:hover {
   opacity: 0.85;
 }
 
-.sigil {
-  font-size: 3rem;
-  margin-top: 2rem;
-  opacity: 0.85;
+.ar-stage {
+  position: relative;
+  width: min(94vw, 840px);
+  aspect-ratio: 3 / 4;
+  margin: 1rem auto 0;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #03040a;
+  touch-action: none;
+}
+
+#cameraFeed,
+#arCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#cameraFeed {
+  object-fit: cover;
+  background: #06070c;
+}
+
+#arCanvas {
+  z-index: 2;
+}
+
+.reticle {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  border-radius: 999px;
+  border: 1px dashed rgba(255, 255, 255, 0.5);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  pointer-events: none;
+  backdrop-filter: blur(1px);
+}
+
+.camera-toggle {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  background: var(--panel);
 }
