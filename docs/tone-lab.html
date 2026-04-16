@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runa Tone Lab</title>
+  <link rel="stylesheet" href="./css/tone-lab.css" />
+</head>
+<body data-theme="elara">
+  <header class="site-header">
+    <div>
+      <strong>Runa Tone Lab</strong>
+      <p class="subtitle">Standalone audio lab for tones, blends, custom tones, and export.</p>
+    </div>
+    <div class="header-actions">
+      <a class="button-link" href="./index.html">Back to Runa</a>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero card glow-card">
+      <div>
+        <h1>Tone Lab</h1>
+        <p class="hero-copy">Headphone-first 8D motion, palette switching, presets, custom tones, JSON save/load, and offline MP3 export.</p>
+      </div>
+      <div class="theme-controls">
+        <label for="themeSelect">Palette</label>
+        <select id="themeSelect">
+          <option value="elara">Elara</option>
+          <option value="nocturne">Nocturne</option>
+          <option value="cerulean">Cerulean</option>
+          <option value="twilight">Twilight</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Presets</h2>
+      <div id="presetButtons" class="chip-row"></div>
+    </section>
+
+    <section class="card field-guide">
+      <div>
+        <h2>Field Guide</h2>
+        <p>Start with one tone in preview mode so you can learn its character by itself. Then add another and listen for what changes: shimmer, width, warmth, lift, or weight. Lower tones act like foundation, mid tones give body, upper-mid tones add lift, and the highest tones behave like overtone light.</p>
+      </div>
+      <div class="guide-panels">
+        <div class="mini-panel">
+          <h3>Blend Reading</h3>
+          <p id="blendDescription">Select one or more tones to generate a blend reading.</p>
+        </div>
+        <div class="mini-panel">
+          <h3>Meaning Weave</h3>
+          <p id="meaningWeave">No tones selected yet.</p>
+        </div>
+        <div class="mini-panel">
+          <h3>Band Roles</h3>
+          <ul id="bandSummary" class="band-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="main-grid">
+      <section class="card tone-library">
+        <h2>Select Tones</h2>
+        <div id="toneGroups"></div>
+      </section>
+
+      <aside class="control-column">
+        <section class="card">
+          <h2>Custom Tone</h2>
+          <div class="control-stack">
+            <label>
+              <span>Name</span>
+              <input id="customToneName" type="text" placeholder="Ex: Flamewell" />
+            </label>
+            <label>
+              <span>Frequency</span>
+              <input id="customToneFrequency" type="range" min="100" max="3000" step="1" value="512" />
+              <strong id="customToneFrequencyValue">512 Hz</strong>
+            </label>
+            <label>
+              <span>Meaning</span>
+              <input id="customToneMeaning" type="text" placeholder="What the tone is for" />
+            </label>
+            <div class="button-row wrap-row">
+              <button id="addCustomToneButton" class="accent-button" type="button">Add</button>
+              <button id="previewCustomToneButton" type="button">Preview</button>
+              <button id="saveCustomTonesButton" type="button">Save file</button>
+            </div>
+            <div class="button-row wrap-row">
+              <button id="loadCustomTonesButton" type="button">Load file</button>
+              <input id="loadCustomTonesInput" type="file" accept="application/json" hidden />
+              <p class="tiny-copy">Custom tones also autosave in this browser.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Engine</h2>
+          <div class="selected-tones">
+            <h3>Selected</h3>
+            <div id="selectedToneChips" class="chip-row"></div>
+          </div>
+          <div class="control-stack">
+            <label>
+              <span>Waveform</span>
+              <select id="waveformSelect">
+                <option value="sine">Sine</option>
+                <option value="triangle">Triangle</option>
+                <option value="sawtooth">Sawtooth</option>
+                <option value="square">Square</option>
+              </select>
+            </label>
+            <label>
+              <span>Master gain</span>
+              <input id="gainControl" type="range" min="0.02" max="0.25" step="0.01" value="0.10" />
+              <strong id="gainValue">0.10</strong>
+            </label>
+            <label>
+              <span>Orbit rate</span>
+              <input id="orbitRateControl" type="range" min="0.01" max="0.20" step="0.01" value="0.05" />
+              <strong id="orbitRateValue">0.05</strong>
+            </label>
+            <label>
+              <span>Depth</span>
+              <input id="depthControl" type="range" min="0.5" max="3" step="0.1" value="1.5" />
+              <strong id="depthValue">1.5</strong>
+            </label>
+            <label>
+              <span>Reverb</span>
+              <input id="reverbControl" type="range" min="0" max="1" step="0.05" value="0.5" />
+              <strong id="reverbValue">0.50</strong>
+            </label>
+            <label>
+              <span>MP3 export length</span>
+              <input id="exportDurationControl" type="range" min="10" max="180" step="5" value="30" />
+              <strong id="exportDurationValue">30s</strong>
+            </label>
+            <label class="toggle-row">
+              <input id="motionEnabled" type="checkbox" checked />
+              <span>8D motion</span>
+            </label>
+            <div class="mini-panel">
+              <h3>Blend Centre</h3>
+              <p id="blendCenter">—</p>
+            </div>
+            <p class="tiny-copy">MP3 export uses offline render plus lamejs loaded from CDN on this page.</p>
+            <p id="exportMessage" class="tiny-copy"></p>
+            <div class="button-row wrap-row">
+              <button id="playSelectedButton" class="accent-button" type="button">Play</button>
+              <button id="stopPlaybackButton" type="button">Stop</button>
+              <button id="exportMp3Button" type="button">Export MP3</button>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"></script>
+  <script src="./js/tone-lab.js"></script>
+</body>
+</html>
