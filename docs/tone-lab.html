@@ -78,6 +78,7 @@
               <span>Frequency</span>
               <input id="customToneFrequency" type="range" min="100" max="3000" step="1" value="512" />
               <strong id="customToneFrequencyValue">512 Hz</strong>
+              <p class="tiny-copy">Sets the pitch of the custom tone you are creating. Lower values sound deeper, higher values sound brighter and thinner.</p>
             </label>
             <label>
               <span>Meaning</span>
@@ -111,36 +112,43 @@
                 <option value="sawtooth">Sawtooth</option>
                 <option value="square">Square</option>
               </select>
+              <p class="tiny-copy">Changes the texture of the sound itself. Sine is smoothest, triangle is soft but more present, sawtooth is brighter and buzzy, and square is the sharpest.</p>
             </label>
             <label>
               <span>Master gain</span>
               <input id="gainControl" type="range" min="0.02" max="0.25" step="0.01" value="0.10" />
               <strong id="gainValue">0.10</strong>
+              <p class="tiny-copy">Controls overall loudness for the whole blend. Turn this up gently, especially with headphones.</p>
             </label>
             <label>
               <span>Orbit rate</span>
               <input id="orbitRateControl" type="range" min="0.01" max="0.20" step="0.01" value="0.05" />
               <strong id="orbitRateValue">0.05</strong>
+              <p class="tiny-copy">Changes how quickly the sound moves around your head in 8D mode. Lower feels drifting, higher feels more restless.</p>
             </label>
             <label>
               <span>Depth</span>
               <input id="depthControl" type="range" min="0.5" max="3" step="0.1" value="1.5" />
               <strong id="depthValue">1.5</strong>
+              <p class="tiny-copy">Adjusts how wide the motion feels. Lower values stay closer and steadier, higher values arc further around you.</p>
             </label>
             <label>
               <span>Reverb</span>
               <input id="reverbControl" type="range" min="0" max="1" step="0.05" value="0.5" />
               <strong id="reverbValue">0.50</strong>
+              <p class="tiny-copy">Adds echo and wash. Lower is dry and clean, higher is dreamier and more spacious.</p>
             </label>
             <label>
               <span>MP3 export length</span>
               <input id="exportDurationControl" type="range" min="10" max="180" step="5" value="30" />
               <strong id="exportDurationValue">30s</strong>
+              <p class="tiny-copy">Sets how long the exported MP3 file will be. This changes the saved file, not the live playback loop.</p>
             </label>
             <label class="toggle-row">
               <input id="motionEnabled" type="checkbox" checked />
               <span>8D motion</span>
             </label>
+            <p class="tiny-copy">Turns the spatial drift on or off. Leave it on for movement around the head, or switch it off for a steadier, more centred field.</p>
             <div class="mini-panel">
               <h3>Blend Centre</h3>
               <p id="blendCenter">—</p>
