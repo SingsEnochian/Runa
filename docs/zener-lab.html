@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runa Zener Lab</title>
+  <link rel="stylesheet" href="./css/psi-lab.css" />
+</head>
+<body data-theme="nocturne-garden">
+  <header class="site-header">
+    <div>
+      <strong>Runa Zener Lab</strong>
+      <p class="subtitle">Forced-choice symbol practice with clean logs, timed windows, confidence tracking, and exportable sessions.</p>
+    </div>
+    <div class="header-actions">
+      <a class="button-link" href="./index.html">Back to Runa</a>
+      <a class="button-link" href="./tone-lab.html">Tone Lab</a>
+      <a class="button-link" href="./rv-capture.html">RV Capture</a>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero card glow-card">
+      <div>
+        <h1>Zener Lab</h1>
+        <p class="hero-copy">Run hidden-target symbol sessions, compare conditions like silence, F10, F12, or a custom shell, and keep the results boringly trackable in the best possible way.</p>
+      </div>
+      <div class="theme-controls">
+        <label for="themeSelect">Palette</label>
+        <select id="themeSelect">
+          <option value="nocturne-garden">Nocturne Garden</option>
+          <option value="ember-rain">Ember Rain</option>
+          <option value="elara">Elara</option>
+          <option value="nocturne">Nocturne</option>
+          <option value="cerulean">Cerulean</option>
+          <option value="twilight">Twilight</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="main-grid">
+      <section class="card">
+        <h2>Session Setup</h2>
+        <div class="control-stack">
+          <label>
+            <span>Session label</span>
+            <input id="sessionLabelInput" type="text" placeholder="Ex: F12 evening block" />
+          </label>
+          <label>
+            <span>Condition label</span>
+            <input id="conditionLabelInput" type="text" placeholder="Ex: F12 shell + headphones" />
+          </label>
+          <div>
+            <span class="metric-label">Quick condition tags</span>
+            <div class="chip-row" id="conditionChipRow"></div>
+          </div>
+          <label>
+            <span>Mode</span>
+            <select id="modeSelect">
+              <option value="hidden-target">Hidden Target</option>
+              <option value="timed-impression">Timed Impression</option>
+              <option value="image-first">Image-First</option>
+            </select>
+          </label>
+          <label>
+            <span>Trial count</span>
+            <input id="trialCountInput" type="number" min="1" max="100" step="1" value="25" />
+          </label>
+          <label>
+            <span>Time window (seconds)</span>
+            <select id="timeWindowSelect">
+              <option value="5">5</option>
+              <option value="10" selected>10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+            </select>
+          </label>
+          <div class="button-row">
+            <button id="startSessionButton" class="accent-button" type="button">Start New Session</button>
+            <button id="continueSessionButton" type="button">Continue Autosaved</button>
+            <button id="clearSessionButton" type="button">Clear</button>
+          </div>
+          <p id="sessionStatus" class="status-copy">No active session yet.</p>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Trial Runner</h2>
+        <div class="trial-status">
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="tiny-copy">Current trial</div>
+              <p class="stat-number" id="trialNumberDisplay">0 / 0</p>
+            </div>
+            <div class="stat-card">
+              <div class="tiny-copy">Timer</div>
+              <p class="timer" id="timerDisplay">00:00</p>
+            </div>
+            <div class="stat-card">
+              <div class="tiny-copy">Mode</div>
+              <p class="stat-number" id="modeDisplay">—</p>
+            </div>
+            <div class="stat-card">
+              <div class="tiny-copy">Condition</div>
+              <p class="stat-number" id="conditionDisplay">—</p>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Trial status</h3>
+            <p id="trialStatusText" class="status-copy">Start a session to generate hidden targets.</p>
+            <div class="button-row">
+              <button id="beginTrialButton" class="accent-button" type="button">Begin Trial</button>
+              <button id="skipTrialButton" type="button">Skip Trial</button>
+              <button id="revealResultsButton" type="button">Reveal Results</button>
+            </div>
+          </div>
+
+          <label id="firstImpressionLabel" class="hidden">
+            <span>First impression</span>
+            <textarea id="firstImpressionInput" placeholder="Shape, motion, emotional feel, any immediate image or sensation..."></textarea>
+          </label>
+
+          <div>
+            <span class="metric-label">Choose symbol</span>
+            <div class="symbol-grid" id="symbolGrid"></div>
+          </div>
+
+          <label>
+            <span>Confidence</span>
+            <input id="confidenceInput" type="range" min="1" max="5" step="1" value="3" />
+            <div class="inline-value" id="confidenceValue">3 / 5</div>
+          </label>
+
+          <label>
+            <span>Notes</span>
+            <textarea id="notesInput" placeholder="Anything notable about the trial, state, body feel, or signal quality..."></textarea>
+          </label>
+
+          <div class="button-row">
+            <button id="submitGuessButton" class="accent-button" type="button">Lock Guess</button>
+            <button id="nextTrialButton" type="button">Next Trial</button>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section class="card">
+      <h2>Session Summary</h2>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="tiny-copy">Hits</div>
+          <div class="metric-value" id="hitsDisplay">0</div>
+        </div>
+        <div class="metric-card">
+          <div class="tiny-copy">Hit rate</div>
+          <div class="metric-value" id="hitRateDisplay">0%</div>
+        </div>
+        <div class="metric-card">
+          <div class="tiny-copy">Average confidence</div>
+          <div class="metric-value" id="averageConfidenceDisplay">0.0</div>
+        </div>
+        <div class="metric-card">
+          <div class="tiny-copy">Average response time</div>
+          <div class="metric-value" id="averageResponseTimeDisplay">0 ms</div>
+        </div>
+      </div>
+      <div class="button-row" style="margin-top: 1rem;">
+        <button id="exportJsonButton" type="button">Export JSON</button>
+        <button id="exportCsvButton" type="button">Export CSV</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Trial Log</h2>
+      <div class="table-wrap">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Target</th>
+              <th>Guess</th>
+              <th>Hit</th>
+              <th>Confidence</th>
+              <th>Response</th>
+              <th>Impression</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="resultsTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="./js/zener-lab.js"></script>
+</body>
+</html>
