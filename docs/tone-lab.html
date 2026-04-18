@@ -10,7 +10,7 @@
   <header class="site-header">
     <div>
       <strong>Runa Tone Lab</strong>
-      <p class="subtitle">Standalone audio lab for tones, blends, custom tones, and export.</p>
+      <p class="subtitle">Standalone audio lab for tones, blends, custom tones, export, and notes.</p>
     </div>
     <div class="header-actions">
       <a class="button-link" href="./index.html">Back to Runa</a>
@@ -21,7 +21,7 @@
     <section class="hero card glow-card">
       <div>
         <h1>Tone Lab</h1>
-        <p class="hero-copy">Headphone-first 8D motion, palette switching, presets, custom tones, JSON save/load, and offline MP3 export.</p>
+        <p class="hero-copy">Headphone-first 8D motion, palette switching, presets, custom tones, JSON save/load, offline MP3 export, and a built-in notes space.</p>
       </div>
       <div class="theme-controls">
         <label for="themeSelect">Palette</label>
@@ -163,6 +163,30 @@
           </div>
         </section>
       </aside>
+    </section>
+
+    <section class="card notes-section">
+      <div class="notes-header">
+        <div>
+          <h2>Research & Correspondence Notes</h2>
+          <p class="tiny-copy">A local notes space for experiment logs, research scraps, messages, and anything you want to keep beside the sound work.</p>
+        </div>
+        <div class="button-row wrap-row">
+          <button id="saveNotesButton" class="accent-button" type="button">Save notes</button>
+          <button id="exportNotesButton" type="button">Export notes</button>
+        </div>
+      </div>
+      <p id="notesStatus" class="tiny-copy">Notes autosave in this browser.</p>
+      <div class="notes-grid">
+        <label class="notes-label">
+          <span>Hearth Light Glint</span>
+          <textarea id="hearthLightNotes" class="notes-area" placeholder="Research notes, session impressions, questions, fragments, observations..."></textarea>
+        </label>
+        <label class="notes-label">
+          <span>Nocturne Glint</span>
+          <textarea id="nocturneGlintNotes" class="notes-area" placeholder="Notes from Noct to you, replies, ideas, correspondence fragments, field notes..."></textarea>
+        </label>
+      </div>
     </section>
   </main>
 
