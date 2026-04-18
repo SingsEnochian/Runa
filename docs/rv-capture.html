@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runa RV Capture</title>
+  <link rel="stylesheet" href="./css/psi-lab.css" />
+</head>
+<body data-theme="ember-rain">
+  <header class="site-header">
+    <div>
+      <strong>Runa RV Capture</strong>
+      <p class="subtitle">A structured capture pad for image-first remote-viewing style sessions, rapid descriptor runs, and telepathy-adjacent notes.</p>
+    </div>
+    <div class="header-actions">
+      <a class="button-link" href="./index.html">Back to Runa</a>
+      <a class="button-link" href="./tone-lab.html">Tone Lab</a>
+      <a class="button-link" href="./zener-lab.html">Zener Lab</a>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero card glow-card">
+      <div>
+        <h1>RV Capture</h1>
+        <p class="hero-copy">Capture first, interpret later. This page keeps the raw sensory structure, timer, state notes, and export in one place so you do not have to juggle notebooks while half in the threshold.</p>
+      </div>
+      <div class="theme-controls">
+        <label for="themeSelect">Palette</label>
+        <select id="themeSelect">
+          <option value="ember-rain">Ember Rain</option>
+          <option value="nocturne-garden">Nocturne Garden</option>
+          <option value="elara">Elara</option>
+          <option value="nocturne">Nocturne</option>
+          <option value="cerulean">Cerulean</option>
+          <option value="twilight">Twilight</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="main-grid">
+      <section class="card">
+        <h2>Session Setup</h2>
+        <div class="control-stack">
+          <label>
+            <span>Session label</span>
+            <input id="sessionLabelInput" type="text" placeholder="Ex: RV001 evening threshold" />
+          </label>
+          <label>
+            <span>Target ID</span>
+            <input id="targetIdInput" type="text" placeholder="Ex: A7-19 or sealed envelope code" />
+          </label>
+          <label>
+            <span>Condition label</span>
+            <input id="conditionLabelInput" type="text" placeholder="Ex: F12 shell + headphones" />
+          </label>
+          <label>
+            <span>Protocol</span>
+            <select id="protocolSelect">
+              <option value="rv001">RV001 — Image-First</option>
+              <option value="rv002">RV002 — Rapid Descriptor</option>
+              <option value="tel001">TEL001 — Ganzfeld-lite Notes</option>
+              <option value="f33r">F33R — Reconstruction Run</option>
+            </select>
+          </label>
+          <label>
+            <span>Shell</span>
+            <select id="shellSelect">
+              <option value="neutral">Neutral</option>
+              <option value="f10">F10</option>
+              <option value="f12" selected>F12</option>
+              <option value="f15">F15</option>
+              <option value="f33ish">F33-ish</option>
+              <option value="custom">Custom</option>
+            </select>
+          </label>
+          <label>
+            <span>Timer (seconds)</span>
+            <select id="durationSelect">
+              <option value="60">60</option>
+              <option value="120" selected>120</option>
+              <option value="300">300</option>
+              <option value="600">600</option>
+            </select>
+          </label>
+          <div class="button-row">
+            <button id="startTimerButton" class="accent-button" type="button">Start Timer</button>
+            <button id="stopTimerButton" type="button">Stop Timer</button>
+            <button id="clearFormButton" type="button">Clear</button>
+          </div>
+          <p id="sessionStatus" class="status-copy">Capture fields autosave locally in this browser.</p>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Live Capture</h2>
+        <div class="trial-status">
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="tiny-copy">Timer</div>
+              <p class="timer" id="timerDisplay">00:00</p>
+            </div>
+            <div class="stat-card">
+              <div class="tiny-copy">Protocol</div>
+              <p class="stat-number" id="protocolDisplay">RV001</p>
+            </div>
+            <div class="stat-card">
+              <div class="tiny-copy">Shell</div>
+              <p class="stat-number" id="shellDisplay">F12</p>
+            </div>
+            <div class="stat-card">
+              <div class="tiny-copy">Target ID</div>
+              <p class="stat-number" id="targetDisplay">—</p>
+            </div>
+          </div>
+
+          <label>
+            <span>Shapes / structure</span>
+            <textarea id="shapesInput" placeholder="Broad, narrow, vertical, clustered, curved, flat, layered..."></textarea>
+          </label>
+          <label>
+            <span>Textures / surfaces</span>
+            <textarea id="texturesInput" placeholder="Metallic, rough, smooth, porous, wet, sharp-edged..."></textarea>
+          </label>
+          <label>
+            <span>Temperature / movement</span>
+            <textarea id="motionInput" placeholder="Warm, cool, still, rushing, rotating, pulsing, drifting..."></textarea>
+          </label>
+          <label>
+            <span>Colours / light</span>
+            <textarea id="colourInput" placeholder="Bright, dim, saturated, pale, blue-white, rust, green-gold..."></textarea>
+          </label>
+          <label>
+            <span>Atmosphere / emotional tone</span>
+            <textarea id="atmosphereInput" placeholder="Open, tense, reverent, industrial, lonely, welcoming, sterile..."></textarea>
+          </label>
+          <label>
+            <span>Sketch notes / layout</span>
+            <textarea id="sketchNotesInput" placeholder="Relative positions, major forms, skyline / horizon notes, arrangement hints..."></textarea>
+          </label>
+          <label>
+            <span>Interpretive guess (late-stage only)</span>
+            <textarea id="interpretationInput" placeholder="Leave this for after the raw material whenever possible."></textarea>
+          </label>
+        </div>
+      </section>
+    </section>
+
+    <section class="card">
+      <h2>Session Metrics</h2>
+      <div class="metrics-grid">
+        <label class="metric-card">
+          <span class="metric-label">Body calm</span>
+          <input id="bodyCalmInput" type="range" min="0" max="10" step="1" value="5" />
+          <div class="metric-value" id="bodyCalmValue">5 / 10</div>
+        </label>
+        <label class="metric-card">
+          <span class="metric-label">Clarity</span>
+          <input id="clarityInput" type="range" min="0" max="10" step="1" value="5" />
+          <div class="metric-value" id="clarityValue">5 / 10</div>
+        </label>
+        <label class="metric-card">
+          <span class="metric-label">Imagery density</span>
+          <input id="imageryInput" type="range" min="0" max="10" step="1" value="5" />
+          <div class="metric-value" id="imageryValue">5 / 10</div>
+        </label>
+        <label class="metric-card">
+          <span class="metric-label">Confidence</span>
+          <input id="confidenceInput" type="range" min="0" max="10" step="1" value="5" />
+          <div class="metric-value" id="confidenceValue">5 / 10</div>
+        </label>
+      </div>
+      <label style="margin-top: 1rem; display: block;">
+        <span>Post-session notes</span>
+        <textarea id="postNotesInput" placeholder="Anything about the shell, signal quality, interruptions, oddities, or what felt strongest..."></textarea>
+      </label>
+      <div class="button-row" style="margin-top: 1rem;">
+        <button id="exportJsonButton" type="button">Export JSON</button>
+        <button id="exportMarkdownButton" type="button">Export Markdown</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="./js/rv-capture.js"></script>
+</body>
+</html>
