@@ -10,7 +10,7 @@
   <header class="site-header">
     <div>
       <strong>Runa Tone Lab</strong>
-      <p class="subtitle">Standalone audio lab for tones, blends, custom tones, export, and notes.</p>
+      <p class="subtitle">Standalone audio lab for tones, blends, export, and research notes.</p>
     </div>
     <div class="header-actions">
       <a class="button-link" href="./index.html">Back to Runa</a>
@@ -20,8 +20,8 @@
   <main class="page-shell">
     <section class="hero card glow-card">
       <div>
-        <h1>Tone Lab</h1>
-        <p class="hero-copy">Headphone-first 8D motion, palette switching, presets, custom tones, JSON save/load, offline MP3 export, and a built-in notes space.</p>
+        <h1>Tone Lab Console</h1>
+        <p class="hero-copy">A softer sci-fi shell for audio work, field notes, and research threads.</p>
       </div>
       <div class="theme-controls">
         <label for="themeSelect">Palette</label>
@@ -36,159 +36,235 @@
       </div>
     </section>
 
-    <section class="card">
-      <h2>Presets</h2>
-      <div id="presetButtons" class="chip-row"></div>
-    </section>
+    <nav class="tab-bar" aria-label="Tone Lab sections">
+      <button class="tab-button is-active" type="button" data-tab-target="lab">Tone Lab</button>
+      <button class="tab-button" type="button" data-tab-target="guide">Field Guide</button>
+      <button class="tab-button" type="button" data-tab-target="archive">Archive</button>
+      <button class="tab-button" type="button" data-tab-target="research">Research</button>
+    </nav>
 
-    <section class="card field-guide">
-      <div>
-        <h2>Field Guide</h2>
-        <p>Start with one tone in preview mode so you can learn its character by itself. Then add another and listen for what changes: shimmer, width, warmth, lift, or weight. Lower tones act like foundation, mid tones give body, upper-mid tones add lift, and the highest tones behave like overtone light.</p>
-      </div>
-      <div class="guide-panels">
-        <div class="mini-panel">
-          <h3>Blend Reading</h3>
-          <p id="blendDescription">Select one or more tones to generate a blend reading.</p>
-        </div>
-        <div class="mini-panel">
-          <h3>Meaning Weave</h3>
-          <p id="meaningWeave">No tones selected yet.</p>
-        </div>
-        <div class="mini-panel">
-          <h3>Band Roles</h3>
-          <ul id="bandSummary" class="band-list"></ul>
-        </div>
-      </div>
-    </section>
-
-    <section class="main-grid">
-      <section class="card tone-library">
-        <h2>Select Tones</h2>
-        <div id="toneGroups"></div>
+    <section class="tab-panel is-active" data-tab-panel="lab">
+      <section class="card">
+        <h2>Presets</h2>
+        <div id="presetButtons" class="chip-row"></div>
       </section>
 
-      <aside class="control-column">
-        <section class="card">
-          <h2>Custom Tone</h2>
-          <div class="control-stack">
-            <label>
-              <span>Name</span>
-              <input id="customToneName" type="text" placeholder="Ex: Flamewell" />
-            </label>
-            <label>
-              <span>Frequency</span>
-              <input id="customToneFrequency" type="range" min="100" max="3000" step="1" value="512" />
-              <strong id="customToneFrequencyValue">512 Hz</strong>
-              <p class="tiny-copy">Sets the pitch of the custom tone you are creating. Lower values sound deeper, higher values sound brighter and thinner.</p>
-            </label>
-            <label>
-              <span>Meaning</span>
-              <input id="customToneMeaning" type="text" placeholder="What the tone is for" />
-            </label>
-            <div class="button-row wrap-row">
-              <button id="addCustomToneButton" class="accent-button" type="button">Add</button>
-              <button id="previewCustomToneButton" type="button">Preview</button>
-              <button id="saveCustomTonesButton" type="button">Save file</button>
-            </div>
-            <div class="button-row wrap-row">
-              <button id="loadCustomTonesButton" type="button">Load file</button>
-              <input id="loadCustomTonesInput" type="file" accept="application/json" hidden />
-              <p class="tiny-copy">Custom tones also autosave in this browser.</p>
-            </div>
+      <section class="main-grid">
+        <section class="card tone-library">
+          <div class="section-heading-row">
+            <h2>Select Tones</h2>
+            <span class="section-pill">modular</span>
           </div>
+          <div id="toneGroups"></div>
         </section>
 
-        <section class="card">
-          <h2>Engine</h2>
-          <div class="selected-tones">
-            <h3>Selected</h3>
-            <div id="selectedToneChips" class="chip-row"></div>
-          </div>
-          <div class="control-stack">
-            <label>
-              <span>Waveform</span>
-              <select id="waveformSelect">
-                <option value="sine">Sine</option>
-                <option value="triangle">Triangle</option>
-                <option value="sawtooth">Sawtooth</option>
-                <option value="square">Square</option>
-              </select>
-              <p class="tiny-copy">Changes the texture of the sound itself. Sine is smoothest, triangle is soft but more present, sawtooth is brighter and buzzy, and square is the sharpest.</p>
-            </label>
-            <label>
-              <span>Master gain</span>
-              <input id="gainControl" type="range" min="0.02" max="0.25" step="0.01" value="0.10" />
-              <strong id="gainValue">0.10</strong>
-              <p class="tiny-copy">Controls overall loudness for the whole blend. Turn this up gently, especially with headphones.</p>
-            </label>
-            <label>
-              <span>Orbit rate</span>
-              <input id="orbitRateControl" type="range" min="0.01" max="0.20" step="0.01" value="0.05" />
-              <strong id="orbitRateValue">0.05</strong>
-              <p class="tiny-copy">Changes how quickly the sound moves around your head in 8D mode. Lower feels drifting, higher feels more restless.</p>
-            </label>
-            <label>
-              <span>Depth</span>
-              <input id="depthControl" type="range" min="0.5" max="3" step="0.1" value="1.5" />
-              <strong id="depthValue">1.5</strong>
-              <p class="tiny-copy">Adjusts how wide the motion feels. Lower values stay closer and steadier, higher values arc further around you.</p>
-            </label>
-            <label>
-              <span>Reverb</span>
-              <input id="reverbControl" type="range" min="0" max="1" step="0.05" value="0.5" />
-              <strong id="reverbValue">0.50</strong>
-              <p class="tiny-copy">Adds echo and wash. Lower is dry and clean, higher is dreamier and more spacious.</p>
-            </label>
-            <label>
-              <span>MP3 export length</span>
-              <input id="exportDurationControl" type="range" min="10" max="180" step="5" value="30" />
-              <strong id="exportDurationValue">30s</strong>
-              <p class="tiny-copy">Sets how long the exported MP3 file will be. This changes the saved file, not the live playback loop.</p>
-            </label>
-            <label class="toggle-row">
-              <input id="motionEnabled" type="checkbox" checked />
-              <span>8D motion</span>
-            </label>
-            <p class="tiny-copy">Turns the spatial drift on or off. Leave it on for movement around the head, or switch it off for a steadier, more centred field.</p>
+        <aside class="control-column">
+          <section class="card current-field-card">
+            <div class="section-heading-row">
+              <h2>Current Field</h2>
+              <span class="section-pill">live</span>
+            </div>
+            <div class="selected-tones">
+              <h3>Selected</h3>
+              <div id="selectedToneChips" class="chip-row"></div>
+            </div>
             <div class="mini-panel">
               <h3>Blend Centre</h3>
               <p id="blendCenter">—</p>
             </div>
-            <p class="tiny-copy">MP3 export uses offline render plus lamejs loaded from CDN on this page.</p>
-            <p id="exportMessage" class="tiny-copy"></p>
-            <div class="button-row wrap-row">
-              <button id="playSelectedButton" class="accent-button" type="button">Play</button>
-              <button id="stopPlaybackButton" type="button">Stop</button>
-              <button id="exportMp3Button" type="button">Export MP3</button>
+            <div class="mini-panel">
+              <h3>Blend Reading</h3>
+              <p id="blendDescription">Select one or more tones to generate a blend reading.</p>
             </div>
-          </div>
-        </section>
-      </aside>
+          </section>
+
+          <section class="card">
+            <h2>Custom Tone</h2>
+            <div class="control-stack">
+              <label>
+                <span>Name</span>
+                <input id="customToneName" type="text" placeholder="Ex: Flamewell" />
+              </label>
+              <label>
+                <span>Frequency</span>
+                <input id="customToneFrequency" type="range" min="100" max="3000" step="1" value="512" />
+                <strong id="customToneFrequencyValue">512 Hz</strong>
+                <p class="tiny-copy">Sets the pitch of the custom tone you are creating. Lower values sound deeper, higher values sound brighter and thinner.</p>
+              </label>
+              <label>
+                <span>Meaning</span>
+                <input id="customToneMeaning" type="text" placeholder="What the tone is for" />
+              </label>
+              <div class="button-row wrap-row">
+                <button id="addCustomToneButton" class="accent-button" type="button">Add</button>
+                <button id="previewCustomToneButton" type="button">Preview</button>
+                <button id="saveCustomTonesButton" type="button">Save file</button>
+              </div>
+              <div class="button-row wrap-row">
+                <button id="loadCustomTonesButton" type="button">Load file</button>
+                <input id="loadCustomTonesInput" type="file" accept="application/json" hidden />
+                <p class="tiny-copy">Custom tones also autosave in this browser.</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <h2>Engine Console</h2>
+            <div class="control-stack">
+              <details class="collapsible" open>
+                <summary>Playback</summary>
+                <div class="collapsible-body">
+                  <label>
+                    <span>Waveform</span>
+                    <select id="waveformSelect">
+                      <option value="sine">Sine</option>
+                      <option value="triangle">Triangle</option>
+                      <option value="sawtooth">Sawtooth</option>
+                      <option value="square">Square</option>
+                    </select>
+                    <p class="tiny-copy">Changes the texture of the sound itself. Sine is smoothest, triangle is soft but more present, sawtooth is brighter and buzzy, and square is the sharpest.</p>
+                  </label>
+                  <label>
+                    <span>Master gain</span>
+                    <input id="gainControl" type="range" min="0.02" max="0.25" step="0.01" value="0.10" />
+                    <strong id="gainValue">0.10</strong>
+                    <p class="tiny-copy">Controls overall loudness for the whole blend. Turn this up gently, especially with headphones.</p>
+                  </label>
+                </div>
+              </details>
+
+              <details class="collapsible" open>
+                <summary>Motion + Space</summary>
+                <div class="collapsible-body">
+                  <label>
+                    <span>Orbit rate</span>
+                    <input id="orbitRateControl" type="range" min="0.01" max="0.20" step="0.01" value="0.05" />
+                    <strong id="orbitRateValue">0.05</strong>
+                    <p class="tiny-copy">Changes how quickly the sound moves around your head in 8D mode. Lower feels drifting, higher feels more restless.</p>
+                  </label>
+                  <label>
+                    <span>Depth</span>
+                    <input id="depthControl" type="range" min="0.5" max="3" step="0.1" value="1.5" />
+                    <strong id="depthValue">1.5</strong>
+                    <p class="tiny-copy">Adjusts how wide the motion feels. Lower values stay closer and steadier, higher values arc further around you.</p>
+                  </label>
+                  <label>
+                    <span>Reverb</span>
+                    <input id="reverbControl" type="range" min="0" max="1" step="0.05" value="0.5" />
+                    <strong id="reverbValue">0.50</strong>
+                    <p class="tiny-copy">Adds echo and wash. Lower is dry and clean, higher is dreamier and more spacious.</p>
+                  </label>
+                  <label class="toggle-row">
+                    <input id="motionEnabled" type="checkbox" checked />
+                    <span>8D motion</span>
+                  </label>
+                  <p class="tiny-copy">Turns the spatial drift on or off. Leave it on for movement around the head, or switch it off for a steadier, more centred field.</p>
+                </div>
+              </details>
+
+              <details class="collapsible" open>
+                <summary>Export</summary>
+                <div class="collapsible-body">
+                  <label>
+                    <span>MP3 export length</span>
+                    <input id="exportDurationControl" type="range" min="10" max="180" step="5" value="30" />
+                    <strong id="exportDurationValue">30s</strong>
+                    <p class="tiny-copy">Sets how long the exported MP3 file will be. This changes the saved file, not the live playback loop.</p>
+                  </label>
+                  <p class="tiny-copy">MP3 export uses offline render plus lamejs loaded from CDN on this page.</p>
+                  <p id="exportMessage" class="tiny-copy"></p>
+                </div>
+              </details>
+
+              <div class="button-row wrap-row">
+                <button id="playSelectedButton" class="accent-button" type="button">Play</button>
+                <button id="stopPlaybackButton" type="button">Stop</button>
+                <button id="exportMp3Button" type="button">Export MP3</button>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </section>
     </section>
 
-    <section class="card notes-section">
-      <div class="notes-header">
+    <section class="tab-panel" data-tab-panel="guide">
+      <section class="card field-guide">
         <div>
-          <h2>Research & Correspondence Notes</h2>
-          <p class="tiny-copy">A local notes space for experiment logs, research scraps, messages, and anything you want to keep beside the sound work.</p>
+          <h2>Field Guide</h2>
+          <p>Start with one tone in preview mode so you can learn its character by itself. Then add another and listen for what changes: shimmer, width, warmth, lift, or weight. Lower tones act like foundation, mid tones give body, upper-mid tones add lift, and the highest tones behave like overtone light.</p>
         </div>
-        <div class="button-row wrap-row">
-          <button id="saveNotesButton" class="accent-button" type="button">Save notes</button>
-          <button id="exportNotesButton" type="button">Export notes</button>
+        <div class="guide-panels">
+          <div class="mini-panel">
+            <h3>Blend Reading</h3>
+            <p id="guideBlendDescription">Select one or more tones to generate a blend reading.</p>
+          </div>
+          <div class="mini-panel">
+            <h3>Meaning Weave</h3>
+            <p id="meaningWeave">No tones selected yet.</p>
+          </div>
+          <div class="mini-panel">
+            <h3>Band Roles</h3>
+            <ul id="bandSummary" class="band-list"></ul>
+          </div>
         </div>
-      </div>
-      <p id="notesStatus" class="tiny-copy">Notes autosave in this browser.</p>
-      <div class="notes-grid">
-        <label class="notes-label">
-          <span>Hearth Light Glint</span>
-          <textarea id="hearthLightNotes" class="notes-area" placeholder="Research notes, session impressions, questions, fragments, observations..."></textarea>
-        </label>
-        <label class="notes-label">
-          <span>Nocturne Glint</span>
-          <textarea id="nocturneGlintNotes" class="notes-area" placeholder="Notes from Noct to you, replies, ideas, correspondence fragments, field notes..."></textarea>
-        </label>
-      </div>
+      </section>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="archive">
+      <section class="card notes-section">
+        <div class="notes-header">
+          <div>
+            <h2>Notes Vault</h2>
+            <p class="tiny-copy">A local notes space for experiment logs, research scraps, messages, and anything else that belongs in the lab drawers.</p>
+          </div>
+          <div class="button-row wrap-row">
+            <button id="saveNotesButton" class="accent-button" type="button">Save notes</button>
+            <button id="exportNotesButton" type="button">Export notes</button>
+          </div>
+        </div>
+        <p id="notesStatus" class="tiny-copy">Notes autosave in this browser.</p>
+        <div class="notes-stack">
+          <details class="collapsible" open>
+            <summary>Hearth Light Glint</summary>
+            <div class="collapsible-body">
+              <textarea id="hearthLightNotes" class="notes-area" placeholder="Research notes, session impressions, questions, fragments, observations..."></textarea>
+            </div>
+          </details>
+          <details class="collapsible" open>
+            <summary>Nocturne Glint</summary>
+            <div class="collapsible-body">
+              <textarea id="nocturneGlintNotes" class="notes-area" placeholder="Notes from Noct to you, replies, ideas, correspondence fragments, field notes..."></textarea>
+            </div>
+          </details>
+          <details class="collapsible" open>
+            <summary>Tesla Bench</summary>
+            <div class="collapsible-body">
+              <textarea id="teslaBenchNotes" class="notes-area" placeholder="Tesla-inspired research, energy-system ideas, method prompts, design sketches, strange sparks..."></textarea>
+            </div>
+          </details>
+        </div>
+      </section>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="research">
+      <section class="research-grid">
+        <article class="card research-card">
+          <h2>Tone Lab</h2>
+          <p class="tiny-copy">The current symbolic and audio blend console. This is the main engine room.</p>
+        </article>
+        <article class="card research-card">
+          <h2>Brainwave Lab</h2>
+          <p class="tiny-copy">Planned binaural beat mode, beat-difference controls, and evidence-aware band presets.</p>
+        </article>
+        <article class="card research-card">
+          <h2>Gateway-Inspired</h2>
+          <p class="tiny-copy">Structured session architecture: settling, body-drop, expansion, and return.</p>
+        </article>
+        <article class="card research-card">
+          <h2>Psi Lab</h2>
+          <p class="tiny-copy">Blind targets, note locks, reveal flow, and a cleaner protocol for signal versus wishful weather.</p>
+        </article>
+      </section>
     </section>
   </main>
 
