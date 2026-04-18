@@ -299,6 +299,24 @@
       this.frame = requestAnimationFrame(() => this.animate());
     }
 
+    applyLiveSettings({ waveform, gain, orbitRate, depth, reverb, motionEnabled }) {
+      if (!this.ctx || !this.master || !this.dry || !this.wet || !this.bundles.length) return;
+
+      const now = this.ctx.currentTime;
+      this.motion = { orbitRate, depth, motionEnabled };
+      this.dry.gain.setTargetAtTime(1 - reverb * 0.45, now, 0.05);
+      this.wet.gain.setTargetAtTime(0.08 + reverb * 0.5, now, 0.05);
+      this.master.gain.cancelScheduledValues(now);
+      this.master.gain.setTargetAtTime(gain, now, 0.05);
+
+      const voiceGainTarget = Math.max(0.02, gain / Math.max(1, this.bundles.length));
+      this.bundles.forEach((bundle) => {
+        bundle.osc.type = waveform;
+        bundle.gain.gain.cancelScheduledValues(now);
+        bundle.gain.gain.setTargetAtTime(voiceGainTarget, now, 0.05);
+      });
+    }
+
     async play({ frequencies, waveform, gain, orbitRate, depth, reverb, motionEnabled }) {
       const ctx = await this.ensure();
       this.stop();
@@ -496,6 +514,9 @@
         state.reverb = preset.reverb;
         state.motionEnabled = preset.motionEnabled;
         syncControlsFromState();
+        if (state.isPlaying) {
+          applyLiveControlChanges();
+        }
         renderAll();
       });
       refs.presetButtons.appendChild(button);
@@ -741,6 +762,13 @@
     };
   }
 
+  function applyLiveControlChanges() {
+    const settings = getCurrentEngineSettings();
+    if (!state.isPlaying) return settings;
+    engine.applyLiveSettings(settings);
+    return settings;
+  }
+
   async function previewCustomTone() {
     const frequency = Number(refs.customToneFrequency.value);
     const settings = getCurrentEngineSettings();
@@ -789,13 +817,31 @@
   });
 
   refs.customToneFrequency.addEventListener("input", updateReadouts);
-  refs.gainControl.addEventListener("input", updateReadouts);
-  refs.orbitRateControl.addEventListener("input", updateReadouts);
-  refs.depthControl.addEventListener("input", updateReadouts);
-  refs.reverbControl.addEventListener("input", updateReadouts);
+  refs.gainControl.addEventListener("input", () => {
+    updateReadouts();
+    applyLiveControlChanges();
+  });
+  refs.orbitRateControl.addEventListener("input", () => {
+    updateReadouts();
+    applyLiveControlChanges();
+  });
+  refs.depthControl.addEventListener("input", () => {
+    updateReadouts();
+    applyLiveControlChanges();
+  });
+  refs.reverbControl.addEventListener("input", () => {
+    updateReadouts();
+    applyLiveControlChanges();
+  });
   refs.exportDurationControl.addEventListener("input", updateReadouts);
-  refs.waveformSelect.addEventListener("change", () => { state.waveform = refs.waveformSelect.value; });
-  refs.motionEnabled.addEventListener("change", () => { state.motionEnabled = refs.motionEnabled.checked; });
+  refs.waveformSelect.addEventListener("change", () => {
+    state.waveform = refs.waveformSelect.value;
+    applyLiveControlChanges();
+  });
+  refs.motionEnabled.addEventListener("change", () => {
+    state.motionEnabled = refs.motionEnabled.checked;
+    applyLiveControlChanges();
+  });
 
   refs.addCustomToneButton.addEventListener("click", addCustomTone);
   refs.previewCustomToneButton.addEventListener("click", () => void previewCustomTone());
