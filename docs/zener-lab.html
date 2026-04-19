@@ -5,12 +5,233 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Runa Zener Lab</title>
   <link rel="stylesheet" href="./css/psi-lab.css" />
+  <style>
+    .zener-shell {
+      gap: 1.5rem;
+    }
+
+    .zener-layout {
+      display: grid;
+      grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.3fr);
+      gap: 1.25rem;
+      align-items: start;
+    }
+
+    .zener-stage-card {
+      min-height: 72vh;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 1rem;
+    }
+
+    .zener-stage-head {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .zener-stage-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .zener-card {
+      perspective: 1200px;
+      min-height: 260px;
+      background: transparent;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .zener-card:disabled {
+      cursor: not-allowed;
+      opacity: 0.92;
+    }
+
+    .zener-card-inner {
+      position: relative;
+      width: 100%;
+      min-height: 260px;
+      transform-style: preserve-3d;
+      transition: transform 0.7s ease, box-shadow 0.35s ease;
+    }
+
+    .zener-card.is-flipped .zener-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .zener-card-face {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      gap: 0.7rem;
+      padding: 1.25rem 0.9rem;
+      backface-visibility: hidden;
+      border-radius: 24px;
+      border: 1px solid color-mix(in srgb, var(--accent-2) 24%, var(--border));
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 34%),
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.015));
+      background-color: color-mix(in srgb, var(--card-strong) 92%, transparent);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 14px 32px rgba(0,0,0,0.22);
+      overflow: hidden;
+    }
+
+    .zener-card-face::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 18px;
+      border: 1px solid color-mix(in srgb, var(--accent-2) 20%, transparent);
+      clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px);
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .zener-card-front {
+      color: var(--text);
+    }
+
+    .zener-card-back {
+      transform: rotateY(180deg);
+      color: #f9f3e8;
+      text-align: center;
+    }
+
+    .zener-card-back.is-hit,
+    .zener-card-back.is-target {
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.12), transparent 34%),
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.018));
+      background-color: rgba(185, 154, 108, 0.22);
+      border-color: rgba(216, 176, 112, 0.48);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 24px rgba(216, 176, 112, 0.18), 0 18px 36px rgba(0,0,0,0.26);
+    }
+
+    .zener-card-back.is-miss {
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 34%),
+        linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+      background-color: rgba(123, 46, 47, 0.24);
+      border-color: rgba(176, 72, 72, 0.46);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 0 22px rgba(123, 46, 47, 0.22), 0 18px 36px rgba(0,0,0,0.26);
+    }
+
+    .zener-card.is-selectable:hover .zener-card-inner,
+    .zener-card.is-selected .zener-card-inner {
+      box-shadow: 0 0 28px var(--glow), 0 18px 36px rgba(0,0,0,0.24);
+      transform: translateY(-2px);
+    }
+
+    .zener-card.is-selected .zener-card-front {
+      border-color: color-mix(in srgb, var(--accent) 55%, white 6%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 24px var(--glow), 0 18px 36px rgba(0,0,0,0.24);
+    }
+
+    .zener-symbol {
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      line-height: 1;
+      text-shadow: 0 0 18px color-mix(in srgb, var(--accent) 18%, transparent);
+      position: relative;
+      z-index: 1;
+    }
+
+    .zener-name {
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      position: relative;
+      z-index: 1;
+    }
+
+    .zener-result {
+      font-size: 1.1rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+
+    .zener-result-detail {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.8);
+      position: relative;
+      z-index: 1;
+    }
+
+    .zener-stage-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .zener-stage-actions .button-row {
+      margin: 0;
+    }
+
+    .zener-confidence {
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .session-journal {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .session-journal textarea {
+      min-height: 200px;
+    }
+
+    .trial-log-card .results-table td:nth-child(4),
+    .trial-log-card .results-table td:nth-child(5) {
+      white-space: nowrap;
+    }
+
+    .trial-log-card .results-table td {
+      font-size: 0.94rem;
+    }
+
+    @media (max-width: 1080px) {
+      .zener-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .zener-stage-card {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 820px) {
+      .zener-stage-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .zener-stage-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .zener-card,
+      .zener-card-inner {
+        min-height: 190px;
+      }
+    }
+  </style>
 </head>
 <body data-theme="nocturne-garden">
   <header class="site-header">
     <div>
       <strong>Runa Zener Lab</strong>
-      <p class="subtitle">Forced-choice symbol practice with clean logs, timed windows, confidence tracking, and exportable sessions.</p>
+      <p class="subtitle">A full-deck symbol runner with glass cards, soft glow, live flip reveals, and post-run reflection.</p>
     </div>
     <div class="header-actions">
       <a class="button-link" href="./index.html">Back to Runa</a>
@@ -19,11 +240,11 @@
     </div>
   </header>
 
-  <main class="page-shell">
+  <main class="page-shell zener-shell">
     <section class="hero card glow-card">
       <div>
-        <h1>Zener Lab</h1>
-        <p class="hero-copy">Run hidden-target symbol sessions, compare conditions like silence, F10, F12, or a custom shell, and keep the results boringly trackable in the best possible way.</p>
+        <h1>Zener Deck</h1>
+        <p class="hero-copy">Run a 25-card block in a cleaner ritual frame. Choose, reveal, log, then journal after the run instead of breaking the signal every card.</p>
       </div>
       <div class="theme-controls">
         <label for="themeSelect">Palette</label>
@@ -38,7 +259,7 @@
       </div>
     </section>
 
-    <section class="main-grid">
+    <section class="zener-layout">
       <section class="card">
         <h2>Session Setup</h2>
         <div class="control-stack">
@@ -59,7 +280,6 @@
             <select id="modeSelect">
               <option value="hidden-target">Hidden Target</option>
               <option value="timed-impression">Timed Impression</option>
-              <option value="image-first">Image-First</option>
             </select>
           </label>
           <label>
@@ -84,9 +304,8 @@
         </div>
       </section>
 
-      <section class="card">
-        <h2>Trial Runner</h2>
-        <div class="trial-status">
+      <section class="card glow-card zener-stage-card">
+        <div class="zener-stage-head">
           <div class="stat-grid">
             <div class="stat-card">
               <div class="tiny-copy">Current trial</div>
@@ -108,38 +327,23 @@
 
           <div class="panel">
             <h3>Trial status</h3>
-            <p id="trialStatusText" class="status-copy">Start a session to generate hidden targets.</p>
-            <div class="button-row">
-              <button id="beginTrialButton" class="accent-button" type="button">Begin Trial</button>
-              <button id="skipTrialButton" type="button">Skip Trial</button>
-              <button id="revealResultsButton" type="button">Reveal Results</button>
-            </div>
+            <p id="trialStatusText" class="status-copy">Start a session to generate a hidden deck.</p>
           </div>
+        </div>
 
-          <label id="firstImpressionLabel" class="hidden">
-            <span>First impression</span>
-            <textarea id="firstImpressionInput" placeholder="Shape, motion, emotional feel, any immediate image or sensation..."></textarea>
-          </label>
+        <div class="zener-stage-grid" id="symbolGrid"></div>
 
-          <div>
-            <span class="metric-label">Choose symbol</span>
-            <div class="symbol-grid" id="symbolGrid"></div>
-          </div>
-
-          <label>
-            <span>Confidence</span>
+        <div class="zener-stage-actions">
+          <div class="zener-confidence">
+            <span class="metric-label">Confidence</span>
             <input id="confidenceInput" type="range" min="1" max="5" step="1" value="3" />
             <div class="inline-value" id="confidenceValue">3 / 5</div>
-          </label>
-
-          <label>
-            <span>Notes</span>
-            <textarea id="notesInput" placeholder="Anything notable about the trial, state, body feel, or signal quality..."></textarea>
-          </label>
-
+          </div>
           <div class="button-row">
-            <button id="submitGuessButton" class="accent-button" type="button">Lock Guess</button>
-            <button id="nextTrialButton" type="button">Next Trial</button>
+            <button id="beginTrialButton" class="accent-button" type="button">Begin Trial</button>
+            <button id="submitGuessButton" type="button">Reveal Card</button>
+            <button id="nextTrialButton" type="button">Next Card</button>
+            <button id="skipTrialButton" type="button">Skip</button>
           </div>
         </div>
       </section>
@@ -171,7 +375,19 @@
       </div>
     </section>
 
-    <section class="card">
+    <section class="card session-journal hidden" id="journalSection">
+      <div>
+        <h2>Post-Run Reflection</h2>
+        <p class="tiny-copy">Journal after the full deck. Hold the weave first, explain later.</p>
+      </div>
+      <textarea id="journalInput" placeholder="What was the feel of the deck? Were some symbols louder? Did the condition change anything? What felt clean, muddy, or surprising?"></textarea>
+      <div class="button-row">
+        <button id="saveJournalButton" class="accent-button" type="button">Save Reflection</button>
+      </div>
+      <p id="journalStatus" class="status-copy">Reflection autosaves locally.</p>
+    </section>
+
+    <section class="card trial-log-card">
       <h2>Trial Log</h2>
       <div class="table-wrap">
         <table class="results-table">
@@ -180,11 +396,9 @@
               <th>#</th>
               <th>Target</th>
               <th>Guess</th>
-              <th>Hit</th>
+              <th>Result</th>
               <th>Confidence</th>
               <th>Response</th>
-              <th>Impression</th>
-              <th>Notes</th>
             </tr>
           </thead>
           <tbody id="resultsTableBody"></tbody>
