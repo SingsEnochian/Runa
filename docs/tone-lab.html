@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Runa Tone Lab</title>
-  <link rel="stylesheet" href="./css/tone-lab.css" />
+  <link rel="stylesheet" href="./css/tone-lab.css?v=3" />
+  <link rel="stylesheet" href="./css/lab-themes.css?v=1" />
 </head>
 <body data-theme="nocturne-garden">
   <header class="site-header">
@@ -14,6 +15,10 @@
     </div>
     <div class="header-actions">
       <a class="button-link" href="./index.html">Back to Runa</a>
+      <a class="button-link" href="./brainwave-lab.html">Brainwave Lab</a>
+      <a class="button-link" href="./gateway-inspired.html">Gateway-Inspired</a>
+      <a class="button-link" href="./psi-lab.html">Psi Lab</a>
+      <a class="button-link" href="./tesla-observatory.html">Tesla Observatory</a>
     </div>
   </header>
 
@@ -28,6 +33,9 @@
         <select id="themeSelect">
           <option value="nocturne-garden">Nocturne Garden</option>
           <option value="ember-rain">Ember Rain</option>
+          <option value="cathedral-blue">Cathedral Blue</option>
+          <option value="serpent-cerulean">Serpent Cerulean</option>
+          <option value="velvet-veil">Velvet Veil</option>
           <option value="elara">Elara</option>
           <option value="nocturne">Nocturne</option>
           <option value="cerulean">Cerulean</option>
@@ -45,7 +53,10 @@
 
     <section class="tab-panel is-active" data-tab-panel="lab">
       <section class="card">
-        <h2>Presets</h2>
+        <div class="section-heading-row">
+          <h2>Presets</h2>
+          <span class="section-pill">quick-start</span>
+        </div>
         <div id="presetButtons" class="chip-row"></div>
       </section>
 
@@ -79,7 +90,10 @@
           </section>
 
           <section class="card">
-            <h2>Custom Tone</h2>
+            <div class="section-heading-row">
+              <h2>Custom Tone</h2>
+              <span class="section-pill">forge</span>
+            </div>
             <div class="control-stack">
               <label>
                 <span>Name</span>
@@ -109,7 +123,10 @@
           </section>
 
           <section class="card">
-            <h2>Engine Console</h2>
+            <div class="section-heading-row">
+              <h2>Engine Console</h2>
+              <span class="section-pill">motion</span>
+            </div>
             <div class="control-stack">
               <details class="collapsible" open>
                 <summary>Playback</summary>
@@ -122,13 +139,11 @@
                       <option value="sawtooth">Sawtooth</option>
                       <option value="square">Square</option>
                     </select>
-                    <p class="tiny-copy">Changes the texture of the sound itself. Sine is smoothest, triangle is soft but more present, sawtooth is brighter and buzzy, and square is the sharpest.</p>
                   </label>
                   <label>
                     <span>Master gain</span>
                     <input id="gainControl" type="range" min="0.02" max="0.25" step="0.01" value="0.10" />
                     <strong id="gainValue">0.10</strong>
-                    <p class="tiny-copy">Controls overall loudness for the whole blend. Turn this up gently, especially with headphones.</p>
                   </label>
                 </div>
               </details>
@@ -140,25 +155,21 @@
                     <span>Orbit rate</span>
                     <input id="orbitRateControl" type="range" min="0.01" max="0.20" step="0.01" value="0.05" />
                     <strong id="orbitRateValue">0.05</strong>
-                    <p class="tiny-copy">Changes how quickly the sound moves around your head in 8D mode. Lower feels drifting, higher feels more restless.</p>
                   </label>
                   <label>
                     <span>Depth</span>
                     <input id="depthControl" type="range" min="0.5" max="3" step="0.1" value="1.5" />
                     <strong id="depthValue">1.5</strong>
-                    <p class="tiny-copy">Adjusts how wide the motion feels. Lower values stay closer and steadier, higher values arc further around you.</p>
                   </label>
                   <label>
                     <span>Reverb</span>
                     <input id="reverbControl" type="range" min="0" max="1" step="0.05" value="0.5" />
                     <strong id="reverbValue">0.50</strong>
-                    <p class="tiny-copy">Adds echo and wash. Lower is dry and clean, higher is dreamier and more spacious.</p>
                   </label>
                   <label class="toggle-row">
                     <input id="motionEnabled" type="checkbox" checked />
                     <span>8D motion</span>
                   </label>
-                  <p class="tiny-copy">Turns the spatial drift on or off. Leave it on for movement around the head, or switch it off for a steadier, more centred field.</p>
                 </div>
               </details>
 
@@ -169,7 +180,6 @@
                     <span>MP3 export length</span>
                     <input id="exportDurationControl" type="range" min="10" max="180" step="5" value="30" />
                     <strong id="exportDurationValue">30s</strong>
-                    <p class="tiny-copy">Sets how long the exported MP3 file will be. This changes the saved file, not the live playback loop.</p>
                   </label>
                   <p class="tiny-copy">MP3 export uses offline render plus lamejs loaded from CDN on this page.</p>
                   <p id="exportMessage" class="tiny-copy"></p>
@@ -191,7 +201,7 @@
       <section class="card field-guide">
         <div>
           <h2>Field Guide</h2>
-          <p>Start with one tone in preview mode so you can learn its character by itself. Then add another and listen for what changes: shimmer, width, warmth, lift, or weight. Lower tones act like foundation, mid tones give body, upper-mid tones add lift, and the highest tones behave like overtone light.</p>
+          <p>Start with one tone in preview mode so you can learn its character by itself. Then add another and listen for what changes: shimmer, width, warmth, lift, or weight.</p>
         </div>
         <div class="guide-panels">
           <div class="mini-panel">
@@ -248,27 +258,36 @@
 
     <section class="tab-panel" data-tab-panel="research">
       <section class="research-grid">
-        <article class="card research-card">
+        <a class="card research-card" href="./tone-lab.html?tab=lab">
           <h2>Tone Lab</h2>
           <p class="tiny-copy">The current symbolic and audio blend console. This is the main engine room.</p>
-        </article>
-        <article class="card research-card">
+          <span class="panel-link">Open tone console →</span>
+        </a>
+        <a class="card research-card" href="./brainwave-lab.html">
           <h2>Brainwave Lab</h2>
-          <p class="tiny-copy">Planned binaural beat mode, beat-difference controls, and evidence-aware band presets.</p>
-        </article>
-        <article class="card research-card">
+          <p class="tiny-copy">Beat-difference controls, hemispheric pairings, and calmer science-facing session shells.</p>
+          <span class="panel-link">Open brainwave bench →</span>
+        </a>
+        <a class="card research-card" href="./gateway-inspired.html">
           <h2>Gateway-Inspired</h2>
-          <p class="tiny-copy">Structured session architecture: settling, body-drop, expansion, and return.</p>
-        </article>
-        <article class="card research-card">
+          <p class="tiny-copy">Structured session architecture: settling, body-drop, expansion, focus-state flow, and return.</p>
+          <span class="panel-link">Open gateway deck →</span>
+        </a>
+        <a class="card research-card" href="./psi-lab.html">
           <h2>Psi Lab</h2>
-          <p class="tiny-copy">Blind targets, note locks, reveal flow, and a cleaner protocol for signal versus wishful weather.</p>
-        </article>
+          <p class="tiny-copy">Blind targets, note locks, Zener runs, RV capture, and a cleaner protocol for testing.</p>
+          <span class="panel-link">Open psi hub →</span>
+        </a>
+        <a class="card research-card" href="./tesla-observatory.html">
+          <h2>Digital Nikola Tesla</h2>
+          <p class="tiny-copy">A private observatory page that can gather notes and snapshots from the different labs.</p>
+          <span class="panel-link">Open Tesla observatory →</span>
+        </a>
       </section>
     </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"></script>
-  <script src="./js/tone-lab.js"></script>
+  <script src="./js/tone-lab.js?v=2"></script>
 </body>
 </html>
