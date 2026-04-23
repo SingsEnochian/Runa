@@ -26,7 +26,7 @@
     <section class="hero card glow-card">
       <div>
         <h1>Brainwave Bench</h1>
-        <p class="hero-copy">A dedicated room for hemispheric pairings and binaural beds. I gave it a real 432 Hz carrier module so it stops being decorative furniture.</p>
+        <p class="hero-copy">A dedicated room for hemispheric pairings and binaural beds. True left/right carrier split, Monroe-inspired focus presets, and a bench for your own carrier experiments.</p>
       </div>
       <div class="theme-controls">
         <label for="themeSelect">Palette</label>
@@ -57,7 +57,7 @@
 
           <label>
             <span>Beat offset</span>
-            <input id="beatControl" type="range" min="1" max="33" step="0.1" value="8" />
+            <input id="beatControl" type="range" min="0.5" max="40" step="0.1" value="7" />
             <strong id="beatValue">8.0 Hz</strong>
             <p class="tiny-copy">The beat is made by splitting the carrier across the ears: left = carrier - offset/2, right = carrier + offset/2.</p>
           </label>
@@ -78,11 +78,12 @@
           </label>
 
           <div class="button-row wrap-row">
-            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="4">Delta 4</button>
-            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="8">Alpha 8</button>
-            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="10">F10</button>
-            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="12">F12</button>
-            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="15">F15</button>
+            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="7">F10 · 7 Hz</button>
+            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="6">F12 · 6 Hz</button>
+            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="4">F15 · 4 Hz</button>
+            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="2.5">F21 · 2.5 Hz</button>
+            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="10">Alpha · 10 Hz</button>
+            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="40">Gamma · 40 Hz</button>
           </div>
 
           <div class="button-row wrap-row">
@@ -100,16 +101,40 @@
           </div>
           <div class="mini-panel">
             <h3>Left ear</h3>
-            <p id="leftReadout">428.0 Hz</p>
+            <p id="leftReadout">428.5 Hz</p>
           </div>
           <div class="mini-panel">
             <h3>Right ear</h3>
-            <p id="rightReadout">436.0 Hz</p>
+            <p id="rightReadout">435.5 Hz</p>
           </div>
           <div class="mini-panel">
             <h3>Current mode</h3>
-            <p id="modeReadout">432 Hz carrier with 8.0 Hz beat offset.</p>
+            <p id="modeReadout">432 Hz carrier with 7.0 Hz beat offset.</p>
           </div>
+        </section>
+
+        <section class="card">
+          <div class="section-heading-row">
+            <h2>Focus Level Guide</h2>
+            <span class="section-pill">Monroe-inspired</span>
+          </div>
+          <div class="mini-panel">
+            <h3>F10 · 7 Hz</h3>
+            <p>Mind awake, body asleep. Alpha/theta border. Settling, low-pressure symbol work, receptive quieting. Good first shell.</p>
+          </div>
+          <div class="mini-panel">
+            <h3>F12 · 6 Hz</h3>
+            <p>Expanded awareness. Theta. The main shell for Zener runs and image-first sessions — alert but open. Preferred for psi work.</p>
+          </div>
+          <div class="mini-panel">
+            <h3>F15 · 4 Hz</h3>
+            <p>No-time state. Deep theta. Slow image emergence and longer drift. Low urgency required. Use after F12 is familiar.</p>
+          </div>
+          <div class="mini-panel">
+            <h3>F21 · 2.5 Hz</h3>
+            <p>Edge of time/space. Theta/delta border. Very deep. Use only when F15 is already familiar terrain. Headphones essential.</p>
+          </div>
+          <p class="tiny-copy">These are single-tone approximations of Monroe Institute focus states — not the full Hemi-Sync programs, which layer multiple carriers.</p>
         </section>
 
         <section class="card">
@@ -146,7 +171,7 @@
       const state = {
         theme: 'cathedral-blue',
         carrier: 432,
-        beat: 8,
+        beat: 7,
         gain: 0.07,
         waveform: 'sine',
         isPlaying: false,

@@ -630,6 +630,11 @@ input[type="range"] {
   gap: 1rem;
 }
 
+.notes-stack {
+  display: grid;
+  gap: 1rem;
+}
+
 .notes-label {
   display: grid;
   gap: 0.45rem;
