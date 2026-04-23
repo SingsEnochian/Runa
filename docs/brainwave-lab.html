@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Runa Brainwave Lab</title>
-  <link rel="stylesheet" href="./css/tone-lab.css?v=3" />
-  <link rel="stylesheet" href="./css/lab-themes.css?v=1" />
+  <link rel="stylesheet" href="./css/tone-lab.css?v=6" />
+  <link rel="stylesheet" href="./css/lab-themes.css?v=2" />
 </head>
 <body data-theme="cathedral-blue">
   <header class="site-header">
     <div>
       <strong>Runa Brainwave Lab</strong>
-      <p class="subtitle">Beat-difference, pairing, and session architecture for calmer science-facing experiments.</p>
+      <p class="subtitle">Carrier tones, beat-difference pairing, and calmer experiment beds.</p>
     </div>
     <div class="header-actions">
       <a class="button-link" href="./index.html">Back to Runa</a>
@@ -26,57 +26,294 @@
     <section class="hero card glow-card">
       <div>
         <h1>Brainwave Bench</h1>
-        <p class="hero-copy">A dedicated room for hemispheric pairings, binaural session structures, and calmer analytical notes.</p>
+        <p class="hero-copy">A dedicated room for hemispheric pairings and binaural beds. I gave it a real 432 Hz carrier module so it stops being decorative furniture.</p>
       </div>
-      <div class="mini-panel">
-        <h3>Current direction</h3>
-        <p>Scaffold complete. Next build pass: pair selector, carrier controls, beat-difference presets, and session timer.</p>
+      <div class="theme-controls">
+        <label for="themeSelect">Palette</label>
+        <select id="themeSelect">
+          <option value="cathedral-blue">Cathedral Blue</option>
+          <option value="serpent-cerulean">Serpent Cerulean</option>
+          <option value="nocturne-garden">Nocturne Garden</option>
+          <option value="ember-rain">Ember Rain</option>
+          <option value="velvet-veil">Velvet Veil</option>
+          <option value="cerulean">Cerulean</option>
+        </select>
       </div>
     </section>
 
     <section class="main-grid">
       <section class="card">
         <div class="section-heading-row">
-          <h2>Preset Families</h2>
-          <span class="section-pill">bench map</span>
+          <h2>432 Carrier Beat</h2>
+          <span class="section-pill">live module</span>
         </div>
-        <div class="tone-grid">
-          <article class="tone-card active">
-            <div class="tone-name">Settle</div>
-            <div class="tone-meaning">Lower-arousal entry sessions, softer body drop, reduced cognitive static.</div>
-          </article>
-          <article class="tone-card">
-            <div class="tone-name">Focus</div>
-            <div class="tone-meaning">Mid-band pairings for steady attention, reading, journalling, and low-friction work.</div>
-          </article>
-          <article class="tone-card">
-            <div class="tone-name">Drift</div>
-            <div class="tone-meaning">Sleep-adjacent or imaginal work, gentler descent, less brittle edges.</div>
-          </article>
-          <article class="tone-card">
-            <div class="tone-name">Lift</div>
-            <div class="tone-meaning">Brighter activation sets for experiment prep, symbolic work, and alert-state transitions.</div>
-          </article>
+
+        <div class="control-stack">
+          <label>
+            <span>Carrier frequency</span>
+            <input id="carrierControl" type="range" min="100" max="800" step="1" value="432" />
+            <strong id="carrierValue">432 Hz</strong>
+          </label>
+
+          <label>
+            <span>Beat offset</span>
+            <input id="beatControl" type="range" min="1" max="33" step="0.1" value="8" />
+            <strong id="beatValue">8.0 Hz</strong>
+            <p class="tiny-copy">The beat is made by splitting the carrier across the ears: left = carrier - offset/2, right = carrier + offset/2.</p>
+          </label>
+
+          <label>
+            <span>Waveform</span>
+            <select id="waveformSelect">
+              <option value="sine">Sine</option>
+              <option value="triangle">Triangle</option>
+              <option value="sawtooth">Sawtooth</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Master gain</span>
+            <input id="gainControl" type="range" min="0.02" max="0.18" step="0.01" value="0.07" />
+            <strong id="gainValue">0.07</strong>
+          </label>
+
+          <div class="button-row wrap-row">
+            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="4">Delta 4</button>
+            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="8">Alpha 8</button>
+            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="10">F10</button>
+            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="12">F12</button>
+            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="15">F15</button>
+          </div>
+
+          <div class="button-row wrap-row">
+            <button id="playButton" class="accent-button" type="button">Play 432 bed</button>
+            <button id="stopButton" type="button" disabled>Stop</button>
+          </div>
         </div>
       </section>
 
       <aside class="control-column">
         <section class="card">
-          <h2>Planned controls</h2>
-          <div class="chip-row">
-            <span class="chip">Left / right carrier</span>
-            <span class="chip">Beat difference</span>
-            <span class="chip">Session timer</span>
-            <span class="chip">Noise bed</span>
-            <span class="chip">Preset save</span>
+          <div class="section-heading-row">
+            <h2>Channel Readout</h2>
+            <span class="section-pill">stereo</span>
+          </div>
+          <div class="mini-panel">
+            <h3>Left ear</h3>
+            <p id="leftReadout">428.0 Hz</p>
+          </div>
+          <div class="mini-panel">
+            <h3>Right ear</h3>
+            <p id="rightReadout">436.0 Hz</p>
+          </div>
+          <div class="mini-panel">
+            <h3>Current mode</h3>
+            <p id="modeReadout">432 Hz carrier with 8.0 Hz beat offset.</p>
           </div>
         </section>
+
         <section class="card">
-          <h2>Research notes</h2>
-          <p class="tiny-copy">This page is live as a shell so the lab routes resolve correctly. The next coding pass should wire interactive controls and a cleaner charting panel.</p>
+          <div class="section-heading-row">
+            <h2>Bench Notes</h2>
+            <span class="section-pill">headphones</span>
+          </div>
+          <p class="tiny-copy">This module creates a true left/right split instead of pretending a single symbolic tone is a binaural bed.</p>
+          <p class="tiny-copy">Headphones are the intended path. Speakers will blur the beat into the room and turn precision into soup.</p>
         </section>
       </aside>
     </section>
   </main>
+
+  <script>
+    (() => {
+      const refs = {
+        themeSelect: document.getElementById('themeSelect'),
+        carrierControl: document.getElementById('carrierControl'),
+        beatControl: document.getElementById('beatControl'),
+        waveformSelect: document.getElementById('waveformSelect'),
+        gainControl: document.getElementById('gainControl'),
+        carrierValue: document.getElementById('carrierValue'),
+        beatValue: document.getElementById('beatValue'),
+        gainValue: document.getElementById('gainValue'),
+        leftReadout: document.getElementById('leftReadout'),
+        rightReadout: document.getElementById('rightReadout'),
+        modeReadout: document.getElementById('modeReadout'),
+        playButton: document.getElementById('playButton'),
+        stopButton: document.getElementById('stopButton'),
+        presetButtons: Array.from(document.querySelectorAll('[data-preset-carrier]')),
+      };
+
+      const state = {
+        theme: 'cathedral-blue',
+        carrier: 432,
+        beat: 8,
+        gain: 0.07,
+        waveform: 'sine',
+        isPlaying: false,
+      };
+
+      let ctx = null;
+      let master = null;
+      let leftOsc = null;
+      let rightOsc = null;
+      let leftPan = null;
+      let rightPan = null;
+      let leftGain = null;
+      let rightGain = null;
+
+      function syncReadouts() {
+        const left = Math.max(1, state.carrier - state.beat / 2);
+        const right = state.carrier + state.beat / 2;
+        refs.carrierValue.textContent = `${state.carrier.toFixed(0)} Hz`;
+        refs.beatValue.textContent = `${state.beat.toFixed(1)} Hz`;
+        refs.gainValue.textContent = state.gain.toFixed(2);
+        refs.leftReadout.textContent = `${left.toFixed(1)} Hz`;
+        refs.rightReadout.textContent = `${right.toFixed(1)} Hz`;
+        refs.modeReadout.textContent = `${state.carrier.toFixed(0)} Hz carrier with ${state.beat.toFixed(1)} Hz beat offset.`;
+        refs.themeSelect.value = state.theme;
+      }
+
+      async function ensureAudio() {
+        if (!ctx) {
+          ctx = new AudioContext();
+          master = ctx.createGain();
+          master.gain.value = 0.0001;
+          master.connect(ctx.destination);
+        }
+        if (ctx.state === 'suspended') await ctx.resume();
+      }
+
+      function stopPlayback() {
+        if (leftOsc) {
+          try { leftOsc.stop(); } catch {}
+          try { leftOsc.disconnect(); } catch {}
+          leftOsc = null;
+        }
+        if (rightOsc) {
+          try { rightOsc.stop(); } catch {}
+          try { rightOsc.disconnect(); } catch {}
+          rightOsc = null;
+        }
+        if (leftPan) {
+          try { leftPan.disconnect(); } catch {}
+          leftPan = null;
+        }
+        if (rightPan) {
+          try { rightPan.disconnect(); } catch {}
+          rightPan = null;
+        }
+        if (leftGain) {
+          try { leftGain.disconnect(); } catch {}
+          leftGain = null;
+        }
+        if (rightGain) {
+          try { rightGain.disconnect(); } catch {}
+          rightGain = null;
+        }
+        if (ctx && master) {
+          const now = ctx.currentTime;
+          master.gain.cancelScheduledValues(now);
+          master.gain.setTargetAtTime(0.0001, now, 0.06);
+        }
+        state.isPlaying = false;
+        refs.playButton.disabled = false;
+        refs.stopButton.disabled = true;
+      }
+
+      async function playBeat() {
+        await ensureAudio();
+        stopPlayback();
+        const now = ctx.currentTime;
+        const leftFreq = Math.max(1, state.carrier - state.beat / 2);
+        const rightFreq = state.carrier + state.beat / 2;
+
+        leftOsc = ctx.createOscillator();
+        rightOsc = ctx.createOscillator();
+        leftPan = ctx.createStereoPanner();
+        rightPan = ctx.createStereoPanner();
+        leftGain = ctx.createGain();
+        rightGain = ctx.createGain();
+
+        leftOsc.type = state.waveform;
+        rightOsc.type = state.waveform;
+        leftOsc.frequency.value = leftFreq;
+        rightOsc.frequency.value = rightFreq;
+        leftPan.pan.value = -1;
+        rightPan.pan.value = 1;
+        leftGain.gain.value = 0.5;
+        rightGain.gain.value = 0.5;
+
+        leftOsc.connect(leftGain);
+        leftGain.connect(leftPan);
+        leftPan.connect(master);
+
+        rightOsc.connect(rightGain);
+        rightGain.connect(rightPan);
+        rightPan.connect(master);
+
+        master.gain.setValueAtTime(0.0001, now);
+        master.gain.linearRampToValueAtTime(state.gain, now + 0.25);
+
+        leftOsc.start();
+        rightOsc.start();
+
+        state.isPlaying = true;
+        refs.playButton.disabled = true;
+        refs.stopButton.disabled = false;
+      }
+
+      function applyLiveChanges() {
+        syncReadouts();
+        if (!state.isPlaying || !ctx || !master || !leftOsc || !rightOsc) return;
+        const now = ctx.currentTime;
+        leftOsc.type = state.waveform;
+        rightOsc.type = state.waveform;
+        leftOsc.frequency.setTargetAtTime(Math.max(1, state.carrier - state.beat / 2), now, 0.04);
+        rightOsc.frequency.setTargetAtTime(state.carrier + state.beat / 2, now, 0.04);
+        master.gain.setTargetAtTime(state.gain, now, 0.04);
+      }
+
+      refs.themeSelect.addEventListener('change', (event) => {
+        state.theme = event.target.value;
+        document.body.dataset.theme = state.theme;
+      });
+
+      refs.carrierControl.addEventListener('input', (event) => {
+        state.carrier = Number(event.target.value);
+        applyLiveChanges();
+      });
+
+      refs.beatControl.addEventListener('input', (event) => {
+        state.beat = Number(event.target.value);
+        applyLiveChanges();
+      });
+
+      refs.gainControl.addEventListener('input', (event) => {
+        state.gain = Number(event.target.value);
+        applyLiveChanges();
+      });
+
+      refs.waveformSelect.addEventListener('change', (event) => {
+        state.waveform = event.target.value;
+        applyLiveChanges();
+      });
+
+      refs.playButton.addEventListener('click', playBeat);
+      refs.stopButton.addEventListener('click', stopPlayback);
+
+      refs.presetButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          state.carrier = Number(button.dataset.presetCarrier);
+          state.beat = Number(button.dataset.presetBeat);
+          refs.carrierControl.value = String(state.carrier);
+          refs.beatControl.value = String(state.beat);
+          applyLiveChanges();
+        });
+      });
+
+      window.addEventListener('beforeunload', stopPlayback);
+      syncReadouts();
+    })();
+  </script>
 </body>
 </html>
