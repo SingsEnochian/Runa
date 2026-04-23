@@ -1,6 +1,6 @@
-const DB_NAME = 'wardenclyffe-prototype';
-const DB_VERSION = 1;
-const STORE_NAME = 'scenes';
+import { WardenclyffeAudioEngine } from './wardenclyffe/audio-engine.js';
+import { createBinauralLayer, createEmptyScene, createToneLayer, touchScene } from './wardenclyffe/scene-factory.js';
+import { listScenes, loadScene, saveScene } from './wardenclyffe/scene-store.js';
 
 const refs = {
   themeSelect: document.getElementById('themeSelect'),
@@ -19,63 +19,14 @@ const refs = {
 
 const state = {
   scene: createEmptyScene(),
-  audio: {
-    ctx: null,
-    master: null,
-    activeNodes: [],
-  },
+  engine: new WardenclyffeAudioEngine(),
 };
-
-function createEmptyScene() {
-  return {
-    id: crypto.randomUUID(),
-    name: 'Untitled Wardenclyffe Scene',
-    theme: 'cathedral-blue',
-    masterGain: 0.8,
-    updatedAt: new Date().toISOString(),
-    layers: [],
-  };
-}
-
-function createToneLayer() {
-  return {
-    id: crypto.randomUUID(),
-    kind: 'tone',
-    name: `Tone ${state.scene.layers.filter((l) => l.kind === 'tone').length + 1}`,
-    enabled: true,
-    waveform: 'sine',
-    frequencyHz: 432,
-    gain: 0.18,
-    motionEnabled: true,
-    motionRateHz: 0.06,
-    motionDepth: 0.7,
-    offset: 0,
-  };
-}
-
-function createBinauralLayer() {
-  return {
-    id: crypto.randomUUID(),
-    kind: 'binaural',
-    name: `Binaural ${state.scene.layers.filter((l) => l.kind === 'binaural').length + 1}`,
-    enabled: true,
-    waveform: 'sine',
-    carrierHz: 432,
-    beatHz: 6,
-    gain: 0.16,
-    motionEnabled: false,
-    motionRateHz: 0.04,
-    motionDepth: 0.4,
-    offset: 0,
-    safeMotion: true,
-  };
-}
 
 function syncSceneFieldsToState() {
   state.scene.name = refs.sceneNameInput.value.trim() || 'Untitled Wardenclyffe Scene';
   state.scene.masterGain = Number(refs.masterGainInput.value);
   state.scene.theme = refs.themeSelect.value;
-  state.scene.updatedAt = new Date().toISOString();
+  touchScene(state.scene);
 }
 
 function render() {
@@ -213,24 +164,26 @@ function attachUiEvents() {
   });
 
   refs.addToneLayerButton.addEventListener('click', () => {
-    state.scene.layers.push(createToneLayer());
-    touchScene();
+    state.scene.layers.push(createToneLayer(state.scene.layers.filter((l) => l.kind === 'tone').length + 1));
+    touchScene(state.scene);
     render();
   });
 
   refs.addBinauralLayerButton.addEventListener('click', () => {
-    state.scene.layers.push(createBinauralLayer());
-    touchScene();
+    state.scene.layers.push(createBinauralLayer(state.scene.layers.filter((l) => l.kind === 'binaural').length + 1));
+    touchScene(state.scene);
     render();
   });
 
   refs.playSceneButton.addEventListener('click', async () => {
     syncSceneFieldsToState();
-    await playScene();
+    await state.engine.playScene(state.scene);
+    refs.engineStatus.textContent = `Playing scene “${state.scene.name}” with ${state.scene.layers.filter((layer) => layer.enabled).length} active layer(s).`;
   });
 
   refs.stopSceneButton.addEventListener('click', () => {
-    stopScene();
+    state.engine.stopScene();
+    refs.engineStatus.textContent = 'Scene stopped.';
   });
 
   refs.saveSceneButton.addEventListener('click', async () => {
@@ -257,7 +210,7 @@ function attachUiEvents() {
       } else {
         layer[field] = Number(nextValue);
       }
-      touchScene();
+      touchScene(state.scene);
       render();
     }
   });
@@ -292,136 +245,9 @@ function attachUiEvents() {
       }
     }
 
-    touchScene();
+    touchScene(state.scene);
     render();
   });
-}
-
-async function playScene() {
-  stopScene();
-
-  const ctx = new AudioContext();
-  const master = new GainNode(ctx, { gain: state.scene.masterGain });
-  master.connect(ctx.destination);
-
-  const activeNodes = [];
-
-  for (const layer of state.scene.layers) {
-    if (!layer.enabled) continue;
-
-    if (layer.kind === 'tone') {
-      const oscillator = new OscillatorNode(ctx, {
-        type: layer.waveform,
-        frequency: layer.frequencyHz,
-      });
-      const gain = new GainNode(ctx, { gain: layer.gain });
-      const panner = new StereoPannerNode(ctx, { pan: layer.offset });
-      oscillator.connect(gain);
-      gain.connect(panner);
-      panner.connect(master);
-      const motion = attachMotion(ctx, panner, layer);
-      oscillator.start();
-      activeNodes.push({ stop: () => oscillator.stop(), disconnect: () => {
-        motion?.dispose();
-        oscillator.disconnect();
-        gain.disconnect();
-        panner.disconnect();
-      }});
-    }
-
-    if (layer.kind === 'binaural') {
-      const merger = new ChannelMergerNode(ctx, { numberOfInputs: 2 });
-      const left = new OscillatorNode(ctx, {
-        type: layer.waveform,
-        frequency: Math.max(1, layer.carrierHz - layer.beatHz / 2),
-      });
-      const right = new OscillatorNode(ctx, {
-        type: layer.waveform,
-        frequency: layer.carrierHz + layer.beatHz / 2,
-      });
-      const leftGain = new GainNode(ctx, { gain: layer.gain });
-      const rightGain = new GainNode(ctx, { gain: layer.gain });
-      let outputNode = merger;
-      let motion = null;
-
-      left.connect(leftGain);
-      right.connect(rightGain);
-      leftGain.connect(merger, 0, 0);
-      rightGain.connect(merger, 0, 1);
-
-      if (layer.motionEnabled && !layer.safeMotion) {
-        const panner = new StereoPannerNode(ctx, { pan: layer.offset });
-        merger.connect(panner);
-        panner.connect(master);
-        outputNode = panner;
-        motion = attachMotion(ctx, panner, layer);
-      } else {
-        merger.connect(master);
-      }
-
-      left.start();
-      right.start();
-      activeNodes.push({ stop: () => { left.stop(); right.stop(); }, disconnect: () => {
-        motion?.dispose();
-        left.disconnect();
-        right.disconnect();
-        leftGain.disconnect();
-        rightGain.disconnect();
-        merger.disconnect();
-        if (outputNode !== merger) outputNode.disconnect();
-      }});
-    }
-  }
-
-  state.audio.ctx = ctx;
-  state.audio.master = master;
-  state.audio.activeNodes = activeNodes;
-  refs.engineStatus.textContent = `Playing scene “${state.scene.name}” with ${state.scene.layers.filter((layer) => layer.enabled).length} active layer(s).`;
-}
-
-function attachMotion(ctx, panner, layer) {
-  if (!layer.motionEnabled || layer.motionDepth <= 0) {
-    return null;
-  }
-  const lfo = new OscillatorNode(ctx, {
-    type: 'sine',
-    frequency: Math.max(0.01, layer.motionRateHz),
-  });
-  const depth = new GainNode(ctx, {
-    gain: Math.max(0, Math.min(1, layer.motionDepth)),
-  });
-  lfo.connect(depth);
-  depth.connect(panner.pan);
-  lfo.start();
-
-  return {
-    dispose: () => {
-      try { lfo.stop(); } catch {}
-      lfo.disconnect();
-      depth.disconnect();
-    },
-  };
-}
-
-function stopScene() {
-  for (const node of state.audio.activeNodes) {
-    try { node.stop(); } catch {}
-    try { node.disconnect(); } catch {}
-  }
-  state.audio.activeNodes = [];
-  if (state.audio.master) {
-    try { state.audio.master.disconnect(); } catch {}
-  }
-  if (state.audio.ctx) {
-    state.audio.ctx.close();
-  }
-  state.audio.ctx = null;
-  state.audio.master = null;
-  refs.engineStatus.textContent = 'Scene stopped.';
-}
-
-function touchScene() {
-  state.scene.updatedAt = new Date().toISOString();
 }
 
 async function renderSavedScenes() {
@@ -468,62 +294,13 @@ async function handleSceneListClick(event) {
 
   const scene = await loadScene(sceneId);
   if (scene) {
-    stopScene();
+    state.engine.stopScene();
     state.scene = scene;
     render();
     refs.engineStatus.textContent = `Loaded scene “${scene.name}”.`;
   }
 
   await renderSavedScenes();
-}
-
-async function openDb() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-      }
-    };
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-}
-
-async function saveScene(scene) {
-  const db = await openDb();
-  await new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    tx.objectStore(STORE_NAME).put(structuredClone(scene));
-    tx.oncomplete = () => resolve();
-    tx.onerror = () => reject(tx.error);
-  });
-  db.close();
-}
-
-async function listScenes() {
-  const db = await openDb();
-  const rows = await new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readonly');
-    const request = tx.objectStore(STORE_NAME).getAll();
-    request.onsuccess = () => resolve(request.result || []);
-    request.onerror = () => reject(request.error);
-  });
-  db.close();
-  return rows;
-}
-
-async function loadScene(sceneId) {
-  const db = await openDb();
-  const row = await new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readonly');
-    const request = tx.objectStore(STORE_NAME).get(sceneId);
-    request.onsuccess = () => resolve(request.result || null);
-    request.onerror = () => reject(request.error);
-  });
-  db.close();
-  return row;
 }
 
 function escapeHtml(value) {
