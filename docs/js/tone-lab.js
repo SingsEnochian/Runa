@@ -2,6 +2,7 @@
   const STORAGE_KEY = "runa-tone-lab.custom-tones.v1";
   const UI_STATE_KEY = "runa-tone-lab.ui.v1";
   const EXPORT_BITRATE_KBPS = 128;
+  const NOTES_KEY = "runa-tone-lab.notes.v1";
 
   const BASE_TONES = [
     { id: "root", name: "Root", frequency: 415, meaning: "Stabilisation / truth of being", category: "codex" },
@@ -94,6 +95,10 @@
   function readCustomTones() { try { const raw = window.localStorage.getItem(STORAGE_KEY); const parsed = raw ? JSON.parse(raw) : []; return Array.isArray(parsed) ? parsed : []; } catch { return []; } }
   function persistCustomTones() { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state.customTones)); }
   function persistUiState() { window.localStorage.setItem(UI_STATE_KEY, JSON.stringify({ theme: state.theme, activeTab: state.activeTab })); }
+  function readNotes() { try { const raw = window.localStorage.getItem(NOTES_KEY); return raw ? JSON.parse(raw) : {}; } catch { return {}; } }
+  function persistNotes() { window.localStorage.setItem(NOTES_KEY, JSON.stringify({ hearthLight: refs.hearthLightNotes.value, nocturneGlint: refs.nocturneGlintNotes.value, teslaBench: refs.teslaBenchNotes.value })); refs.notesStatus.textContent = `Saved at ${new Date().toLocaleTimeString()}.`; }
+  function restoreNotes() { const data = readNotes(); if (data.hearthLight !== undefined) refs.hearthLightNotes.value = data.hearthLight; if (data.nocturneGlint !== undefined) refs.nocturneGlintNotes.value = data.nocturneGlint; if (data.teslaBench !== undefined) refs.teslaBenchNotes.value = data.teslaBench; }
+  function exportNotes() { const lines = ["=== Hearth Light Glint ===", refs.hearthLightNotes.value, "", "=== Nocturne Glint ===", refs.nocturneGlintNotes.value, "", "=== Tesla Bench ===", refs.teslaBenchNotes.value]; const blob = new Blob([lines.join("\n")], { type: "text/plain" }); downloadBlob(blob, "runa-tone-lab-notes.txt"); }
   function restoreUiState() {
     try {
       const raw = window.localStorage.getItem(UI_STATE_KEY);
@@ -327,9 +332,13 @@
   refs.stopPlaybackButton.addEventListener("click", () => engine.stop());
   refs.exportMp3Button.addEventListener("click", () => void exportMp3());
   window.addEventListener("beforeunload", () => { void engine.close(); });
+  refs.saveNotesButton.addEventListener("click", persistNotes);
+  refs.exportNotesButton.addEventListener("click", exportNotes);
+  [refs.hearthLightNotes, refs.nocturneGlintNotes, refs.teslaBenchNotes].forEach((textarea) => { textarea.addEventListener("input", persistNotes); });
 
   restoreUiState();
   syncControlsFromState();
   renderPresetButtons();
   renderAll();
+  restoreNotes();
 })();

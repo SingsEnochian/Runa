@@ -1,5 +1,7 @@
 (() => {
   const STORAGE_KEY = "runa-zener-lab.session.v1";
+  const JOURNAL_KEY = "runa-zener-lab.journal.v1";
+
   const SYMBOLS = [
     { id: "circle", name: "Circle", mark: "○" },
     { id: "cross", name: "Cross", mark: "+" },
@@ -29,13 +31,9 @@
     trialStatusText: document.getElementById("trialStatusText"),
     beginTrialButton: document.getElementById("beginTrialButton"),
     skipTrialButton: document.getElementById("skipTrialButton"),
-    revealResultsButton: document.getElementById("revealResultsButton"),
-    firstImpressionLabel: document.getElementById("firstImpressionLabel"),
-    firstImpressionInput: document.getElementById("firstImpressionInput"),
     symbolGrid: document.getElementById("symbolGrid"),
     confidenceInput: document.getElementById("confidenceInput"),
     confidenceValue: document.getElementById("confidenceValue"),
-    notesInput: document.getElementById("notesInput"),
     submitGuessButton: document.getElementById("submitGuessButton"),
     nextTrialButton: document.getElementById("nextTrialButton"),
     hitsDisplay: document.getElementById("hitsDisplay"),
@@ -45,6 +43,10 @@
     exportJsonButton: document.getElementById("exportJsonButton"),
     exportCsvButton: document.getElementById("exportCsvButton"),
     resultsTableBody: document.getElementById("resultsTableBody"),
+    journalSection: document.getElementById("journalSection"),
+    journalInput: document.getElementById("journalInput"),
+    saveJournalButton: document.getElementById("saveJournalButton"),
+    journalStatus: document.getElementById("journalStatus"),
   };
 
   const state = {
@@ -88,6 +90,20 @@
     window.localStorage.removeItem(STORAGE_KEY);
   }
 
+  function readJournal() {
+    try { return window.localStorage.getItem(JOURNAL_KEY) || ""; } catch { return ""; }
+  }
+
+  function persistJournal(text) {
+    try { window.localStorage.setItem(JOURNAL_KEY, text); } catch {}
+  }
+
+  function clearJournal() {
+    try { window.localStorage.removeItem(JOURNAL_KEY); } catch {}
+    if (refs.journalInput) refs.journalInput.value = "";
+    if (refs.journalStatus) refs.journalStatus.textContent = "Reflection autosaves locally.";
+  }
+
   function randomSymbolId() {
     return SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)].id;
   }
@@ -110,11 +126,7 @@
   }
 
   function modeLabel(mode) {
-    return {
-      "hidden-target": "Hidden",
-      "timed-impression": "Timed",
-      "image-first": "Image-First",
-    }[mode] || mode;
+    return { "hidden-target": "Hidden", "timed-impression": "Timed" }[mode] || mode;
   }
 
   function currentTarget() {
@@ -126,10 +138,7 @@
   }
 
   function stopTimer() {
-    if (timerInterval) {
-      window.clearInterval(timerInterval);
-      timerInterval = null;
-    }
+    if (timerInterval) { window.clearInterval(timerInterval); timerInterval = null; }
     timerEndsAt = null;
   }
 
@@ -165,23 +174,79 @@
 
   function renderSymbolButtons() {
     refs.symbolGrid.innerHTML = "";
+    const lastTrial = state.phase === "revealed" && state.trials.length > 0
+      ? state.trials[state.trials.length - 1]
+      : null;
+    const isSelectable = state.phase === "response";
+
     SYMBOLS.forEach((symbol) => {
+      const isSelected = state.selectedGuess === symbol.id;
+      let isFlipped = false;
+      let backClass = "";
+      let resultText = "";
+      let resultDetail = "";
+
+      if (lastTrial) {
+        const wasGuessed = lastTrial.guess === symbol.id;
+        const wasTarget = lastTrial.target === symbol.id;
+        if (wasGuessed || wasTarget) {
+          isFlipped = true;
+          if (lastTrial.skipped) {
+            if (wasTarget) { backClass = "is-target"; resultText = "Target"; resultDetail = "Skipped"; }
+          } else if (wasGuessed && wasTarget) {
+            backClass = "is-hit"; resultText = "Hit"; resultDetail = symbol.name;
+          } else if (wasGuessed) {
+            backClass = "is-miss"; resultText = "Miss"; resultDetail = symbol.name;
+          } else if (wasTarget) {
+            backClass = "is-target"; resultText = "Target"; resultDetail = symbol.name;
+          }
+        }
+      }
+
       const button = document.createElement("button");
       button.type = "button";
-      button.className = `symbol-button${state.selectedGuess === symbol.id ? " active" : ""}`;
-      button.disabled = state.phase !== "response";
-      button.addEventListener("click", () => {
-        state.selectedGuess = symbol.id;
-        renderSymbolButtons();
-      });
+      button.className = [
+        "zener-card",
+        isSelectable ? "is-selectable" : "",
+        isSelected ? "is-selected" : "",
+        isFlipped ? "is-flipped" : "",
+      ].filter(Boolean).join(" ");
+      button.disabled = !isSelectable;
 
+      const inner = document.createElement("div");
+      inner.className = "zener-card-inner";
+
+      const front = document.createElement("div");
+      front.className = "zener-card-face zener-card-front";
       const mark = document.createElement("div");
-      mark.className = "symbol-mark";
+      mark.className = "zener-symbol";
       mark.textContent = symbol.mark;
       const name = document.createElement("div");
-      name.className = "symbol-name";
+      name.className = "zener-name";
       name.textContent = symbol.name;
-      button.append(mark, name);
+      front.append(mark, name);
+
+      const back = document.createElement("div");
+      back.className = ["zener-card-face", "zener-card-back", backClass].filter(Boolean).join(" ");
+      const result = document.createElement("div");
+      result.className = "zener-result";
+      result.textContent = resultText;
+      const detail = document.createElement("div");
+      detail.className = "zener-result-detail";
+      detail.textContent = resultDetail;
+      back.append(result, detail);
+
+      inner.append(front, back);
+      button.appendChild(inner);
+
+      if (isSelectable) {
+        button.addEventListener("click", () => {
+          state.selectedGuess = symbol.id;
+          renderSymbolButtons();
+          renderStatus();
+        });
+      }
+
       refs.symbolGrid.appendChild(button);
     });
   }
@@ -193,10 +258,10 @@
   }
 
   function renderSummary() {
-    const completed = state.trials.filter((trial) => !trial.skipped);
-    const hits = completed.filter((trial) => trial.hit).length;
-    const avgConfidence = completed.length ? completed.reduce((sum, trial) => sum + trial.confidence, 0) / completed.length : 0;
-    const avgResponse = completed.length ? completed.reduce((sum, trial) => sum + trial.responseTimeMs, 0) / completed.length : 0;
+    const completed = state.trials.filter((t) => !t.skipped);
+    const hits = completed.filter((t) => t.hit).length;
+    const avgConfidence = completed.length ? completed.reduce((s, t) => s + t.confidence, 0) / completed.length : 0;
+    const avgResponse = completed.length ? completed.reduce((s, t) => s + t.responseTimeMs, 0) / completed.length : 0;
     refs.hitsDisplay.textContent = String(hits);
     refs.hitRateDisplay.textContent = completed.length ? `${((hits / completed.length) * 100).toFixed(1)}%` : "0%";
     refs.averageConfidenceDisplay.textContent = avgConfidence ? avgConfidence.toFixed(2) : "0.0";
@@ -206,11 +271,13 @@
   function renderResultsTable() {
     refs.resultsTableBody.innerHTML = "";
     state.trials.forEach((trial) => {
-      const targetMeta = SYMBOLS.find((symbol) => symbol.id === trial.target);
-      const guessMeta = SYMBOLS.find((symbol) => symbol.id === trial.guess);
+      const targetMeta = SYMBOLS.find((s) => s.id === trial.target);
+      const guessMeta = SYMBOLS.find((s) => s.id === trial.guess);
       const row = document.createElement("tr");
       if (trial.hit) row.className = "hit";
-      const targetText = state.revealResults || state.phase === "complete" ? `${targetMeta?.mark || ""} ${targetMeta?.name || trial.target}` : "Hidden";
+      const targetText = state.revealResults || state.phase === "complete"
+        ? `${targetMeta?.mark || ""} ${targetMeta?.name || trial.target}`
+        : "Hidden";
       row.innerHTML = `
         <td>${trial.index + 1}</td>
         <td>${targetText}</td>
@@ -218,8 +285,6 @@
         <td>${trial.skipped ? "—" : trial.hit ? "Yes" : "No"}</td>
         <td>${trial.skipped ? "—" : trial.confidence}</td>
         <td>${trial.skipped ? "—" : formatMs(trial.responseTimeMs)}</td>
-        <td>${trial.firstImpression ? `<code>${trial.firstImpression}</code>` : "—"}</td>
-        <td>${trial.notes ? `<code>${trial.notes}</code>` : "—"}</td>
       `;
       refs.resultsTableBody.appendChild(row);
     });
@@ -241,19 +306,28 @@
       refs.trialStatusText.textContent = "Hold the impression window. Guessing unlocks when the countdown finishes.";
     } else if (state.phase === "response") {
       refs.trialStatusText.textContent = "Target remains hidden. Choose a symbol, rate confidence, and lock the guess.";
+    } else if (state.phase === "revealed") {
+      const lastTrial = state.trials[state.trials.length - 1];
+      refs.trialStatusText.textContent = lastTrial?.skipped
+        ? "Trial skipped. Click Next Card to continue."
+        : lastTrial?.hit
+        ? "Hit. Click Next Card to continue."
+        : "Miss. Click Next Card to continue.";
     } else if (state.phase === "complete") {
       refs.trialStatusText.textContent = "Session complete. Results can now be reviewed or exported.";
     }
 
-    refs.beginTrialButton.disabled = !(state.phase === "ready" || state.phase === "idle" || state.phase === "complete") || !state.sessionId || state.phase === "complete";
+    refs.beginTrialButton.disabled = state.phase !== "ready" || !state.sessionId;
     refs.skipTrialButton.disabled = state.phase !== "response" && state.phase !== "waiting";
     refs.submitGuessButton.disabled = state.phase !== "response" || !state.selectedGuess;
-    refs.nextTrialButton.disabled = state.phase !== "ready" || state.currentIndex >= state.targets.length;
-    refs.revealResultsButton.disabled = state.trials.length === 0;
-    refs.revealResultsButton.textContent = state.revealResults ? "Hide Results" : "Reveal Results";
+    refs.nextTrialButton.disabled = state.phase !== "revealed";
     refs.exportJsonButton.disabled = state.trials.length === 0;
     refs.exportCsvButton.disabled = state.trials.length === 0;
-    refs.firstImpressionLabel.classList.toggle("hidden", state.mode === "hidden-target");
+
+    if (refs.journalSection) {
+      refs.journalSection.classList.toggle("hidden", state.phase !== "complete");
+    }
+
     renderSymbolButtons();
     renderHeaderStats();
     renderSummary();
@@ -279,12 +353,11 @@
     state.selectedGuess = null;
     state.trialGateOpenedAt = null;
     state.revealResults = false;
-    refs.notesInput.value = "";
-    refs.firstImpressionInput.value = "";
     refs.confidenceInput.value = "3";
     refs.confidenceValue.textContent = "3 / 5";
     stopTimer();
     refs.timerDisplay.textContent = formatSeconds(state.timeWindowSec);
+    clearJournal();
     persistState();
     renderAll();
   }
@@ -292,8 +365,6 @@
   function beginTrial() {
     if (!state.sessionId || state.phase === "complete") return;
     state.selectedGuess = null;
-    refs.notesInput.value = "";
-    refs.firstImpressionInput.value = "";
     refs.confidenceInput.value = "3";
     refs.confidenceValue.textContent = "3 / 5";
 
@@ -318,7 +389,7 @@
     } else {
       state.phase = "response";
       state.trialGateOpenedAt = Date.now();
-      refs.timerDisplay.textContent = state.mode === "image-first" ? formatSeconds(state.timeWindowSec) : "00:00";
+      refs.timerDisplay.textContent = "00:00";
     }
 
     persistState();
@@ -331,8 +402,6 @@
     const confidence = Number(refs.confidenceInput.value) || 3;
     const guess = skipped ? null : state.selectedGuess;
     const responseTimeMs = skipped || !state.trialGateOpenedAt ? 0 : Date.now() - state.trialGateOpenedAt;
-    const firstImpression = refs.firstImpressionInput.value.trim();
-    const notes = refs.notesInput.value.trim();
 
     state.trials.push({
       index: state.currentIndex,
@@ -340,8 +409,6 @@
       guess,
       hit: !skipped && guess === target,
       confidence,
-      firstImpression,
-      notes,
       responseTimeMs,
       mode: state.mode,
       skipped,
@@ -351,18 +418,8 @@
     state.selectedGuess = null;
     state.trialGateOpenedAt = null;
     stopTimer();
+    state.phase = "revealed";
 
-    if (state.currentIndex >= state.targets.length) {
-      state.phase = "complete";
-      state.revealResults = true;
-      refs.timerDisplay.textContent = "00:00";
-    } else {
-      state.phase = "ready";
-      refs.timerDisplay.textContent = formatSeconds(state.timeWindowSec);
-    }
-
-    refs.notesInput.value = "";
-    refs.firstImpressionInput.value = "";
     refs.confidenceInput.value = "3";
     refs.confidenceValue.textContent = "3 / 5";
     persistState();
@@ -385,7 +442,7 @@
   }
 
   function exportCsv() {
-    const header = ["session_id","session_label","condition_label","mode","trial_index","target","guess","hit","confidence","response_time_ms","first_impression","notes"];
+    const header = ["session_id", "session_label", "condition_label", "mode", "trial_index", "target", "guess", "hit", "confidence", "response_time_ms"];
     const rows = state.trials.map((trial) => [
       state.sessionId || "",
       state.sessionLabel || "",
@@ -397,8 +454,6 @@
       trial.hit ? "1" : "0",
       trial.confidence ?? "",
       trial.responseTimeMs ?? "",
-      trial.firstImpression || "",
-      trial.notes || "",
     ]);
     const csv = [header, ...rows]
       .map((row) => row.map((cell) => `"${escapeCell(cell)}"`).join(","))
@@ -440,16 +495,20 @@
   });
 
   refs.startSessionButton.addEventListener("click", startSession);
+
   refs.continueSessionButton.addEventListener("click", () => {
     if (loadState()) {
       syncInputsFromState();
       refs.timerDisplay.textContent = formatSeconds(state.timeWindowSec || 10);
+      if (refs.journalInput) refs.journalInput.value = readJournal();
       renderAll();
     }
   });
+
   refs.clearSessionButton.addEventListener("click", () => {
     stopTimer();
     clearStoredState();
+    clearJournal();
     state.theme = refs.themeSelect.value || "nocturne-garden";
     state.sessionLabel = "";
     state.conditionLabel = "";
@@ -466,28 +525,45 @@
     state.revealResults = false;
     syncInputsFromState();
     refs.timerDisplay.textContent = "00:00";
-    refs.notesInput.value = "";
-    refs.firstImpressionInput.value = "";
     renderAll();
   });
+
   refs.beginTrialButton.addEventListener("click", beginTrial);
   refs.skipTrialButton.addEventListener("click", () => finalizeTrial({ skipped: true }));
   refs.submitGuessButton.addEventListener("click", () => finalizeTrial({ skipped: false }));
+
   refs.nextTrialButton.addEventListener("click", () => {
-    if (state.phase === "ready") beginTrial();
-  });
-  refs.revealResultsButton.addEventListener("click", () => {
-    state.revealResults = !state.revealResults;
+    if (state.phase !== "revealed") return;
+    if (state.currentIndex >= state.targets.length) {
+      state.phase = "complete";
+      state.revealResults = true;
+    } else {
+      state.phase = "ready";
+    }
     persistState();
-    renderResultsTable();
-    renderStatus();
+    renderAll();
   });
+
   refs.exportJsonButton.addEventListener("click", exportJson);
   refs.exportCsvButton.addEventListener("click", exportCsv);
+
+  if (refs.journalInput) {
+    refs.journalInput.addEventListener("input", () => {
+      persistJournal(refs.journalInput.value);
+      if (refs.journalStatus) refs.journalStatus.textContent = "Saved.";
+    });
+  }
+  if (refs.saveJournalButton) {
+    refs.saveJournalButton.addEventListener("click", () => {
+      persistJournal(refs.journalInput?.value || "");
+      if (refs.journalStatus) refs.journalStatus.textContent = "Saved.";
+    });
+  }
 
   if (loadState()) {
     syncInputsFromState();
     refs.timerDisplay.textContent = state.phase === "idle" ? "00:00" : formatSeconds(state.timeWindowSec || 10);
+    if (refs.journalInput) refs.journalInput.value = readJournal();
   } else {
     syncInputsFromState();
     refs.timerDisplay.textContent = "00:00";

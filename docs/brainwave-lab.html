@@ -152,6 +152,26 @@
         isPlaying: false,
       };
 
+      const STORAGE_KEY = 'runa-brainwave-lab.state.v1';
+
+      function saveToStorage() {
+        try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ carrier: state.carrier, beat: state.beat, gain: state.gain, waveform: state.waveform, theme: state.theme })); } catch {}
+      }
+
+      function loadFromStorage() {
+        try {
+          const raw = window.localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const data = JSON.parse(raw);
+          if (data.carrier) { state.carrier = Number(data.carrier); refs.carrierControl.value = String(state.carrier); }
+          if (data.beat) { state.beat = Number(data.beat); refs.beatControl.value = String(state.beat); }
+          if (data.gain) { state.gain = Number(data.gain); refs.gainControl.value = String(state.gain); }
+          if (data.waveform) { state.waveform = data.waveform; refs.waveformSelect.value = state.waveform; }
+          if (data.theme) { state.theme = data.theme; document.body.dataset.theme = state.theme; refs.themeSelect.value = state.theme; }
+          syncReadouts();
+        } catch {}
+      }
+
       let ctx = null;
       let master = null;
       let leftOsc = null;
@@ -276,26 +296,31 @@
       refs.themeSelect.addEventListener('change', (event) => {
         state.theme = event.target.value;
         document.body.dataset.theme = state.theme;
+        saveToStorage();
       });
 
       refs.carrierControl.addEventListener('input', (event) => {
         state.carrier = Number(event.target.value);
         applyLiveChanges();
+        saveToStorage();
       });
 
       refs.beatControl.addEventListener('input', (event) => {
         state.beat = Number(event.target.value);
         applyLiveChanges();
+        saveToStorage();
       });
 
       refs.gainControl.addEventListener('input', (event) => {
         state.gain = Number(event.target.value);
         applyLiveChanges();
+        saveToStorage();
       });
 
       refs.waveformSelect.addEventListener('change', (event) => {
         state.waveform = event.target.value;
         applyLiveChanges();
+        saveToStorage();
       });
 
       refs.playButton.addEventListener('click', playBeat);
@@ -308,11 +333,13 @@
           refs.carrierControl.value = String(state.carrier);
           refs.beatControl.value = String(state.beat);
           applyLiveChanges();
+          saveToStorage();
         });
       });
 
       window.addEventListener('beforeunload', stopPlayback);
       syncReadouts();
+      loadFromStorage();
     })();
   </script>
 </body>
