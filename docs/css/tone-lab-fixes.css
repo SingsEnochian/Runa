@@ -1,0 +1,61 @@
+.main-grid {
+  align-items: start;
+}
+
+.main-grid > .tone-library,
+.main-grid > .control-column {
+  align-self: start;
+}
+
+.control-column {
+  align-content: start;
+  align-self: start;
+}
+
+.tone-library,
+.current-field-card {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+  padding-top: 1.4rem;
+}
+
+.tone-library .section-heading-row,
+.current-field-card .section-heading-row {
+  min-height: 2.45rem;
+  align-items: flex-start;
+}
+
+.tone-library #toneGroups,
+.current-field-card .selected-tones,
+.current-field-card .mini-panel {
+  margin-top: 0;
+}
+
+.current-field-card .selected-tones {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.current-field-card .chip-row {
+  margin: 0;
+}
+
+.current-field-card .mini-panel {
+  display: grid;
+  align-content: start;
+  gap: 0.45rem;
+}
+
+.current-field-card .mini-panel h3,
+.current-field-card .mini-panel p,
+.current-field-card .selected-tones h3 {
+  margin: 0;
+}
+
+@media (max-width: 980px) {
+  .tone-library .section-heading-row,
+  .current-field-card .section-heading-row {
+    min-height: auto;
+  }
+}
