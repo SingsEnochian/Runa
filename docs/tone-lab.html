@@ -19,6 +19,7 @@
       <a class="button-link" href="./gateway-inspired.html">Gateway-Inspired</a>
       <a class="button-link" href="./psi-lab.html">Psi Lab</a>
       <a class="button-link" href="./tesla-observatory.html">Tesla Observatory</a>
+      <a class="button-link" href="./wardenclyffe.html">Wardenclyffe</a>
     </div>
   </header>
 
@@ -190,6 +191,7 @@
                 <button id="playSelectedButton" class="accent-button" type="button">Play</button>
                 <button id="stopPlaybackButton" type="button">Stop</button>
                 <button id="exportMp3Button" type="button">Export MP3</button>
+                <button id="openInWardenclyffeButton" type="button">Open in Wardenclyffe</button>
               </div>
             </div>
           </section>
@@ -283,11 +285,17 @@
           <p class="tiny-copy">A private observatory page that can gather notes and snapshots from the different labs.</p>
           <span class="panel-link">Open Tesla observatory →</span>
         </a>
+        <a class="card research-card" href="./wardenclyffe.html">
+          <h2>Wardenclyffe Engine</h2>
+          <p class="tiny-copy">The shared layer engine prototype. This is where Tone Lab selections can now be handed off as scenes.</p>
+          <span class="panel-link">Open Wardenclyffe →</span>
+        </a>
       </section>
     </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"></script>
   <script src="./js/tone-lab.js?v=2"></script>
+  <script type="module" src="./js/tone-lab-wardenclyffe-bridge.js"></script>
 </body>
 </html>
