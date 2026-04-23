@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runa Psi Lab</title>
+  <link rel="stylesheet" href="./css/psi-lab.css" />
+  <style>
+    .protocol-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .protocol-card {
+      padding: 1.1rem 1.2rem;
+      border-radius: 16px;
+      border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+      background: color-mix(in srgb, var(--card-strong) 82%, transparent);
+      display: grid;
+      gap: 0.55rem;
+    }
+
+    .protocol-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .protocol-id {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .protocol-name {
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .protocol-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .protocol-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .protocol-tag {
+      font-size: 0.72rem;
+      padding: 0.18rem 0.55rem;
+      border-radius: 99px;
+      background: color-mix(in srgb, var(--accent) 14%, transparent);
+      border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+      color: var(--text);
+      letter-spacing: 0.05em;
+    }
+
+    .tool-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .tool-card {
+      padding: 1.2rem;
+      border-radius: 16px;
+      border: 1px solid color-mix(in srgb, var(--accent-2) 24%, var(--border));
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.06), transparent 40%),
+        color-mix(in srgb, var(--card-strong) 88%, transparent);
+      display: grid;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: inherit;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .tool-card:hover {
+      border-color: color-mix(in srgb, var(--accent) 48%, transparent);
+      box-shadow: 0 0 20px color-mix(in srgb, var(--glow) 30%, transparent);
+    }
+
+    .tool-card-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .tool-card-desc {
+      font-size: 0.84rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .field-notes-status {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+    }
+
+    .condition-log {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .condition-log-entry {
+      padding: 0.65rem 0.85rem;
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--card-strong) 65%, transparent);
+      border: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+      font-size: 0.88rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      align-items: baseline;
+    }
+
+    .condition-log-time {
+      font-size: 0.75rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body data-theme="nocturne-garden">
+  <header class="site-header">
+    <div>
+      <strong>Runa Psi Lab</strong>
+      <p class="subtitle">Protocol hub for structured psi experiments — Zener runs, remote viewing sessions, and condition tracking.</p>
+    </div>
+    <div class="header-actions">
+      <a class="button-link" href="./index.html">Back to Runa</a>
+      <a class="button-link" href="./zener-lab.html">Zener Lab</a>
+      <a class="button-link" href="./rv-capture.html">RV Capture</a>
+      <a class="button-link" href="./brainwave-lab.html">Brainwave Lab</a>
+      <a class="button-link" href="./gateway-inspired.html">Gateway Sequencer</a>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero card glow-card">
+      <div>
+        <h1>Psi Lab</h1>
+        <p class="hero-copy">A central hub for running structured psi experiments. Launch your protocol, log the condition, run the session, and record what arose. All tools speak to localStorage — your data stays local.</p>
+      </div>
+      <div class="theme-controls">
+        <label for="themeSelect">Palette</label>
+        <select id="themeSelect">
+          <option value="nocturne-garden">Nocturne Garden</option>
+          <option value="ember-rain">Ember Rain</option>
+          <option value="elara">Elara</option>
+          <option value="nocturne">Nocturne</option>
+          <option value="cerulean">Cerulean</option>
+          <option value="twilight">Twilight</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Lab Tools</h2>
+      <p class="tiny-copy">Each tool runs independently. Start from any of them or use the condition log below to frame the session first.</p>
+      <div class="tool-card-grid" style="margin-top:1rem;">
+        <a class="tool-card" href="./zener-lab.html">
+          <div class="tool-card-name">Zener Lab</div>
+          <div class="tool-card-desc">25-card symbol runs with flip-reveal, hit/miss tracking, confidence rating, and post-run reflection.</div>
+        </a>
+        <a class="tool-card" href="./rv-capture.html">
+          <div class="tool-card-name">RV Capture</div>
+          <div class="tool-card-desc">Remote viewing session recorder. Capture impressions, sketches, descriptors, and a debrief after target reveal.</div>
+        </a>
+        <a class="tool-card" href="./brainwave-lab.html">
+          <div class="tool-card-name">Brainwave Lab</div>
+          <div class="tool-card-desc">Binaural bed with true left/right carrier split. Monroe-inspired focus presets for F10, F12, F15, F21.</div>
+        </a>
+        <a class="tool-card" href="./gateway-inspired.html">
+          <div class="tool-card-name">Gateway Sequencer</div>
+          <div class="tool-card-desc">Five-phase session runner — Tuning, F10, F12, Focus Work, Return — with per-phase timers and notes.</div>
+        </a>
+        <a class="tool-card" href="./tone-lab.html">
+          <div class="tool-card-name">Tone Lab</div>
+          <div class="tool-card-desc">Multi-tone blend engine with 3D spatial motion, reverb, and solfeggio frequency set.</div>
+        </a>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Protocols</h2>
+      <p class="tiny-copy">Structured experiment designs. Each protocol defines the tool, the condition, and what counts as data.</p>
+      <div class="protocol-grid" style="margin-top:1rem;">
+        <div class="protocol-card">
+          <div class="protocol-card-head">
+            <span class="protocol-id">TEL-001</span>
+          </div>
+          <div class="protocol-name">Basic Telepathy Screen</div>
+          <div class="protocol-desc">One sender, one receiver. Sender holds a Zener symbol for 30 s; receiver picks from the deck. 25 trials, headphones, no coaching between trials.</div>
+          <div class="protocol-tags">
+            <span class="protocol-tag">Zener Lab</span>
+            <span class="protocol-tag">pair session</span>
+            <span class="protocol-tag">blinded</span>
+          </div>
+        </div>
+
+        <div class="protocol-card">
+          <div class="protocol-card-head">
+            <span class="protocol-id">RV-001</span>
+          </div>
+          <div class="protocol-name">Coordinate RV — Still Target</div>
+          <div class="protocol-desc">Coordinate given before session. No feedback until full debrief. Capture spontaneous impressions only — no analytical overlay.</div>
+          <div class="protocol-tags">
+            <span class="protocol-tag">RV Capture</span>
+            <span class="protocol-tag">solo</span>
+            <span class="protocol-tag">coordinate</span>
+          </div>
+        </div>
+
+        <div class="protocol-card">
+          <div class="protocol-card-head">
+            <span class="protocol-id">RV-002</span>
+          </div>
+          <div class="protocol-name">ERV Under Binaural</div>
+          <div class="protocol-desc">Extended Remote Viewing with a binaural bed running throughout. F12 shell (432 Hz / 6 Hz). Run after Gateway Sequencer F12 phase.</div>
+          <div class="protocol-tags">
+            <span class="protocol-tag">RV Capture</span>
+            <span class="protocol-tag">Brainwave Lab</span>
+            <span class="protocol-tag">F12</span>
+          </div>
+        </div>
+
+        <div class="protocol-card">
+          <div class="protocol-card-head">
+            <span class="protocol-id">ZEN-TEL</span>
+          </div>
+          <div class="protocol-name">Zener + Binaural Condition Test</div>
+          <div class="protocol-desc">Run two Zener blocks back-to-back: first silent, then with F12 binaural bed. Compare hit rates across conditions using the same hidden deck seed.</div>
+          <div class="protocol-tags">
+            <span class="protocol-tag">Zener Lab</span>
+            <span class="protocol-tag">condition compare</span>
+            <span class="protocol-tag">F12</span>
+          </div>
+        </div>
+
+        <div class="protocol-card">
+          <div class="protocol-card-head">
+            <span class="protocol-id">F33R</span>
+          </div>
+          <div class="protocol-name">Full 55-Minute Gateway Run</div>
+          <div class="protocol-desc">Complete Gateway Sequencer (5+10+15+20+5). RV or Zener work in the Focus State phase. Journal immediately on return before moving.</div>
+          <div class="protocol-tags">
+            <span class="protocol-tag">Gateway Sequencer</span>
+            <span class="protocol-tag">full session</span>
+            <span class="protocol-tag">55 min</span>
+          </div>
+        </div>
+
+        <div class="protocol-card">
+          <div class="protocol-card-head">
+            <span class="protocol-id">COND-01</span>
+          </div>
+          <div class="protocol-name">Condition Comparison Series</div>
+          <div class="protocol-desc">Repeat the same Zener run (same seed) across three different conditions over three sessions. Plot hit rate and confidence by condition.</div>
+          <div class="protocol-tags">
+            <span class="protocol-tag">Zener Lab</span>
+            <span class="protocol-tag">longitudinal</span>
+            <span class="protocol-tag">data series</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Session Condition Log</h2>
+      <p class="tiny-copy">Record the condition before starting. Stamped entries help you connect results to context later.</p>
+      <div class="control-stack">
+        <div>
+          <span class="metric-label">Quick condition tags</span>
+          <div class="chip-row" id="conditionChipRow"></div>
+        </div>
+        <label>
+          <span>Condition label</span>
+          <input id="conditionInput" type="text" placeholder="Ex: F12 binaural, evening, low traffic, rested" />
+        </label>
+        <div class="button-row">
+          <button id="logConditionButton" class="accent-button" type="button">Log Condition</button>
+          <button id="clearLogButton" type="button">Clear Log</button>
+        </div>
+      </div>
+      <div class="condition-log" id="conditionLog" style="margin-top:1rem;"></div>
+    </section>
+
+    <section class="card">
+      <h2>Field Notes</h2>
+      <p class="tiny-copy">Running notes across all sessions. Autosaves locally. Use this for patterns, hunches, or observations that don't fit inside individual session tools.</p>
+      <div class="control-stack">
+        <textarea id="fieldNotesInput" placeholder="Cross-session patterns, anomalies, things to try next…" style="min-height:220px;"></textarea>
+        <div class="button-row">
+          <button id="saveFieldNotesButton" class="accent-button" type="button">Save Notes</button>
+          <button id="exportFieldNotesButton" type="button">Export</button>
+        </div>
+        <p id="fieldNotesStatus" class="status-copy">Notes autosave locally.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const NOTES_KEY = 'runa-psi-lab.notes.v1';
+      const LOG_KEY = 'runa-psi-lab.condition-log.v1';
+      const UI_KEY = 'runa-psi-lab.ui.v1';
+
+      const CONDITION_CHIPS = [
+        'F10 shell', 'F12 shell', 'F15 shell',
+        'binaural bed', 'silence', 'morning', 'evening',
+        'rested', 'fatigued', 'solo', 'pair session',
+        'headphones', 'eyes closed',
+      ];
+
+      const refs = {
+        themeSelect: document.getElementById('themeSelect'),
+        conditionChipRow: document.getElementById('conditionChipRow'),
+        conditionInput: document.getElementById('conditionInput'),
+        logConditionButton: document.getElementById('logConditionButton'),
+        clearLogButton: document.getElementById('clearLogButton'),
+        conditionLog: document.getElementById('conditionLog'),
+        fieldNotesInput: document.getElementById('fieldNotesInput'),
+        saveFieldNotesButton: document.getElementById('saveFieldNotesButton'),
+        exportFieldNotesButton: document.getElementById('exportFieldNotesButton'),
+        fieldNotesStatus: document.getElementById('fieldNotesStatus'),
+      };
+
+      function readNotes() { try { return JSON.parse(window.localStorage.getItem(NOTES_KEY) || '""') || ''; } catch { return ''; } }
+      function saveNotes(text) { try { window.localStorage.setItem(NOTES_KEY, JSON.stringify(text)); } catch {} }
+      function readLog() { try { const d = JSON.parse(window.localStorage.getItem(LOG_KEY) || '[]'); return Array.isArray(d) ? d : []; } catch { return []; } }
+      function saveLog(log) { try { window.localStorage.setItem(LOG_KEY, JSON.stringify(log)); } catch {} }
+      function readUi() { try { return JSON.parse(window.localStorage.getItem(UI_KEY) || '{}'); } catch { return {}; } }
+      function saveUi(data) { try { window.localStorage.setItem(UI_KEY, JSON.stringify(data)); } catch {} }
+
+      function renderConditionLog(log) {
+        refs.conditionLog.innerHTML = '';
+        if (!log.length) {
+          const p = document.createElement('p'); p.className = 'tiny-copy'; p.textContent = 'No entries yet.';
+          refs.conditionLog.appendChild(p); return;
+        }
+        [...log].reverse().forEach((entry) => {
+          const row = document.createElement('div'); row.className = 'condition-log-entry';
+          const label = document.createElement('span'); label.textContent = entry.label;
+          const time = document.createElement('span'); time.className = 'condition-log-time'; time.textContent = entry.time;
+          row.appendChild(label); row.appendChild(time);
+          refs.conditionLog.appendChild(row);
+        });
+      }
+
+      function buildConditionChips() {
+        CONDITION_CHIPS.forEach((label) => {
+          const btn = document.createElement('button');
+          btn.type = 'button'; btn.className = 'chip-button'; btn.textContent = label;
+          btn.addEventListener('click', () => {
+            const cur = refs.conditionInput.value.trim();
+            refs.conditionInput.value = cur ? `${cur}, ${label}` : label;
+          });
+          refs.conditionChipRow.appendChild(btn);
+        });
+      }
+
+      refs.logConditionButton.addEventListener('click', () => {
+        const label = refs.conditionInput.value.trim();
+        if (!label) return;
+        const log = readLog();
+        log.push({ label, time: new Date().toLocaleString() });
+        saveLog(log);
+        renderConditionLog(log);
+        refs.conditionInput.value = '';
+      });
+
+      refs.clearLogButton.addEventListener('click', () => {
+        if (!window.confirm('Clear the condition log?')) return;
+        saveLog([]);
+        renderConditionLog([]);
+      });
+
+      refs.fieldNotesInput.addEventListener('input', () => {
+        saveNotes(refs.fieldNotesInput.value);
+        refs.fieldNotesStatus.textContent = `Autosaved at ${new Date().toLocaleTimeString()}.`;
+      });
+
+      refs.saveFieldNotesButton.addEventListener('click', () => {
+        saveNotes(refs.fieldNotesInput.value);
+        refs.fieldNotesStatus.textContent = `Saved at ${new Date().toLocaleTimeString()}.`;
+      });
+
+      refs.exportFieldNotesButton.addEventListener('click', () => {
+        const text = refs.fieldNotesInput.value || '(empty)';
+        const blob = new Blob([text], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = `runa-psi-lab-notes-${Date.now()}.txt`; a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      refs.themeSelect.addEventListener('change', (event) => {
+        document.body.dataset.theme = event.target.value;
+        saveUi({ theme: event.target.value });
+      });
+
+      // Init
+      const ui = readUi();
+      if (ui.theme) { document.body.dataset.theme = ui.theme; refs.themeSelect.value = ui.theme; }
+      refs.fieldNotesInput.value = readNotes();
+      renderConditionLog(readLog());
+      buildConditionChips();
+    })();
+  </script>
+</body>
+</html>

@@ -20,6 +20,15 @@
     { id: "seldrin", name: "Seldrin", frequency: 741, meaning: "Clarity / steadiness / clean signal", category: "ours" },
     { id: "lantern", name: "Lantern", frequency: 888, meaning: "Witness / guiding attention", category: "ours" },
     { id: "withness", name: "Withness", frequency: 1203, meaning: "Shared presence without merge", category: "ours" },
+    { id: "sol-174", name: "UT grave", frequency: 174, meaning: "Deep foundation — lowest solfeggio anchor, sub-bass grounding", category: "solfeggio" },
+    { id: "sol-285", name: "Field", frequency: 285, meaning: "Cellular resonance — tissue and field coherence in tradition", category: "solfeggio" },
+    { id: "sol-396", name: "Ut · 396", frequency: 396, meaning: "Liberating fear and guilt — root clearing tone", category: "solfeggio" },
+    { id: "sol-417", name: "Re · 417", frequency: 417, meaning: "Undoing and change — breaks up stagnant patterns", category: "solfeggio" },
+    { id: "sol-528", name: "Mi · 528", frequency: 528, meaning: "Transformation — widely cited as the 'love frequency'", category: "solfeggio" },
+    { id: "sol-639", name: "Fa · 639", frequency: 639, meaning: "Connecting — relationships, harmony, bridging", category: "solfeggio" },
+    { id: "sol-741", name: "Sol · 741", frequency: 741, meaning: "Awakening intuition — clarity, problem solving", category: "solfeggio" },
+    { id: "sol-852", name: "La · 852", frequency: 852, meaning: "Returning to spiritual order — opening to higher awareness", category: "solfeggio" },
+    { id: "sol-963", name: "Ti · 963", frequency: 963, meaning: "Crown tone — divine consciousness, pure light frequency", category: "solfeggio" },
   ];
 
   const PRESETS = [
@@ -250,12 +259,12 @@
   function renderToneGroups() {
     refs.toneGroups.innerHTML = "";
     const tones = getAllTones();
-    const groups = { ours: tones.filter((tone) => tone.category === "ours"), codex: tones.filter((tone) => tone.category === "codex"), custom: tones.filter((tone) => tone.category === "custom") };
-    ["ours", "codex", "custom"].forEach((groupKey) => {
+    const groups = { ours: tones.filter((tone) => tone.category === "ours"), codex: tones.filter((tone) => tone.category === "codex"), solfeggio: tones.filter((tone) => tone.category === "solfeggio"), custom: tones.filter((tone) => tone.category === "custom") };
+    ["ours", "codex", "solfeggio", "custom"].forEach((groupKey) => {
       const wrapper = document.createElement("section"); wrapper.className = "tone-group";
       const title = document.createElement("div"); title.className = "group-title"; title.textContent = groupKey; wrapper.appendChild(title);
       const grid = document.createElement("div"); grid.className = "tone-grid";
-      if (!groups[groupKey].length) { const empty = document.createElement("p"); empty.className = "tiny-copy"; empty.textContent = "No custom tones yet."; grid.appendChild(empty); }
+      if (!groups[groupKey].length) { if (groupKey !== "custom") return; const empty = document.createElement("p"); empty.className = "tiny-copy"; empty.textContent = "No custom tones yet."; grid.appendChild(empty); }
       else {
         groups[groupKey].forEach((tone) => {
           const active = state.selectedIds.includes(tone.id);

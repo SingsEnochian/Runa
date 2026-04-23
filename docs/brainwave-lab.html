@@ -82,6 +82,7 @@
             <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="6">F12 · 6 Hz</button>
             <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="4">F15 · 4 Hz</button>
             <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="2.5">F21 · 2.5 Hz</button>
+            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="8">Alpha Bridge · 8 Hz</button>
             <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="10">Alpha · 10 Hz</button>
             <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="40">Gamma · 40 Hz</button>
           </div>
@@ -145,6 +146,15 @@
           <p class="tiny-copy">This module creates a true left/right split instead of pretending a single symbolic tone is a binaural bed.</p>
           <p class="tiny-copy">Headphones are the intended path. Speakers will blur the beat into the room and turn precision into soup.</p>
         </section>
+
+        <section class="card">
+          <div class="section-heading-row">
+            <h2>Cymatic Field</h2>
+            <span class="section-pill">live</span>
+          </div>
+          <canvas id="cymaticCanvas" style="width:100%;max-width:280px;height:280px;display:block;margin:0 auto;border-radius:12px;background:rgba(0,0,0,0.22);"></canvas>
+          <p class="tiny-copy" style="margin-top:0.6rem;text-align:center;">Carrier mode shape · beat expansion rings</p>
+        </section>
       </aside>
     </section>
   </main>
@@ -188,11 +198,11 @@
           const raw = window.localStorage.getItem(STORAGE_KEY);
           if (!raw) return;
           const data = JSON.parse(raw);
-          if (data.carrier) { state.carrier = Number(data.carrier); refs.carrierControl.value = String(state.carrier); }
-          if (data.beat) { state.beat = Number(data.beat); refs.beatControl.value = String(state.beat); }
-          if (data.gain) { state.gain = Number(data.gain); refs.gainControl.value = String(state.gain); }
-          if (data.waveform) { state.waveform = data.waveform; refs.waveformSelect.value = state.waveform; }
-          if (data.theme) { state.theme = data.theme; document.body.dataset.theme = state.theme; refs.themeSelect.value = state.theme; }
+          if (data.carrier != null) { state.carrier = Number(data.carrier); refs.carrierControl.value = String(state.carrier); }
+          if (data.beat != null) { state.beat = Number(data.beat); refs.beatControl.value = String(state.beat); }
+          if (data.gain != null) { state.gain = Number(data.gain); refs.gainControl.value = String(state.gain); }
+          if (data.waveform != null) { state.waveform = data.waveform; refs.waveformSelect.value = state.waveform; }
+          if (data.theme != null) { state.theme = data.theme; document.body.dataset.theme = state.theme; refs.themeSelect.value = state.theme; }
           syncReadouts();
         } catch {}
       }
@@ -205,6 +215,83 @@
       let rightPan = null;
       let leftGain = null;
       let rightGain = null;
+
+      // ── Cymatic Canvas ────────────────────────────────────────────────
+      const cymaticCanvas = document.getElementById('cymaticCanvas');
+      const cymaticCtx = cymaticCanvas.getContext('2d');
+      const CYMA_SIZE = 280;
+      let cymaticFrame = null;
+      let cymaticClock = 0;
+      (function initCymatic() {
+        const dpr = window.devicePixelRatio || 1;
+        cymaticCanvas.width = CYMA_SIZE * dpr;
+        cymaticCanvas.height = CYMA_SIZE * dpr;
+        cymaticCtx.scale(dpr, dpr);
+      })();
+
+      function cymaticModeN(carrier) {
+        return Math.max(2, Math.min(12, Math.round(carrier / 80)));
+      }
+
+      function drawCymatic() {
+        const W = CYMA_SIZE, H = CYMA_SIZE;
+        const cx = W / 2, cy = H / 2;
+        const maxR = Math.min(W, H) / 2 - 10;
+        cymaticCtx.clearRect(0, 0, W, H);
+
+        const n = cymaticModeN(state.carrier);
+        const rings = 5;
+        const speed = state.isPlaying ? (state.beat / 8) : 0;
+        for (let i = 0; i < rings; i++) {
+          const t = ((cymaticClock * speed * 0.5 + i / rings) % 1 + 1) % 1;
+          const r = t * maxR;
+          if (r < 1) continue;
+          const alpha = (1 - t) * 0.28;
+          cymaticCtx.beginPath();
+          cymaticCtx.arc(cx, cy, r, 0, Math.PI * 2);
+          cymaticCtx.strokeStyle = `rgba(210,170,90,${alpha.toFixed(3)})`;
+          cymaticCtx.lineWidth = 1;
+          cymaticCtx.stroke();
+        }
+
+        const shapeR = maxR * 0.42;
+        const mod = 0.26;
+        const phase = state.isPlaying ? cymaticClock * 0.07 * Math.PI * 2 : 0;
+        cymaticCtx.beginPath();
+        for (let i = 0; i <= 720; i++) {
+          const theta = (i / 720) * Math.PI * 2;
+          const r = shapeR * (1 + mod * Math.cos(n * theta + phase));
+          const x = cx + r * Math.cos(theta);
+          const y = cy + r * Math.sin(theta);
+          if (i === 0) cymaticCtx.moveTo(x, y);
+          else cymaticCtx.lineTo(x, y);
+        }
+        cymaticCtx.closePath();
+        cymaticCtx.strokeStyle = 'rgba(210,170,90,0.72)';
+        cymaticCtx.lineWidth = 1.5;
+        cymaticCtx.stroke();
+
+        cymaticCtx.beginPath();
+        cymaticCtx.arc(cx, cy, 2, 0, Math.PI * 2);
+        cymaticCtx.fillStyle = 'rgba(210,170,90,0.55)';
+        cymaticCtx.fill();
+      }
+
+      function cymaticStep() {
+        cymaticClock += 0.016;
+        drawCymatic();
+        cymaticFrame = requestAnimationFrame(cymaticStep);
+      }
+
+      function startCymatic() {
+        if (cymaticFrame === null) cymaticFrame = requestAnimationFrame(cymaticStep);
+      }
+
+      function stopCymatic() {
+        if (cymaticFrame !== null) { cancelAnimationFrame(cymaticFrame); cymaticFrame = null; }
+        drawCymatic();
+      }
+      // ── End Cymatic Canvas ────────────────────────────────────────────
 
       function syncReadouts() {
         const left = Math.max(1, state.carrier - state.beat / 2);
@@ -263,6 +350,7 @@
         state.isPlaying = false;
         refs.playButton.disabled = false;
         refs.stopButton.disabled = true;
+        stopCymatic();
       }
 
       async function playBeat() {
@@ -305,10 +393,12 @@
         state.isPlaying = true;
         refs.playButton.disabled = true;
         refs.stopButton.disabled = false;
+        startCymatic();
       }
 
       function applyLiveChanges() {
         syncReadouts();
+        drawCymatic();
         if (!state.isPlaying || !ctx || !master || !leftOsc || !rightOsc) return;
         const now = ctx.currentTime;
         leftOsc.type = state.waveform;
@@ -362,9 +452,20 @@
         });
       });
 
+      function loadFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const c = params.get('carrier');
+        const b = params.get('beat');
+        if (c !== null) { const v = Number(c); if (v > 0) { state.carrier = v; refs.carrierControl.value = String(v); } }
+        if (b !== null) { const v = Number(b); if (v > 0) { state.beat = v; refs.beatControl.value = String(v); } }
+        if (c !== null || b !== null) syncReadouts();
+      }
+
       window.addEventListener('beforeunload', stopPlayback);
       syncReadouts();
       loadFromStorage();
+      loadFromUrl();
+      drawCymatic();
     })();
   </script>
 </body>

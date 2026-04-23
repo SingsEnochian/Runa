@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runa Gateway-Inspired Sequencer</title>
+  <link rel="stylesheet" href="./css/tone-lab.css?v=6" />
+  <link rel="stylesheet" href="./css/lab-themes.css?v=2" />
+  <style>
+    .phase-steps {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .phase-step {
+      flex: 1;
+      min-width: 0;
+      padding: 0.45rem 0.6rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-align: center;
+      border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+      background: color-mix(in srgb, var(--card-strong) 60%, transparent);
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .phase-step.is-active {
+      background: color-mix(in srgb, var(--accent) 18%, var(--card-strong));
+      border-color: color-mix(in srgb, var(--accent) 48%, transparent);
+      color: var(--text);
+    }
+
+    .phase-step.is-done {
+      opacity: 0.55;
+      text-decoration: line-through;
+    }
+
+    .phase-runner-card {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 1rem;
+      min-height: 62vh;
+    }
+
+    .phase-body {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .phase-link-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .timer-block {
+      display: grid;
+      gap: 0.6rem;
+    }
+
+    .phase-timer {
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      font-variant-numeric: tabular-nums;
+      color: var(--accent);
+    }
+
+    .phase-timer.is-elapsed {
+      color: color-mix(in srgb, var(--accent) 55%, #e08060);
+      animation: pulse-elapsed 1.2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-elapsed {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.55; }
+    }
+
+    .phase-list-entry {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      gap: 0.5rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: background 0.18s, border-color 0.18s;
+    }
+
+    .phase-list-entry:hover {
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+    }
+
+    .phase-list-entry.is-active {
+      background: color-mix(in srgb, var(--accent) 14%, var(--card-strong));
+      border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+    }
+
+    .phase-list-entry.is-done .phase-entry-name {
+      opacity: 0.5;
+      text-decoration: line-through;
+    }
+
+    .phase-entry-name { font-weight: 600; }
+    .phase-entry-dur { color: var(--muted); font-size: 0.82rem; white-space: nowrap; }
+
+    .session-control-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+    }
+
+    .session-stat {
+      padding: 0.6rem 0.75rem;
+      background: color-mix(in srgb, var(--card-strong) 70%, transparent);
+      border-radius: 10px;
+      border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+    }
+
+    .session-stat .tiny-copy { margin: 0 0 0.2rem; }
+    .session-stat strong { font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body data-theme="cathedral-blue">
+  <header class="site-header">
+    <div>
+      <strong>Runa Gateway-Inspired Sequencer</strong>
+      <p class="subtitle">A guided five-phase session runner with per-phase timers, notes, and Brainwave Lab deep-links.</p>
+    </div>
+    <div class="header-actions">
+      <a class="button-link" href="./index.html">Back to Runa</a>
+      <a class="button-link" href="./brainwave-lab.html">Brainwave Lab</a>
+      <a class="button-link" href="./tone-lab.html">Tone Lab</a>
+      <a class="button-link" href="./psi-lab.html">Psi Lab</a>
+      <a class="button-link" href="./tesla-observatory.html">Tesla Observatory</a>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero card glow-card">
+      <div>
+        <h1>Gateway-Inspired Sequencer</h1>
+        <p class="hero-copy">Runs a five-phase session modelled on the Monroe Institute Gateway approach — Tuning, F10 Settling, F12 Expansion, Focus Work, Return. Each phase has its own timer, notes, and a direct link to launch the Brainwave Lab at the right frequency.</p>
+      </div>
+      <div class="theme-controls">
+        <label for="themeSelect">Palette</label>
+        <select id="themeSelect">
+          <option value="cathedral-blue">Cathedral Blue</option>
+          <option value="serpent-cerulean">Serpent Cerulean</option>
+          <option value="velvet-veil">Velvet Veil</option>
+          <option value="nocturne-garden">Nocturne Garden</option>
+          <option value="ember-rain">Ember Rain</option>
+          <option value="twilight">Twilight</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="main-grid">
+      <section class="card glow-card phase-runner-card">
+        <div>
+          <div class="section-heading-row">
+            <h2 id="phaseTitle">Phase 1 — Resonant Tuning</h2>
+            <span class="section-pill" id="phasePill">5 min</span>
+          </div>
+          <div class="phase-steps" id="phaseSteps"></div>
+        </div>
+
+        <div class="phase-body">
+          <p id="phaseDesc" class="tiny-copy"></p>
+
+          <div class="phase-link-row">
+            <a id="phaseLink" class="button-link" href="./brainwave-lab.html" target="_blank">Open in Brainwave Lab →</a>
+            <span id="phaseLinkNote" class="tiny-copy"></span>
+          </div>
+
+          <div class="timer-block">
+            <div class="phase-timer" id="timerDisplay">05:00</div>
+            <div class="button-row">
+              <button id="startTimerButton" class="accent-button" type="button">Start</button>
+              <button id="pauseTimerButton" type="button" disabled>Pause</button>
+              <button id="resetTimerButton" type="button">Reset</button>
+            </div>
+          </div>
+
+          <div class="control-stack">
+            <label>
+              <span>Phase duration (minutes)</span>
+              <input id="phaseDurationInput" type="number" min="1" max="60" step="1" value="5" />
+            </label>
+
+            <label>
+              <span>Phase notes</span>
+              <textarea id="phaseNotesInput" placeholder="Impressions, images, feelings from this phase…" style="min-height:120px;"></textarea>
+            </label>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button id="prevPhaseButton" type="button">← Previous</button>
+          <button id="markDoneButton" type="button">Mark Done</button>
+          <button id="nextPhaseButton" class="accent-button" type="button">Next Phase →</button>
+        </div>
+      </section>
+
+      <aside class="control-column">
+        <section class="card">
+          <div class="section-heading-row">
+            <h2>Session Phases</h2>
+            <span class="section-pill" id="sessionProgressPill">0 / 5</span>
+          </div>
+          <div id="phaseList"></div>
+        </section>
+
+        <section class="card">
+          <div class="section-heading-row">
+            <h2>Session</h2>
+            <span class="section-pill" id="sessionTimePill">00:00</span>
+          </div>
+          <div class="session-control-grid">
+            <div class="session-stat">
+              <p class="tiny-copy">Phases done</p>
+              <strong id="doneCount">0</strong>
+            </div>
+            <div class="session-stat">
+              <p class="tiny-copy">Active phase</p>
+              <strong id="activePhaseLabel">—</strong>
+            </div>
+          </div>
+          <div class="button-row" style="margin-top:0.75rem;">
+            <button id="newSessionButton" class="accent-button" type="button">New Session</button>
+            <button id="exportButton" type="button">Export Log</button>
+          </div>
+          <p id="sessionStatus" class="status-copy">No session started yet.</p>
+        </section>
+
+        <section class="card">
+          <div class="section-heading-row">
+            <h2>Phase Guide</h2>
+            <span class="section-pill">Monroe-inspired</span>
+          </div>
+          <div class="mini-panel">
+            <h3>Resonant Tuning · 5 min</h3>
+            <p>Environment, posture, headphone check. Let the tone settle before asking anything of the session.</p>
+          </div>
+          <div class="mini-panel">
+            <h3>F10 Settling · 10 min</h3>
+            <p>432 Hz / 7 Hz beat. Mind awake, body asleep. Alpha/theta border. No agenda — just drain surface noise.</p>
+          </div>
+          <div class="mini-panel">
+            <h3>F12 Expansion · 15 min</h3>
+            <p>432 Hz / 6 Hz beat. Theta. Open the field. Symbol work and first impressions belong here.</p>
+          </div>
+          <div class="mini-panel">
+            <h3>Focus State Work · 20 min</h3>
+            <p>Run your protocol: Zener run, RV target, journaling, or held silence. Carry the question, not the deadline.</p>
+          </div>
+          <div class="mini-panel">
+            <h3>Return · 5 min</h3>
+            <p>432 Hz / 10 Hz beat. Alpha. Gentle emergence. Write before you move.</p>
+          </div>
+        </section>
+      </aside>
+    </section>
+
+    <section class="card">
+      <div class="section-heading-row">
+        <h2>Session Log</h2>
+        <span class="section-pill">autosave</span>
+      </div>
+      <p class="tiny-copy">Overall session notes. Write after the run, or use it as a running log throughout.</p>
+      <div class="control-stack">
+        <textarea id="sessionNotesInput" placeholder="Session date, condition, overall impressions, what to carry forward…" style="min-height:180px;"></textarea>
+        <div class="button-row">
+          <button id="saveSessionNotesButton" class="accent-button" type="button">Save Notes</button>
+        </div>
+        <p id="notesStatus" class="status-copy">Notes autosave locally.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const STORAGE_KEY = 'runa-gateway.state.v1';
+
+      const PHASES = [
+        { id: 'tuning',    name: 'Resonant Tuning',   duration: 5,  carrier: 432, beat: 4,  desc: 'Environment and posture check. Let the carrier settle before asking anything of the session.' },
+        { id: 'f10',       name: 'F10 Settling',       duration: 10, carrier: 432, beat: 7,  desc: '432 Hz carrier, 7 Hz beat. Alpha/theta border. Mind awake, body asleep. Drain surface noise.' },
+        { id: 'f12',       name: 'F12 Expansion',      duration: 15, carrier: 432, beat: 6,  desc: '432 Hz carrier, 6 Hz beat. Theta. Expanded awareness. Open the field for symbol work and first impressions.' },
+        { id: 'work',      name: 'Focus State Work',   duration: 20, carrier: 432, beat: 4,  desc: 'Deep work phase. Run your protocol: Zener run, RV target, journaling, or held silence.' },
+        { id: 'return',    name: 'Return',              duration: 5,  carrier: 432, beat: 10, desc: '432 Hz carrier, 10 Hz beat. Alpha. Gentle emergence. Write before you move.' },
+      ];
+
+      const state = {
+        theme: 'cathedral-blue',
+        activeIndex: 0,
+        phaseNotes: PHASES.map(() => ''),
+        phaseDone: PHASES.map(() => false),
+        phaseDurations: PHASES.map((p) => p.duration),
+        sessionNotes: '',
+        sessionStarted: false,
+        timerRunning: false,
+        timerSecondsLeft: PHASES[0].duration * 60,
+        sessionElapsed: 0,
+      };
+
+      let timerInterval = null;
+      let sessionInterval = null;
+
+      const refs = {
+        themeSelect: document.getElementById('themeSelect'),
+        phaseSteps: document.getElementById('phaseSteps'),
+        phaseTitle: document.getElementById('phaseTitle'),
+        phasePill: document.getElementById('phasePill'),
+        phaseDesc: document.getElementById('phaseDesc'),
+        phaseLink: document.getElementById('phaseLink'),
+        phaseLinkNote: document.getElementById('phaseLinkNote'),
+        timerDisplay: document.getElementById('timerDisplay'),
+        startTimerButton: document.getElementById('startTimerButton'),
+        pauseTimerButton: document.getElementById('pauseTimerButton'),
+        resetTimerButton: document.getElementById('resetTimerButton'),
+        phaseDurationInput: document.getElementById('phaseDurationInput'),
+        phaseNotesInput: document.getElementById('phaseNotesInput'),
+        prevPhaseButton: document.getElementById('prevPhaseButton'),
+        markDoneButton: document.getElementById('markDoneButton'),
+        nextPhaseButton: document.getElementById('nextPhaseButton'),
+        phaseList: document.getElementById('phaseList'),
+        sessionProgressPill: document.getElementById('sessionProgressPill'),
+        sessionTimePill: document.getElementById('sessionTimePill'),
+        doneCount: document.getElementById('doneCount'),
+        activePhaseLabel: document.getElementById('activePhaseLabel'),
+        newSessionButton: document.getElementById('newSessionButton'),
+        exportButton: document.getElementById('exportButton'),
+        sessionStatus: document.getElementById('sessionStatus'),
+        sessionNotesInput: document.getElementById('sessionNotesInput'),
+        saveSessionNotesButton: document.getElementById('saveSessionNotesButton'),
+        notesStatus: document.getElementById('notesStatus'),
+      };
+
+      function formatTime(seconds) {
+        const m = Math.floor(Math.abs(seconds) / 60);
+        const s = Math.abs(seconds) % 60;
+        const sign = seconds < 0 ? '+' : '';
+        return `${sign}${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      }
+
+      function saveToStorage() {
+        try {
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            theme: state.theme,
+            activeIndex: state.activeIndex,
+            phaseNotes: state.phaseNotes,
+            phaseDone: state.phaseDone,
+            phaseDurations: state.phaseDurations,
+            sessionNotes: state.sessionNotes,
+            sessionElapsed: state.sessionElapsed,
+          }));
+        } catch {}
+      }
+
+      function loadFromStorage() {
+        try {
+          const raw = window.localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const data = JSON.parse(raw);
+          if (data.theme) { state.theme = data.theme; document.body.dataset.theme = state.theme; refs.themeSelect.value = state.theme; }
+          if (typeof data.activeIndex === 'number') state.activeIndex = Math.min(data.activeIndex, PHASES.length - 1);
+          if (Array.isArray(data.phaseNotes)) state.phaseNotes = data.phaseNotes.slice(0, PHASES.length).concat(state.phaseNotes.slice(data.phaseNotes.length));
+          if (Array.isArray(data.phaseDone)) state.phaseDone = data.phaseDone.slice(0, PHASES.length).concat(state.phaseDone.slice(data.phaseDone.length));
+          if (Array.isArray(data.phaseDurations)) state.phaseDurations = data.phaseDurations.slice(0, PHASES.length).concat(state.phaseDurations.slice(data.phaseDurations.length));
+          if (typeof data.sessionNotes === 'string') state.sessionNotes = data.sessionNotes;
+          if (typeof data.sessionElapsed === 'number') state.sessionElapsed = data.sessionElapsed;
+          state.timerSecondsLeft = state.phaseDurations[state.activeIndex] * 60;
+          state.sessionStarted = state.sessionElapsed > 0 || state.phaseDone.some(Boolean);
+        } catch {}
+      }
+
+      function stopTimer() {
+        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+        state.timerRunning = false;
+      }
+
+      function stopSessionClock() {
+        if (sessionInterval) { clearInterval(sessionInterval); sessionInterval = null; }
+      }
+
+      function startSessionClock() {
+        if (sessionInterval) return;
+        sessionInterval = setInterval(() => {
+          state.sessionElapsed += 1;
+          refs.sessionTimePill.textContent = formatTime(state.sessionElapsed);
+          saveToStorage();
+        }, 1000);
+      }
+
+      function renderPhaseSteps() {
+        refs.phaseSteps.innerHTML = '';
+        PHASES.forEach((phase, i) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = `phase-step${i === state.activeIndex ? ' is-active' : ''}${state.phaseDone[i] ? ' is-done' : ''}`;
+          btn.textContent = `${i + 1}`;
+          btn.title = phase.name;
+          btn.addEventListener('click', () => goToPhase(i));
+          refs.phaseSteps.appendChild(btn);
+        });
+      }
+
+      function renderPhaseList() {
+        refs.phaseList.innerHTML = '';
+        PHASES.forEach((phase, i) => {
+          const row = document.createElement('div');
+          row.className = `phase-list-entry${i === state.activeIndex ? ' is-active' : ''}${state.phaseDone[i] ? ' is-done' : ''}`;
+          row.innerHTML = `<span class="phase-entry-name">${phase.name}</span><span class="phase-entry-dur">${state.phaseDurations[i]} min</span>`;
+          row.addEventListener('click', () => goToPhase(i));
+          refs.phaseList.appendChild(row);
+        });
+        const done = state.phaseDone.filter(Boolean).length;
+        refs.sessionProgressPill.textContent = `${done} / ${PHASES.length}`;
+        refs.doneCount.textContent = String(done);
+        refs.activePhaseLabel.textContent = PHASES[state.activeIndex].name;
+      }
+
+      function renderActivePhase() {
+        const phase = PHASES[state.activeIndex];
+        const dur = state.phaseDurations[state.activeIndex];
+        refs.phaseTitle.textContent = `Phase ${state.activeIndex + 1} — ${phase.name}`;
+        refs.phasePill.textContent = `${dur} min`;
+        refs.phaseDesc.textContent = phase.desc;
+        refs.phaseLink.href = `./brainwave-lab.html?carrier=${phase.carrier}&beat=${phase.beat}`;
+        refs.phaseLinkNote.textContent = `${phase.carrier} Hz carrier · ${phase.beat} Hz beat`;
+        refs.phaseDurationInput.value = String(dur);
+        refs.phaseNotesInput.value = state.phaseNotes[state.activeIndex] || '';
+        refs.timerDisplay.textContent = formatTime(state.timerSecondsLeft);
+        refs.timerDisplay.classList.toggle('is-elapsed', state.timerSecondsLeft < 0);
+        refs.prevPhaseButton.disabled = state.activeIndex === 0;
+        refs.nextPhaseButton.disabled = state.activeIndex === PHASES.length - 1;
+        refs.startTimerButton.disabled = state.timerRunning;
+        refs.pauseTimerButton.disabled = !state.timerRunning;
+      }
+
+      function renderAll() {
+        document.body.dataset.theme = state.theme;
+        renderPhaseSteps();
+        renderPhaseList();
+        renderActivePhase();
+        refs.sessionNotesInput.value = state.sessionNotes;
+        refs.sessionTimePill.textContent = formatTime(state.sessionElapsed);
+        if (state.sessionStarted) {
+          refs.sessionStatus.textContent = 'Session in progress. Notes autosave.';
+        }
+      }
+
+      function goToPhase(index) {
+        stopTimer();
+        state.phaseNotes[state.activeIndex] = refs.phaseNotesInput.value;
+        state.activeIndex = index;
+        state.timerSecondsLeft = state.phaseDurations[index] * 60;
+        saveToStorage();
+        renderAll();
+      }
+
+      refs.startTimerButton.addEventListener('click', () => {
+        if (!state.sessionStarted) {
+          state.sessionStarted = true;
+          startSessionClock();
+          refs.sessionStatus.textContent = 'Session in progress. Notes autosave.';
+        }
+        state.timerRunning = true;
+        refs.startTimerButton.disabled = true;
+        refs.pauseTimerButton.disabled = false;
+        timerInterval = setInterval(() => {
+          state.timerSecondsLeft -= 1;
+          refs.timerDisplay.textContent = formatTime(state.timerSecondsLeft);
+          refs.timerDisplay.classList.toggle('is-elapsed', state.timerSecondsLeft < 0);
+          if (state.timerSecondsLeft === 0) {
+            refs.timerDisplay.classList.add('is-elapsed');
+          }
+        }, 1000);
+      });
+
+      refs.pauseTimerButton.addEventListener('click', () => {
+        stopTimer();
+        refs.startTimerButton.disabled = false;
+        refs.pauseTimerButton.disabled = true;
+      });
+
+      refs.resetTimerButton.addEventListener('click', () => {
+        stopTimer();
+        state.timerSecondsLeft = state.phaseDurations[state.activeIndex] * 60;
+        refs.timerDisplay.textContent = formatTime(state.timerSecondsLeft);
+        refs.timerDisplay.classList.remove('is-elapsed');
+        refs.startTimerButton.disabled = false;
+        refs.pauseTimerButton.disabled = true;
+      });
+
+      refs.phaseDurationInput.addEventListener('change', () => {
+        const v = Math.max(1, Math.min(60, Number(refs.phaseDurationInput.value) || 5));
+        state.phaseDurations[state.activeIndex] = v;
+        if (!state.timerRunning) {
+          state.timerSecondsLeft = v * 60;
+          refs.timerDisplay.textContent = formatTime(state.timerSecondsLeft);
+        }
+        refs.phasePill.textContent = `${v} min`;
+        renderPhaseList();
+        saveToStorage();
+      });
+
+      refs.phaseNotesInput.addEventListener('input', () => {
+        state.phaseNotes[state.activeIndex] = refs.phaseNotesInput.value;
+        saveToStorage();
+      });
+
+      refs.markDoneButton.addEventListener('click', () => {
+        state.phaseDone[state.activeIndex] = !state.phaseDone[state.activeIndex];
+        renderPhaseSteps();
+        renderPhaseList();
+        saveToStorage();
+      });
+
+      refs.prevPhaseButton.addEventListener('click', () => {
+        if (state.activeIndex > 0) goToPhase(state.activeIndex - 1);
+      });
+
+      refs.nextPhaseButton.addEventListener('click', () => {
+        if (state.activeIndex < PHASES.length - 1) goToPhase(state.activeIndex + 1);
+      });
+
+      refs.themeSelect.addEventListener('change', (event) => {
+        state.theme = event.target.value;
+        document.body.dataset.theme = state.theme;
+        saveToStorage();
+      });
+
+      refs.sessionNotesInput.addEventListener('input', () => {
+        state.sessionNotes = refs.sessionNotesInput.value;
+        saveToStorage();
+      });
+
+      refs.saveSessionNotesButton.addEventListener('click', () => {
+        state.sessionNotes = refs.sessionNotesInput.value;
+        saveToStorage();
+        refs.notesStatus.textContent = `Saved at ${new Date().toLocaleTimeString()}.`;
+      });
+
+      refs.newSessionButton.addEventListener('click', () => {
+        if (!window.confirm('Start a new session? Phase notes and done states will be cleared.')) return;
+        stopTimer();
+        stopSessionClock();
+        state.activeIndex = 0;
+        state.phaseNotes = PHASES.map(() => '');
+        state.phaseDone = PHASES.map(() => false);
+        state.phaseDurations = PHASES.map((p) => p.duration);
+        state.timerSecondsLeft = PHASES[0].duration * 60;
+        state.sessionStarted = false;
+        state.sessionElapsed = 0;
+        state.sessionNotes = '';
+        saveToStorage();
+        renderAll();
+        refs.sessionStatus.textContent = 'New session ready.';
+      });
+
+      refs.exportButton.addEventListener('click', () => {
+        const lines = [
+          `Runa Gateway Session — ${new Date().toLocaleDateString()}`,
+          `Session duration: ${formatTime(state.sessionElapsed)}`,
+          '',
+        ];
+        PHASES.forEach((phase, i) => {
+          const done = state.phaseDone[i] ? '[done]' : '[not completed]';
+          lines.push(`=== Phase ${i + 1}: ${phase.name} ${done} (${state.phaseDurations[i]} min) ===`);
+          lines.push(state.phaseNotes[i] || '(no notes)');
+          lines.push('');
+        });
+        if (state.sessionNotes) {
+          lines.push('=== Session Log ===');
+          lines.push(state.sessionNotes);
+        }
+        const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `runa-gateway-${Date.now()}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      loadFromStorage();
+      renderAll();
+      if (state.sessionStarted) startSessionClock();
+    })();
+  </script>
+</body>
+</html>
