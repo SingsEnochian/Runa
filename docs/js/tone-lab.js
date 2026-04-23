@@ -2,6 +2,7 @@
   const STORAGE_KEY = "runa-tone-lab.custom-tones.v1";
   const UI_STATE_KEY = "runa-tone-lab.ui.v1";
   const EXPORT_BITRATE_KBPS = 128;
+  const NOTES_KEY = "runa-tone-lab.notes.v1";
 
   const BASE_TONES = [
     { id: "root", name: "Root", frequency: 415, meaning: "Stabilisation / truth of being", category: "codex" },
@@ -19,6 +20,15 @@
     { id: "seldrin", name: "Seldrin", frequency: 741, meaning: "Clarity / steadiness / clean signal", category: "ours" },
     { id: "lantern", name: "Lantern", frequency: 888, meaning: "Witness / guiding attention", category: "ours" },
     { id: "withness", name: "Withness", frequency: 1203, meaning: "Shared presence without merge", category: "ours" },
+    { id: "sol-174", name: "UT grave", frequency: 174, meaning: "Deep foundation — lowest solfeggio anchor, sub-bass grounding", category: "solfeggio" },
+    { id: "sol-285", name: "Field", frequency: 285, meaning: "Cellular resonance — tissue and field coherence in tradition", category: "solfeggio" },
+    { id: "sol-396", name: "Ut · 396", frequency: 396, meaning: "Liberating fear and guilt — root clearing tone", category: "solfeggio" },
+    { id: "sol-417", name: "Re · 417", frequency: 417, meaning: "Undoing and change — breaks up stagnant patterns", category: "solfeggio" },
+    { id: "sol-528", name: "Mi · 528", frequency: 528, meaning: "Transformation — widely cited as the 'love frequency'", category: "solfeggio" },
+    { id: "sol-639", name: "Fa · 639", frequency: 639, meaning: "Connecting — relationships, harmony, bridging", category: "solfeggio" },
+    { id: "sol-741", name: "Sol · 741", frequency: 741, meaning: "Awakening intuition — clarity, problem solving", category: "solfeggio" },
+    { id: "sol-852", name: "La · 852", frequency: 852, meaning: "Returning to spiritual order — opening to higher awareness", category: "solfeggio" },
+    { id: "sol-963", name: "Ti · 963", frequency: 963, meaning: "Crown tone — divine consciousness, pure light frequency", category: "solfeggio" },
   ];
 
   const PRESETS = [
@@ -94,6 +104,10 @@
   function readCustomTones() { try { const raw = window.localStorage.getItem(STORAGE_KEY); const parsed = raw ? JSON.parse(raw) : []; return Array.isArray(parsed) ? parsed : []; } catch { return []; } }
   function persistCustomTones() { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state.customTones)); }
   function persistUiState() { window.localStorage.setItem(UI_STATE_KEY, JSON.stringify({ theme: state.theme, activeTab: state.activeTab })); }
+  function readNotes() { try { const raw = window.localStorage.getItem(NOTES_KEY); return raw ? JSON.parse(raw) : {}; } catch { return {}; } }
+  function persistNotes() { window.localStorage.setItem(NOTES_KEY, JSON.stringify({ hearthLight: refs.hearthLightNotes.value, nocturneGlint: refs.nocturneGlintNotes.value, teslaBench: refs.teslaBenchNotes.value })); refs.notesStatus.textContent = `Saved at ${new Date().toLocaleTimeString()}.`; }
+  function restoreNotes() { const data = readNotes(); if (data.hearthLight !== undefined) refs.hearthLightNotes.value = data.hearthLight; if (data.nocturneGlint !== undefined) refs.nocturneGlintNotes.value = data.nocturneGlint; if (data.teslaBench !== undefined) refs.teslaBenchNotes.value = data.teslaBench; }
+  function exportNotes() { const lines = ["=== Hearth Light Glint ===", refs.hearthLightNotes.value, "", "=== Nocturne Glint ===", refs.nocturneGlintNotes.value, "", "=== Tesla Bench ===", refs.teslaBenchNotes.value]; const blob = new Blob([lines.join("\n")], { type: "text/plain" }); downloadBlob(blob, "runa-tone-lab-notes.txt"); }
   function restoreUiState() {
     try {
       const raw = window.localStorage.getItem(UI_STATE_KEY);
@@ -245,12 +259,12 @@
   function renderToneGroups() {
     refs.toneGroups.innerHTML = "";
     const tones = getAllTones();
-    const groups = { ours: tones.filter((tone) => tone.category === "ours"), codex: tones.filter((tone) => tone.category === "codex"), custom: tones.filter((tone) => tone.category === "custom") };
-    ["ours", "codex", "custom"].forEach((groupKey) => {
+    const groups = { ours: tones.filter((tone) => tone.category === "ours"), codex: tones.filter((tone) => tone.category === "codex"), solfeggio: tones.filter((tone) => tone.category === "solfeggio"), custom: tones.filter((tone) => tone.category === "custom") };
+    ["ours", "codex", "solfeggio", "custom"].forEach((groupKey) => {
       const wrapper = document.createElement("section"); wrapper.className = "tone-group";
       const title = document.createElement("div"); title.className = "group-title"; title.textContent = groupKey; wrapper.appendChild(title);
       const grid = document.createElement("div"); grid.className = "tone-grid";
-      if (!groups[groupKey].length) { const empty = document.createElement("p"); empty.className = "tiny-copy"; empty.textContent = "No custom tones yet."; grid.appendChild(empty); }
+      if (!groups[groupKey].length) { if (groupKey !== "custom") return; const empty = document.createElement("p"); empty.className = "tiny-copy"; empty.textContent = "No custom tones yet."; grid.appendChild(empty); }
       else {
         groups[groupKey].forEach((tone) => {
           const active = state.selectedIds.includes(tone.id);
@@ -327,9 +341,13 @@
   refs.stopPlaybackButton.addEventListener("click", () => engine.stop());
   refs.exportMp3Button.addEventListener("click", () => void exportMp3());
   window.addEventListener("beforeunload", () => { void engine.close(); });
+  refs.saveNotesButton.addEventListener("click", persistNotes);
+  refs.exportNotesButton.addEventListener("click", exportNotes);
+  [refs.hearthLightNotes, refs.nocturneGlintNotes, refs.teslaBenchNotes].forEach((textarea) => { textarea.addEventListener("input", persistNotes); });
 
   restoreUiState();
   syncControlsFromState();
   renderPresetButtons();
   renderAll();
+  restoreNotes();
 })();

@@ -26,7 +26,7 @@
     <section class="hero card glow-card">
       <div>
         <h1>Brainwave Bench</h1>
-        <p class="hero-copy">A dedicated room for hemispheric pairings and binaural beds. I gave it a real 432 Hz carrier module so it stops being decorative furniture.</p>
+        <p class="hero-copy">A dedicated room for hemispheric pairings and binaural beds. True left/right carrier split, Monroe-inspired focus presets, and a bench for your own carrier experiments.</p>
       </div>
       <div class="theme-controls">
         <label for="themeSelect">Palette</label>
@@ -57,7 +57,7 @@
 
           <label>
             <span>Beat offset</span>
-            <input id="beatControl" type="range" min="1" max="33" step="0.1" value="8" />
+            <input id="beatControl" type="range" min="0.5" max="40" step="0.1" value="7" />
             <strong id="beatValue">8.0 Hz</strong>
             <p class="tiny-copy">The beat is made by splitting the carrier across the ears: left = carrier - offset/2, right = carrier + offset/2.</p>
           </label>
@@ -78,11 +78,13 @@
           </label>
 
           <div class="button-row wrap-row">
-            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="4">Delta 4</button>
-            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="8">Alpha 8</button>
-            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="10">F10</button>
-            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="12">F12</button>
-            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="15">F15</button>
+            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="7">F10 · 7 Hz</button>
+            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="6">F12 · 6 Hz</button>
+            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="4">F15 · 4 Hz</button>
+            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="2.5">F21 · 2.5 Hz</button>
+            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="8">Alpha Bridge · 8 Hz</button>
+            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="10">Alpha · 10 Hz</button>
+            <button class="chip" type="button" data-preset-carrier="432" data-preset-beat="40">Gamma · 40 Hz</button>
           </div>
 
           <div class="button-row wrap-row">
@@ -100,16 +102,40 @@
           </div>
           <div class="mini-panel">
             <h3>Left ear</h3>
-            <p id="leftReadout">428.0 Hz</p>
+            <p id="leftReadout">428.5 Hz</p>
           </div>
           <div class="mini-panel">
             <h3>Right ear</h3>
-            <p id="rightReadout">436.0 Hz</p>
+            <p id="rightReadout">435.5 Hz</p>
           </div>
           <div class="mini-panel">
             <h3>Current mode</h3>
-            <p id="modeReadout">432 Hz carrier with 8.0 Hz beat offset.</p>
+            <p id="modeReadout">432 Hz carrier with 7.0 Hz beat offset.</p>
           </div>
+        </section>
+
+        <section class="card">
+          <div class="section-heading-row">
+            <h2>Focus Level Guide</h2>
+            <span class="section-pill">Monroe-inspired</span>
+          </div>
+          <div class="mini-panel">
+            <h3>F10 · 7 Hz</h3>
+            <p>Mind awake, body asleep. Alpha/theta border. Settling, low-pressure symbol work, receptive quieting. Good first shell.</p>
+          </div>
+          <div class="mini-panel">
+            <h3>F12 · 6 Hz</h3>
+            <p>Expanded awareness. Theta. The main shell for Zener runs and image-first sessions — alert but open. Preferred for psi work.</p>
+          </div>
+          <div class="mini-panel">
+            <h3>F15 · 4 Hz</h3>
+            <p>No-time state. Deep theta. Slow image emergence and longer drift. Low urgency required. Use after F12 is familiar.</p>
+          </div>
+          <div class="mini-panel">
+            <h3>F21 · 2.5 Hz</h3>
+            <p>Edge of time/space. Theta/delta border. Very deep. Use only when F15 is already familiar terrain. Headphones essential.</p>
+          </div>
+          <p class="tiny-copy">These are single-tone approximations of Monroe Institute focus states — not the full Hemi-Sync programs, which layer multiple carriers.</p>
         </section>
 
         <section class="card">
@@ -119,6 +145,15 @@
           </div>
           <p class="tiny-copy">This module creates a true left/right split instead of pretending a single symbolic tone is a binaural bed.</p>
           <p class="tiny-copy">Headphones are the intended path. Speakers will blur the beat into the room and turn precision into soup.</p>
+        </section>
+
+        <section class="card">
+          <div class="section-heading-row">
+            <h2>Cymatic Field</h2>
+            <span class="section-pill">live</span>
+          </div>
+          <canvas id="cymaticCanvas" style="width:100%;max-width:280px;height:280px;display:block;margin:0 auto;border-radius:12px;background:rgba(0,0,0,0.22);"></canvas>
+          <p class="tiny-copy" style="margin-top:0.6rem;text-align:center;">Carrier mode shape · beat expansion rings</p>
         </section>
       </aside>
     </section>
@@ -146,11 +181,31 @@
       const state = {
         theme: 'cathedral-blue',
         carrier: 432,
-        beat: 8,
+        beat: 7,
         gain: 0.07,
         waveform: 'sine',
         isPlaying: false,
       };
+
+      const STORAGE_KEY = 'runa-brainwave-lab.state.v1';
+
+      function saveToStorage() {
+        try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ carrier: state.carrier, beat: state.beat, gain: state.gain, waveform: state.waveform, theme: state.theme })); } catch {}
+      }
+
+      function loadFromStorage() {
+        try {
+          const raw = window.localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const data = JSON.parse(raw);
+          if (data.carrier != null) { state.carrier = Number(data.carrier); refs.carrierControl.value = String(state.carrier); }
+          if (data.beat != null) { state.beat = Number(data.beat); refs.beatControl.value = String(state.beat); }
+          if (data.gain != null) { state.gain = Number(data.gain); refs.gainControl.value = String(state.gain); }
+          if (data.waveform != null) { state.waveform = data.waveform; refs.waveformSelect.value = state.waveform; }
+          if (data.theme != null) { state.theme = data.theme; document.body.dataset.theme = state.theme; refs.themeSelect.value = state.theme; }
+          syncReadouts();
+        } catch {}
+      }
 
       let ctx = null;
       let master = null;
@@ -160,6 +215,83 @@
       let rightPan = null;
       let leftGain = null;
       let rightGain = null;
+
+      // ── Cymatic Canvas ────────────────────────────────────────────────
+      const cymaticCanvas = document.getElementById('cymaticCanvas');
+      const cymaticCtx = cymaticCanvas.getContext('2d');
+      const CYMA_SIZE = 280;
+      let cymaticFrame = null;
+      let cymaticClock = 0;
+      (function initCymatic() {
+        const dpr = window.devicePixelRatio || 1;
+        cymaticCanvas.width = CYMA_SIZE * dpr;
+        cymaticCanvas.height = CYMA_SIZE * dpr;
+        cymaticCtx.scale(dpr, dpr);
+      })();
+
+      function cymaticModeN(carrier) {
+        return Math.max(2, Math.min(12, Math.round(carrier / 80)));
+      }
+
+      function drawCymatic() {
+        const W = CYMA_SIZE, H = CYMA_SIZE;
+        const cx = W / 2, cy = H / 2;
+        const maxR = Math.min(W, H) / 2 - 10;
+        cymaticCtx.clearRect(0, 0, W, H);
+
+        const n = cymaticModeN(state.carrier);
+        const rings = 5;
+        const speed = state.isPlaying ? (state.beat / 8) : 0;
+        for (let i = 0; i < rings; i++) {
+          const t = ((cymaticClock * speed * 0.5 + i / rings) % 1 + 1) % 1;
+          const r = t * maxR;
+          if (r < 1) continue;
+          const alpha = (1 - t) * 0.28;
+          cymaticCtx.beginPath();
+          cymaticCtx.arc(cx, cy, r, 0, Math.PI * 2);
+          cymaticCtx.strokeStyle = `rgba(210,170,90,${alpha.toFixed(3)})`;
+          cymaticCtx.lineWidth = 1;
+          cymaticCtx.stroke();
+        }
+
+        const shapeR = maxR * 0.42;
+        const mod = 0.26;
+        const phase = state.isPlaying ? cymaticClock * 0.07 * Math.PI * 2 : 0;
+        cymaticCtx.beginPath();
+        for (let i = 0; i <= 720; i++) {
+          const theta = (i / 720) * Math.PI * 2;
+          const r = shapeR * (1 + mod * Math.cos(n * theta + phase));
+          const x = cx + r * Math.cos(theta);
+          const y = cy + r * Math.sin(theta);
+          if (i === 0) cymaticCtx.moveTo(x, y);
+          else cymaticCtx.lineTo(x, y);
+        }
+        cymaticCtx.closePath();
+        cymaticCtx.strokeStyle = 'rgba(210,170,90,0.72)';
+        cymaticCtx.lineWidth = 1.5;
+        cymaticCtx.stroke();
+
+        cymaticCtx.beginPath();
+        cymaticCtx.arc(cx, cy, 2, 0, Math.PI * 2);
+        cymaticCtx.fillStyle = 'rgba(210,170,90,0.55)';
+        cymaticCtx.fill();
+      }
+
+      function cymaticStep() {
+        cymaticClock += 0.016;
+        drawCymatic();
+        cymaticFrame = requestAnimationFrame(cymaticStep);
+      }
+
+      function startCymatic() {
+        if (cymaticFrame === null) cymaticFrame = requestAnimationFrame(cymaticStep);
+      }
+
+      function stopCymatic() {
+        if (cymaticFrame !== null) { cancelAnimationFrame(cymaticFrame); cymaticFrame = null; }
+        drawCymatic();
+      }
+      // ── End Cymatic Canvas ────────────────────────────────────────────
 
       function syncReadouts() {
         const left = Math.max(1, state.carrier - state.beat / 2);
@@ -218,6 +350,7 @@
         state.isPlaying = false;
         refs.playButton.disabled = false;
         refs.stopButton.disabled = true;
+        stopCymatic();
       }
 
       async function playBeat() {
@@ -260,10 +393,12 @@
         state.isPlaying = true;
         refs.playButton.disabled = true;
         refs.stopButton.disabled = false;
+        startCymatic();
       }
 
       function applyLiveChanges() {
         syncReadouts();
+        drawCymatic();
         if (!state.isPlaying || !ctx || !master || !leftOsc || !rightOsc) return;
         const now = ctx.currentTime;
         leftOsc.type = state.waveform;
@@ -276,26 +411,31 @@
       refs.themeSelect.addEventListener('change', (event) => {
         state.theme = event.target.value;
         document.body.dataset.theme = state.theme;
+        saveToStorage();
       });
 
       refs.carrierControl.addEventListener('input', (event) => {
         state.carrier = Number(event.target.value);
         applyLiveChanges();
+        saveToStorage();
       });
 
       refs.beatControl.addEventListener('input', (event) => {
         state.beat = Number(event.target.value);
         applyLiveChanges();
+        saveToStorage();
       });
 
       refs.gainControl.addEventListener('input', (event) => {
         state.gain = Number(event.target.value);
         applyLiveChanges();
+        saveToStorage();
       });
 
       refs.waveformSelect.addEventListener('change', (event) => {
         state.waveform = event.target.value;
         applyLiveChanges();
+        saveToStorage();
       });
 
       refs.playButton.addEventListener('click', playBeat);
@@ -308,11 +448,24 @@
           refs.carrierControl.value = String(state.carrier);
           refs.beatControl.value = String(state.beat);
           applyLiveChanges();
+          saveToStorage();
         });
       });
 
+      function loadFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const c = params.get('carrier');
+        const b = params.get('beat');
+        if (c !== null) { const v = Number(c); if (v > 0) { state.carrier = v; refs.carrierControl.value = String(v); } }
+        if (b !== null) { const v = Number(b); if (v > 0) { state.beat = v; refs.beatControl.value = String(v); } }
+        if (c !== null || b !== null) syncReadouts();
+      }
+
       window.addEventListener('beforeunload', stopPlayback);
       syncReadouts();
+      loadFromStorage();
+      loadFromUrl();
+      drawCymatic();
     })();
   </script>
 </body>

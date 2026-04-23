@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runa Tesla Observatory</title>
+  <link rel="stylesheet" href="./css/tone-lab.css?v=6" />
+  <link rel="stylesheet" href="./css/lab-themes.css?v=2" />
+  <style>
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    .roadmap-card {
+      padding: 1rem 1.1rem;
+      border-radius: 14px;
+      border: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+      background: color-mix(in srgb, var(--card-strong) 78%, transparent);
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .roadmap-card-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .roadmap-card-desc {
+      font-size: 0.83rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .roadmap-status {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.15rem 0.5rem;
+      border-radius: 99px;
+      display: inline-block;
+      width: fit-content;
+    }
+
+    .roadmap-status.next { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--text); }
+    .roadmap-status.research { background: color-mix(in srgb, var(--accent-2) 22%, transparent); color: var(--muted); }
+    .roadmap-status.scoped { background: rgba(120, 200, 160, 0.15); color: color-mix(in srgb, #7bc8a0 80%, var(--text)); }
+
+    .stat-dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .stat-tile {
+      padding: 0.9rem 1rem;
+      border-radius: 12px;
+      border: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+      background: color-mix(in srgb, var(--card-strong) 72%, transparent);
+    }
+
+    .stat-tile-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-tile-value {
+      font-size: 1.45rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-tile-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 0.15rem;
+    }
+
+    .journal-section {
+      display: grid;
+      gap: 1rem;
+    }
+  </style>
+</head>
+<body data-theme="twilight">
+  <header class="site-header">
+    <div>
+      <strong>Runa Tesla Observatory</strong>
+      <p class="subtitle">Cross-lab stats dashboard, research journal, and the roadmap for what comes next.</p>
+    </div>
+    <div class="header-actions">
+      <a class="button-link" href="./index.html">Back to Runa</a>
+      <a class="button-link" href="./tone-lab.html">Tone Lab</a>
+      <a class="button-link" href="./brainwave-lab.html">Brainwave Lab</a>
+      <a class="button-link" href="./psi-lab.html">Psi Lab</a>
+      <a class="button-link" href="./gateway-inspired.html">Gateway Sequencer</a>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero card glow-card">
+      <div>
+        <h1>Tesla Observatory</h1>
+        <p class="hero-copy">A dashboard reading the state of every lab. Cross-session stats from Zener runs, the current Brainwave Lab tuning, notes from the Tone Lab, and a research journal for tracking what you are learning across all tools.</p>
+      </div>
+      <div class="theme-controls">
+        <label for="themeSelect">Palette</label>
+        <select id="themeSelect">
+          <option value="twilight">Twilight</option>
+          <option value="nocturne">Nocturne</option>
+          <option value="cathedral-blue">Cathedral Blue</option>
+          <option value="velvet-veil">Velvet Veil</option>
+          <option value="serpent-cerulean">Serpent Cerulean</option>
+          <option value="ember-rain">Ember Rain</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-heading-row">
+        <h2>Cross-Lab Stats</h2>
+        <span class="section-pill" id="refreshPill">live</span>
+      </div>
+      <p class="tiny-copy" style="margin-bottom:1rem;">Read from localStorage across all Runa tools. Refreshes on load and on the button below.</p>
+      <div class="stat-dashboard" id="statDashboard"></div>
+      <div class="button-row" style="margin-top:1rem;">
+        <button id="refreshStatsButton" type="button">Refresh Stats</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-heading-row">
+        <h2>Brainwave Lab — Last State</h2>
+        <span class="section-pill">from localStorage</span>
+      </div>
+      <div id="brainwaveSnapshot" class="stat-dashboard"></div>
+    </section>
+
+    <section class="card">
+      <div class="section-heading-row">
+        <h2>Research Journal</h2>
+        <span class="section-pill">autosave</span>
+      </div>
+      <p class="tiny-copy">Long-form notes across all sessions and tools. What is working, what is noise, what to test next.</p>
+      <div class="journal-section">
+        <textarea id="journalInput" placeholder="Cross-tool research notes — patterns, hypotheses, anomalies, next steps…" style="min-height:280px;"></textarea>
+        <div class="button-row">
+          <button id="saveJournalButton" class="accent-button" type="button">Save Journal</button>
+          <button id="exportJournalButton" type="button">Export</button>
+        </div>
+        <p id="journalStatus" class="status-copy">Journal autosaves locally.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-heading-row">
+        <h2>Coming Next</h2>
+        <span class="section-pill">roadmap</span>
+      </div>
+      <p class="tiny-copy" style="margin-bottom:1rem;">Features scoped, researched, or queued for future builds.</p>
+      <div class="roadmap-grid">
+        <div class="roadmap-card">
+          <span class="roadmap-status next">next</span>
+          <div class="roadmap-card-name">Session Ramp Engine</div>
+          <div class="roadmap-card-desc">Automate the Gateway phase sequence — advance timer, crossfade beat frequency between phases, hands-free from Tuning to Return.</div>
+        </div>
+
+        <div class="roadmap-card">
+          <span class="roadmap-status next">next</span>
+          <div class="roadmap-card-name">Stacked Carrier Mode</div>
+          <div class="roadmap-card-desc">Layer multiple carrier pairs (100/200/400 Hz, same beat offset) for a Hemi-Sync–style harmonic bed. Monroe patent US4834701.</div>
+        </div>
+
+        <div class="roadmap-card">
+          <span class="roadmap-status scoped">scoped</span>
+          <div class="roadmap-card-name">Isochronic 40 Hz Gamma</div>
+          <div class="roadmap-card-desc">Amplitude-modulated gamma at 40 Hz — not binaural. Matches the MIT/Tsai GENUS protocol research. Requires AM oscillator, not beat difference.</div>
+        </div>
+
+        <div class="roadmap-card">
+          <span class="roadmap-status scoped">scoped</span>
+          <div class="roadmap-card-name">Condition Comparison Chart</div>
+          <div class="roadmap-card-desc">Visualise Zener hit rates across sessions by condition tag. Pull from the condition log in Psi Lab and overlay hit rate from Zener exports.</div>
+        </div>
+
+        <div class="roadmap-card">
+          <span class="roadmap-status scoped">scoped</span>
+          <div class="roadmap-card-name">Pink Noise Bed</div>
+          <div class="roadmap-card-desc">Add a pink noise floor option to the Brainwave Lab. Blended under the binaural bed to mask environmental sound and smooth the carrier edges.</div>
+        </div>
+
+        <div class="roadmap-card">
+          <span class="roadmap-status research">research</span>
+          <div class="roadmap-card-name">Session Archive</div>
+          <div class="roadmap-card-desc">Export and re-import full session bundles (Zener log + journal + condition + Brainwave state) as a single JSON archive. Versioned and timestamped.</div>
+        </div>
+
+        <div class="roadmap-card">
+          <span class="roadmap-status research">research</span>
+          <div class="roadmap-card-name">Timed Impression Mode</div>
+          <div class="roadmap-card-desc">Present each Zener card with a short countdown. Prioritise first-impression accuracy over deliberate analysis — closer to a genuine psi signal window.</div>
+        </div>
+
+        <div class="roadmap-card">
+          <span class="roadmap-status research">research</span>
+          <div class="roadmap-card-name">Solfeggio Beat Pairs</div>
+          <div class="roadmap-card-desc">Binaural pairs derived from adjacent solfeggio frequencies. 396/417 Hz (21 Hz beat), 528/528.6 Hz (0.6 Hz sub-beat), etc. Experimental shelf.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const JOURNAL_KEY = 'runa-observatory.journal.v1';
+      const UI_KEY = 'runa-observatory.ui.v1';
+
+      const refs = {
+        themeSelect: document.getElementById('themeSelect'),
+        statDashboard: document.getElementById('statDashboard'),
+        brainwaveSnapshot: document.getElementById('brainwaveSnapshot'),
+        refreshStatsButton: document.getElementById('refreshStatsButton'),
+        refreshPill: document.getElementById('refreshPill'),
+        journalInput: document.getElementById('journalInput'),
+        saveJournalButton: document.getElementById('saveJournalButton'),
+        exportJournalButton: document.getElementById('exportJournalButton'),
+        journalStatus: document.getElementById('journalStatus'),
+      };
+
+      function tile(label, value, sub) {
+        const div = document.createElement('div'); div.className = 'stat-tile';
+        const l = document.createElement('div'); l.className = 'stat-tile-label'; l.textContent = label;
+        const v = document.createElement('div'); v.className = 'stat-tile-value'; v.textContent = value;
+        div.appendChild(l); div.appendChild(v);
+        if (sub) { const s = document.createElement('div'); s.className = 'stat-tile-sub'; s.textContent = sub; div.appendChild(s); }
+        return div;
+      }
+
+      function readZenerStats() {
+        try {
+          const raw = window.localStorage.getItem('runa-zener-lab.session.v1');
+          if (!raw) return null;
+          const data = JSON.parse(raw);
+          if (!data || !Array.isArray(data.trials)) return null;
+          const done = data.trials.filter((t) => t.result !== undefined);
+          const hits = done.filter((t) => t.result === 'hit').length;
+          return { total: data.trialCount || 25, done: done.length, hits, label: data.sessionLabel || '—', condition: data.conditionLabel || '—' };
+        } catch { return null; }
+      }
+
+      function readBrainwaveState() {
+        try {
+          const raw = window.localStorage.getItem('runa-brainwave-lab.state.v1');
+          if (!raw) return null;
+          return JSON.parse(raw);
+        } catch { return null; }
+      }
+
+      function readToneLabNotes() {
+        try {
+          const raw = window.localStorage.getItem('runa-tone-lab.notes.v1');
+          if (!raw) return null;
+          return JSON.parse(raw);
+        } catch { return null; }
+      }
+
+      function readGatewayState() {
+        try {
+          const raw = window.localStorage.getItem('runa-gateway.state.v1');
+          if (!raw) return null;
+          return JSON.parse(raw);
+        } catch { return null; }
+      }
+
+      function buildStats() {
+        refs.statDashboard.innerHTML = '';
+        const z = readZenerStats();
+        if (z) {
+          const rate = z.done > 0 ? ((z.hits / z.done) * 100).toFixed(1) : '—';
+          const chance = 20;
+          const delta = z.done > 0 ? ((z.hits / z.done) * 100 - chance).toFixed(1) : '—';
+          refs.statDashboard.appendChild(tile('Zener hits', z.done > 0 ? `${z.hits} / ${z.done}` : '—', z.label));
+          refs.statDashboard.appendChild(tile('Hit rate', z.done > 0 ? `${rate}%` : '—', `chance: 20%  Δ ${delta}%`));
+        } else {
+          refs.statDashboard.appendChild(tile('Zener data', '—', 'no session found'));
+        }
+
+        const g = readGatewayState();
+        if (g) {
+          const done = Array.isArray(g.phaseDone) ? g.phaseDone.filter(Boolean).length : 0;
+          const elapsed = typeof g.sessionElapsed === 'number' ? `${Math.floor(g.sessionElapsed / 60)}m ${g.sessionElapsed % 60}s` : '—';
+          refs.statDashboard.appendChild(tile('Gateway phases', `${done} / 5`, elapsed));
+        } else {
+          refs.statDashboard.appendChild(tile('Gateway phases', '—', 'no session found'));
+        }
+
+        const notes = readToneLabNotes();
+        const noteCount = notes ? Object.values(notes).filter((v) => typeof v === 'string' && v.trim()).length : 0;
+        refs.statDashboard.appendChild(tile('Tone Lab notes', noteCount > 0 ? `${noteCount} section${noteCount !== 1 ? 's' : ''}` : '—', 'filled'));
+
+        refs.refreshPill.textContent = `refreshed ${new Date().toLocaleTimeString()}`;
+      }
+
+      function buildBrainwaveSnapshot() {
+        refs.brainwaveSnapshot.innerHTML = '';
+        const b = readBrainwaveState();
+        if (!b) { const p = document.createElement('p'); p.className = 'tiny-copy'; p.textContent = 'No Brainwave Lab state found.'; refs.brainwaveSnapshot.appendChild(p); return; }
+        if (b.carrier !== undefined) refs.brainwaveSnapshot.appendChild(tile('Carrier', `${Number(b.carrier).toFixed(0)} Hz`));
+        if (b.beat !== undefined) refs.brainwaveSnapshot.appendChild(tile('Beat offset', `${Number(b.beat).toFixed(1)} Hz`));
+        if (b.waveform) refs.brainwaveSnapshot.appendChild(tile('Waveform', b.waveform));
+        if (b.gain !== undefined) refs.brainwaveSnapshot.appendChild(tile('Master gain', Number(b.gain).toFixed(2)));
+        if (b.carrier !== undefined && b.beat !== undefined) {
+          const left = Math.max(1, b.carrier - b.beat / 2);
+          const right = b.carrier + b.beat / 2;
+          refs.brainwaveSnapshot.appendChild(tile('Left ear', `${left.toFixed(1)} Hz`));
+          refs.brainwaveSnapshot.appendChild(tile('Right ear', `${right.toFixed(1)} Hz`));
+        }
+      }
+
+      refs.refreshStatsButton.addEventListener('click', () => { buildStats(); buildBrainwaveSnapshot(); });
+
+      refs.journalInput.addEventListener('input', () => {
+        try { window.localStorage.setItem(JOURNAL_KEY, JSON.stringify(refs.journalInput.value)); } catch {}
+        refs.journalStatus.textContent = `Autosaved at ${new Date().toLocaleTimeString()}.`;
+      });
+
+      refs.saveJournalButton.addEventListener('click', () => {
+        try { window.localStorage.setItem(JOURNAL_KEY, JSON.stringify(refs.journalInput.value)); } catch {}
+        refs.journalStatus.textContent = `Saved at ${new Date().toLocaleTimeString()}.`;
+      });
+
+      refs.exportJournalButton.addEventListener('click', () => {
+        const text = refs.journalInput.value || '(empty)';
+        const blob = new Blob([text], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = `runa-observatory-journal-${Date.now()}.txt`; a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      refs.themeSelect.addEventListener('change', (event) => {
+        document.body.dataset.theme = event.target.value;
+        try { window.localStorage.setItem(UI_KEY, JSON.stringify({ theme: event.target.value })); } catch {}
+      });
+
+      // Init
+      try {
+        const ui = JSON.parse(window.localStorage.getItem(UI_KEY) || '{}');
+        if (ui.theme) { document.body.dataset.theme = ui.theme; refs.themeSelect.value = ui.theme; }
+      } catch {}
+      try {
+        const j = JSON.parse(window.localStorage.getItem(JOURNAL_KEY) || '""');
+        if (j) refs.journalInput.value = j;
+      } catch {}
+      buildStats();
+      buildBrainwaveSnapshot();
+    })();
+  </script>
+</body>
+</html>
