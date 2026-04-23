@@ -2,6 +2,8 @@ import { WardenclyffeAudioEngine } from './wardenclyffe/audio-engine.js';
 import { createBinauralLayer, createEmptyScene, createToneLayer, touchScene } from './wardenclyffe/scene-factory.js';
 import { listScenes, loadScene, saveScene } from './wardenclyffe/scene-store.js';
 
+const AUTOLOAD_KEY = 'wardenclyffe:auto-load-scene';
+
 const refs = {
   themeSelect: document.getElementById('themeSelect'),
   sceneNameInput: document.getElementById('sceneNameInput'),
@@ -303,6 +305,23 @@ async function handleSceneListClick(event) {
   await renderSavedScenes();
 }
 
+async function tryAutoLoadScene() {
+  const url = new URL(window.location.href);
+  const shouldAutoload = url.searchParams.get('autoload') === '1';
+  const sceneId = window.sessionStorage.getItem(AUTOLOAD_KEY);
+  if (!shouldAutoload || !sceneId) {
+    return;
+  }
+
+  window.sessionStorage.removeItem(AUTOLOAD_KEY);
+  const scene = await loadScene(sceneId);
+  if (scene) {
+    state.scene = scene;
+    render();
+    refs.engineStatus.textContent = `Tone Lab handed off scene “${scene.name}”.`;
+  }
+}
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll('&', '&amp;')
@@ -316,10 +335,11 @@ function escapeAttribute(value) {
   return escapeHtml(value);
 }
 
-function init() {
+async function init() {
   attachUiEvents();
   render();
-  renderSavedScenes();
+  await tryAutoLoadScene();
+  await renderSavedScenes();
 }
 
 init();
