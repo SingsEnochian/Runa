@@ -361,6 +361,7 @@
             phaseDone: state.phaseDone,
             phaseDurations: state.phaseDurations,
             sessionNotes: state.sessionNotes,
+            sessionStarted: state.sessionStarted,
             sessionElapsed: state.sessionElapsed,
           }));
         } catch {}
@@ -377,9 +378,10 @@
           if (Array.isArray(data.phaseDone)) state.phaseDone = data.phaseDone.slice(0, PHASES.length).concat(state.phaseDone.slice(data.phaseDone.length));
           if (Array.isArray(data.phaseDurations)) state.phaseDurations = data.phaseDurations.slice(0, PHASES.length).concat(state.phaseDurations.slice(data.phaseDurations.length));
           if (typeof data.sessionNotes === 'string') state.sessionNotes = data.sessionNotes;
+          if (typeof data.sessionStarted === 'boolean') state.sessionStarted = data.sessionStarted;
           if (typeof data.sessionElapsed === 'number') state.sessionElapsed = data.sessionElapsed;
           state.timerSecondsLeft = state.phaseDurations[state.activeIndex] * 60;
-          state.sessionStarted = state.sessionElapsed > 0 || state.phaseDone.some(Boolean);
+          state.timerRunning = false;
         } catch {}
       }
 
@@ -454,13 +456,18 @@
         renderActivePhase();
         refs.sessionNotesInput.value = state.sessionNotes;
         refs.sessionTimePill.textContent = formatTime(state.sessionElapsed);
-        if (state.sessionStarted) {
-          refs.sessionStatus.textContent = 'Session in progress. Notes autosave.';
+        if (state.timerRunning) {
+          refs.sessionStatus.textContent = 'Session timer running. Notes autosave.';
+        } else if (state.sessionStarted) {
+          refs.sessionStatus.textContent = 'Session loaded or paused. Press Start to resume timing.';
+        } else {
+          refs.sessionStatus.textContent = 'No session started yet.';
         }
       }
 
       function goToPhase(index) {
         stopTimer();
+        stopSessionClock();
         state.phaseNotes[state.activeIndex] = refs.phaseNotesInput.value;
         state.activeIndex = index;
         state.timerSecondsLeft = state.phaseDurations[index] * 60;
@@ -471,12 +478,13 @@
       refs.startTimerButton.addEventListener('click', () => {
         if (!state.sessionStarted) {
           state.sessionStarted = true;
-          startSessionClock();
-          refs.sessionStatus.textContent = 'Session in progress. Notes autosave.';
         }
+        startSessionClock();
+        refs.sessionStatus.textContent = 'Session timer running. Notes autosave.';
         state.timerRunning = true;
         refs.startTimerButton.disabled = true;
         refs.pauseTimerButton.disabled = false;
+        saveToStorage();
         timerInterval = setInterval(() => {
           state.timerSecondsLeft -= 1;
           refs.timerDisplay.textContent = formatTime(state.timerSecondsLeft);
@@ -489,17 +497,23 @@
 
       refs.pauseTimerButton.addEventListener('click', () => {
         stopTimer();
+        stopSessionClock();
         refs.startTimerButton.disabled = false;
         refs.pauseTimerButton.disabled = true;
+        saveToStorage();
+        renderAll();
       });
 
       refs.resetTimerButton.addEventListener('click', () => {
         stopTimer();
+        stopSessionClock();
         state.timerSecondsLeft = state.phaseDurations[state.activeIndex] * 60;
         refs.timerDisplay.textContent = formatTime(state.timerSecondsLeft);
         refs.timerDisplay.classList.remove('is-elapsed');
         refs.startTimerButton.disabled = false;
         refs.pauseTimerButton.disabled = true;
+        saveToStorage();
+        renderAll();
       });
 
       refs.phaseDurationInput.addEventListener('change', () => {
@@ -595,7 +609,6 @@
 
       loadFromStorage();
       renderAll();
-      if (state.sessionStarted) startSessionClock();
     })();
   </script>
 </body>
