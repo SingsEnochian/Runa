@@ -1,6 +1,7 @@
 import { WardenclyffeAudioEngine } from './wardenclyffe/audio-engine.js';
 import { createBinauralLayer, createEmptyScene, createToneLayer, touchScene } from './wardenclyffe/scene-factory.js';
 import { listScenes, loadScene, saveScene } from './wardenclyffe/scene-store.js';
+import { generateTeslaCommentary } from './wardenclyffe/tesla-commentary.js';
 
 const AUTOLOAD_KEY = 'wardenclyffe:auto-load-scene';
 
@@ -17,6 +18,11 @@ const refs = {
   engineStatus: document.getElementById('engineStatus'),
   layerStack: document.getElementById('layerStack'),
   sceneList: document.getElementById('sceneList'),
+  commentaryQuestionInput: document.getElementById('commentaryQuestionInput'),
+  commentaryNoteInput: document.getElementById('commentaryNoteInput'),
+  generateCommentaryButton: document.getElementById('generateCommentaryButton'),
+  copyCommentaryButton: document.getElementById('copyCommentaryButton'),
+  commentaryOutput: document.getElementById('commentaryOutput'),
 };
 
 const state = {
@@ -193,6 +199,25 @@ function attachUiEvents() {
     await saveScene(state.scene);
     refs.engineStatus.textContent = `Saved scene “${state.scene.name}”.`;
     await renderSavedScenes();
+  });
+
+  refs.generateCommentaryButton?.addEventListener('click', () => {
+    syncSceneFieldsToState();
+    refs.commentaryOutput.value = generateTeslaCommentary(state.scene, {
+      question: refs.commentaryQuestionInput?.value || '',
+      note: refs.commentaryNoteInput?.value || '',
+    });
+  });
+
+  refs.copyCommentaryButton?.addEventListener('click', async () => {
+    const value = refs.commentaryOutput?.value || '';
+    if (!value.trim()) return;
+    try {
+      await navigator.clipboard.writeText(value);
+      refs.engineStatus.textContent = 'Wardenclyffe Note copied.';
+    } catch {
+      refs.engineStatus.textContent = 'Copy failed. The note remains in the chamber.';
+    }
   });
 
   refs.layerStack.addEventListener('input', (event) => {
