@@ -142,7 +142,7 @@ import { saveScene } from './wardenclyffe/scene-store.js';
   };
 
   function setStepState(stepEl, state) {
-    stepEl.dataset.state = state;
+    if (stepEl) stepEl.dataset.state = state;
   }
 
   function collectSelectedTones() {
@@ -199,21 +199,31 @@ import { saveScene } from './wardenclyffe/scene-store.js';
     fieldModel.savedSceneId = scene.id;
     fieldModel.savedAt = new Date().toISOString();
 
-    await wait(320);
+    await wait(420);
     setStepState(refs.buildFieldStep, 'folding');
-    await wait(320);
+    await wait(420);
 
-    setStepState(refs.buildFieldStep, 'collapsed');
     refs.buildFieldSummary.hidden = false;
     refs.buildFieldSummaryMeta.textContent = `${fieldModel.selectedTones.length} tones · ${fieldModel.waveform} · ${fieldModel.motionEnabled ? '8D on' : '8D off'}`;
+    setStepState(refs.buildFieldStep, 'collapsed');
 
     refs.divider.hidden = false;
+    refs.divider.classList.remove('is-revealed');
     refs.wardenclyffeStep.hidden = false;
-    setStepState(refs.wardenclyffeStep, 'active');
+    refs.wardenclyffeStep.classList.remove('is-revealed');
+
+    window.requestAnimationFrame(() => {
+      refs.divider.classList.add('is-revealed');
+      refs.wardenclyffeStep.classList.add('is-revealed');
+      setStepState(refs.wardenclyffeStep, 'active');
+    });
+
     refs.exportMessage && (refs.exportMessage.textContent = 'Field saved. Proceed to Wardenclyffe.');
   }
 
   function reopenBuildField() {
+    refs.divider.classList.remove('is-revealed');
+    refs.wardenclyffeStep.classList.remove('is-revealed');
     refs.divider.hidden = true;
     refs.wardenclyffeStep.hidden = true;
     refs.buildFieldSummary.hidden = true;
@@ -273,36 +283,38 @@ import { saveScene } from './wardenclyffe/scene-store.js';
     style.id = 'toneLabWorkflowStyles';
     style.textContent = `
       .workflow-shell { display: grid; gap: 1rem; }
-      .step-panel { position: relative; transition: transform 360ms ease, opacity 260ms ease, filter 260ms ease; }
-      .step-frame { position: relative; overflow: hidden; border-radius: 22px; border: 1px solid color-mix(in srgb, var(--border) 78%, transparent); background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015)), color-mix(in srgb, var(--card) 88%, transparent); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 12px 32px rgba(0,0,0,0.18); }
-      .step-header, .step-body, .step-summary { padding: 1rem 1.1rem; }
+      .step-panel { position: relative; transition: transform 420ms ease, opacity 320ms ease, filter 320ms ease; }
+      .step-frame { position: relative; overflow: hidden; border-radius: 22px; border: 1px solid color-mix(in srgb, var(--border) 78%, transparent); background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015)), color-mix(in srgb, var(--card) 88%, transparent); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 12px 32px rgba(0,0,0,0.18); transition: transform 420ms ease, box-shadow 320ms ease, opacity 320ms ease; }
+      .step-header, .step-body { padding: 1rem 1.1rem; }
+      .step-summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-height: 0; opacity: 0; overflow: hidden; padding: 0 1.1rem; transition: max-height 360ms ease, opacity 260ms ease, padding 260ms ease; }
       .step-kicker { display: flex; gap: 0.5rem; align-items: center; font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
       .step-header h2 { margin: 0.35rem 0 0.25rem; }
       .step-subtitle { margin: 0; color: var(--muted); }
       .step-actions { display: flex; flex-wrap: wrap; gap: 0.85rem; align-items: center; justify-content: space-between; margin-top: 1rem; }
       .step-status { color: var(--muted); font-size: 0.92rem; }
-      .step-summary { display: none; align-items: center; justify-content: space-between; gap: 1rem; }
       .summary-left { display: flex; gap: 0.8rem; align-items: center; }
       .summary-feather { font-size: 1.25rem; filter: drop-shadow(0 0 8px rgba(255,255,255,0.25)); }
       .summary-meta { margin: 0.15rem 0 0; color: var(--muted); }
       .copper-trace { position: absolute; left: 0; right: 0; height: 2px; top: 0; background: linear-gradient(90deg, rgba(184,115,51,0.12), rgba(212,140,64,0.7), rgba(184,115,51,0.12)); opacity: 0.45; transform-origin: left center; }
       .spark-layer { position: absolute; inset: 0; pointer-events: none; opacity: 0; }
-      .step-divider { display: grid; justify-items: center; gap: 0.45rem; padding: 0.35rem 0 0.6rem; color: var(--muted); }
+      .step-divider { display: grid; justify-items: center; gap: 0.45rem; padding: 0.35rem 0 0.6rem; color: var(--muted); opacity: 0; transform: translateY(-10px); transition: opacity 320ms ease, transform 420ms ease; }
+      .step-divider.is-revealed { opacity: 1; transform: translateY(0); }
       .divider-line { width: 2px; height: 24px; background: linear-gradient(180deg, rgba(210,145,78,0.7), rgba(255,255,255,0.15)); }
-      .divider-feathers { display: flex; gap: 0.35rem; font-size: 1rem; animation: featherDrift 900ms ease-out; }
+      .divider-feathers { display: flex; gap: 0.35rem; font-size: 1rem; }
       .divider-copy { margin: 0; font-size: 0.9rem; }
       .step-panel[data-state="active"] .step-frame { box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 12px 36px rgba(0,0,0,0.2), 0 0 0 1px rgba(210,145,78,0.08); }
       .step-panel[data-state="armed"] .copper-trace { opacity: 0.8; box-shadow: 0 0 10px rgba(212,140,64,0.35); }
-      .step-panel[data-state="saving"] .copper-trace { animation: chargePass 360ms ease-in-out; }
-      .step-panel[data-state="saving"] .spark-layer { opacity: 1; animation: sparkFlash 260ms ease-out; }
-      .step-panel[data-state="folding"] { transform: translateY(-4px) scale(0.99); }
-      .step-panel[data-state="folding"] .step-body, .step-panel[data-state="folding"] .step-header { opacity: 0; transform: translateY(-8px); transition: opacity 220ms ease, transform 220ms ease; }
+      .step-panel[data-state="saving"] .copper-trace { animation: chargePass 520ms ease-in-out; }
+      .step-panel[data-state="saving"] .spark-layer { opacity: 1; animation: sparkFlash 360ms ease-out; }
+      .step-panel[data-state="folding"] .step-frame { transform: perspective(1200px) rotateX(6deg) translateY(-6px) scale(0.988); }
+      .step-panel[data-state="folding"] .step-body, .step-panel[data-state="folding"] .step-header { opacity: 0; transform: translateY(-12px); transition: opacity 320ms ease, transform 320ms ease; }
       .step-panel[data-state="collapsed"] .step-header, .step-panel[data-state="collapsed"] .step-body { display: none; }
-      .step-panel[data-state="collapsed"] .step-summary { display: flex; }
+      .step-panel[data-state="collapsed"] .step-summary { max-height: 180px; opacity: 1; padding: 1rem 1.1rem; }
+      #wardenclyffeStep { opacity: 0; transform: translateY(16px) scale(0.985); }
+      #wardenclyffeStep.is-revealed { opacity: 1; transform: translateY(0) scale(1); }
       .workflow-shell[data-reduced-motion="true"] * { animation-duration: 1ms !important; transition-duration: 1ms !important; }
-      @keyframes chargePass { 0% { transform: scaleX(0.1); opacity: 0.35; } 50% { transform: scaleX(1); opacity: 1; } 100% { transform: scaleX(1); opacity: 0.75; } }
-      @keyframes sparkFlash { 0% { background: radial-gradient(circle at 20% 0%, rgba(255,220,170,0.7), transparent 18%); } 100% { background: radial-gradient(circle at 70% 0%, rgba(255,220,170,0), transparent 24%); } }
-      @keyframes featherDrift { 0% { opacity: 0; transform: translateY(-8px); } 100% { opacity: 1; transform: translateY(0); } }
+      @keyframes chargePass { 0% { transform: scaleX(0.08); opacity: 0.3; } 50% { transform: scaleX(1); opacity: 1; } 100% { transform: scaleX(1); opacity: 0.75; } }
+      @keyframes sparkFlash { 0% { background: radial-gradient(circle at 18% 0%, rgba(255,220,170,0.7), transparent 18%); } 100% { background: radial-gradient(circle at 72% 0%, rgba(255,220,170,0), transparent 24%); } }
     `;
     document.head.appendChild(style);
   }
