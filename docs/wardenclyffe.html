@@ -84,6 +84,12 @@
       line-height: 1.55;
     }
 
+    .ground-hum-summary {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
     @media (max-width: 980px) {
       .wardenclyffe-grid,
       .two-up {
@@ -158,6 +164,43 @@
       </section>
 
       <aside class="control-column">
+        <section class="card glow-card">
+          <div class="section-heading-row">
+            <h2>Ground Hum</h2>
+            <span class="section-pill">modelled</span>
+          </div>
+          <div class="control-stack">
+            <label>
+              <span>Location</span>
+              <input id="schumannLocationInput" type="text" value="St. Augustine · 30.0°N, 81.3°W" readonly />
+            </label>
+            <label>
+              <span>Underlay intensity</span>
+              <input id="schumannIntensityInput" type="range" min="0.03" max="0.45" step="0.01" value="0.18" />
+              <strong id="schumannIntensityValue">0.18</strong>
+            </label>
+            <label>
+              <span>Tactile bias</span>
+              <input id="schumannTactileInput" type="range" min="0" max="1" step="0.01" value="0.80" />
+              <strong id="schumannTactileValue">0.80</strong>
+            </label>
+            <label>
+              <span>Audible bias</span>
+              <input id="schumannAudibleInput" type="range" min="0" max="1" step="0.01" value="0.22" />
+              <strong id="schumannAudibleValue">0.22</strong>
+            </label>
+            <label class="toggle-row">
+              <input id="schumannOvertoneInput" type="checkbox" checked />
+              <span>Include 9× overtone (70.47 Hz)</span>
+            </label>
+            <div class="button-row wrap-row">
+              <button id="seedSchumannButton" class="accent-button" type="button">Seed St. Augustine Ground Hum</button>
+              <button id="clearSchumannButton" type="button">Clear underlay</button>
+            </div>
+            <p id="groundHumSummary" class="ground-hum-summary">Modelled coastal weighting. The 7.83 Hz fundamental is intended as a felt base, with higher modes layered softly above it.</p>
+          </div>
+        </section>
+
         <section class="card">
           <div class="section-heading-row">
             <h2>Saved Scenes</h2>
