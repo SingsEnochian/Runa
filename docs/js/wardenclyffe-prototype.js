@@ -365,6 +365,8 @@ async function init() {
   render();
   await tryAutoLoadScene();
   await renderSavedScenes();
+  window.__wardenclyffe = { state, refs, render, touchScene, renderSavedScenes };
+  window.dispatchEvent(new CustomEvent('wardenclyffe:ready'));
 }
 
 init();
