@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runa Draft Preview · Wardenclyffe Branch</title>
+  <link rel="stylesheet" href="./css/tone-lab.css?v=6" />
+  <link rel="stylesheet" href="./css/lab-themes.css?v=2" />
+  <style>
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .preview-card {
+      display: grid;
+      gap: 0.75rem;
+      padding: 1rem;
+      border-radius: 18px;
+      border: 1px solid color-mix(in srgb, var(--border) 74%, transparent);
+      background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.015));
+      background-color: color-mix(in srgb, var(--card) 86%, transparent);
+    }
+
+    .preview-meta {
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body data-theme="cathedral-blue">
+  <header class="site-header">
+    <div>
+      <strong>Runa Draft Preview</strong>
+      <p class="subtitle">A live preview door for the Wardenclyffe development branch.</p>
+    </div>
+    <div class="header-actions">
+      <a class="button-link" href="./index.html">Branch Index</a>
+      <a class="button-link" href="./tone-lab.html">Tone Lab</a>
+      <a class="button-link" href="./wardenclyffe.html">Wardenclyffe</a>
+      <a class="button-link" href="./tesla-observatory.html">Observatory</a>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero card glow-card">
+      <div>
+        <h1>Wardenclyffe Preview Door</h1>
+        <p class="hero-copy">This page is meant for branch testing before merge. Use it to step into the draft Tone Lab bridge, the Wardenclyffe engine prototype, and the first Tesla commentary chamber.</p>
+      </div>
+      <div class="theme-controls">
+        <label for="themeSelect">Palette</label>
+        <select id="themeSelect">
+          <option value="cathedral-blue">Cathedral Blue</option>
+          <option value="serpent-cerulean">Serpent Cerulean</option>
+          <option value="velvet-veil">Velvet Veil</option>
+          <option value="nocturne-garden">Nocturne Garden</option>
+          <option value="ember-rain">Ember Rain</option>
+          <option value="twilight">Twilight</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="preview-grid">
+      <article class="preview-card">
+        <h2>Tone Lab Draft</h2>
+        <p class="preview-meta">Use this for Play/Stop testing, field changes, and the handoff into Wardenclyffe.</p>
+        <a class="button-link" href="./tone-lab.html">Open Tone Lab</a>
+      </article>
+
+      <article class="preview-card">
+        <h2>Wardenclyffe Engine</h2>
+        <p class="preview-meta">Layer stack, scene save/load, playback, and Tesla commentary chamber.</p>
+        <a class="button-link" href="./wardenclyffe.html">Open Wardenclyffe</a>
+      </article>
+
+      <article class="preview-card">
+        <h2>Branch Index</h2>
+        <p class="preview-meta">The broader branch build with links to the other labs.</p>
+        <a class="button-link" href="./index.html">Open Branch Index</a>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const select = document.getElementById('themeSelect');
+    select?.addEventListener('change', () => {
+      document.body.dataset.theme = select.value;
+    });
+  </script>
+</body>
+</html>
