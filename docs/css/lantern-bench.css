@@ -1,0 +1,173 @@
+.lantern-body {
+  min-height: 100vh;
+  color: #f7dfab;
+  background: linear-gradient(135deg, #07090d 0%, #10151f 50%, #160f0a 100%);
+}
+
+.lantern-body.grove-glow {
+  background: linear-gradient(135deg, #07100c 0%, #111a12 52%, #1d130b 100%);
+}
+
+.lantern-body .header-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.lantern-bench {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  text-align: left;
+}
+
+.bench-hero,
+.bench-panel,
+.tool-card,
+.bench-card {
+  border: 1px solid rgba(255, 184, 107, 0.28);
+  background: linear-gradient(145deg, rgba(13, 20, 31, 0.88), rgba(22, 14, 10, 0.78));
+  box-shadow: 0 0 34px rgba(2, 164, 211, 0.12), inset 0 0 28px rgba(255, 184, 107, 0.04);
+}
+
+.bench-hero {
+  padding: clamp(1.5rem, 4vw, 3rem);
+  border-radius: 28px;
+}
+
+.bench-hero h1 {
+  margin: 0;
+  font-size: clamp(2.35rem, 7vw, 5.8rem);
+  color: #ffe5ac;
+  text-shadow: 0 0 22px rgba(255, 184, 107, 0.42);
+}
+
+.eyebrow {
+  margin: 0 0 0.8rem;
+  color: #02a4d3;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.bench-lede {
+  max-width: 760px;
+  color: rgba(255, 246, 220, 0.82);
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+
+.bench-status,
+.mode-readout,
+.tesla-note {
+  border: 1px solid rgba(2, 164, 211, 0.32);
+  border-radius: 18px;
+  background: rgba(2, 8, 14, 0.58);
+  color: #d8f6ff;
+}
+
+.bench-status {
+  display: inline-flex;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+}
+
+.bench-grid,
+.bench-tools {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.bench-card,
+.tool-card,
+.bench-panel {
+  border-radius: 24px;
+  padding: 1.25rem;
+}
+
+.bench-card {
+  cursor: pointer;
+  min-height: 220px;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.bench-card:hover,
+.bench-card.active {
+  transform: translateY(-3px);
+  border-color: rgba(255, 184, 107, 0.62);
+  box-shadow: 0 0 44px rgba(255, 184, 107, 0.15), 0 0 34px rgba(2, 164, 211, 0.12);
+}
+
+.bench-card h2,
+.tool-card h2,
+.bench-panel h2 {
+  margin: 0.35rem 0 0.6rem;
+  color: #ffe5ac;
+}
+
+.bench-card p,
+.tool-card p,
+.bench-panel p,
+.bench-list {
+  color: rgba(255, 246, 220, 0.82);
+  line-height: 1.6;
+}
+
+.coil {
+  display: inline-grid;
+  place-items: center;
+  width: 2.8rem;
+  height: 2.8rem;
+  border: 1px solid rgba(255, 184, 107, 0.45);
+  border-radius: 50%;
+  color: #ffb86b;
+}
+
+.bench-panel {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.mode-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.mode-buttons.compact { margin: 0.75rem 0; }
+.mode-readout { grid-column: 1 / -1; padding: 0.9rem 1rem; }
+.bench-tools { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.tool-card.wide { grid-column: 1 / -1; }
+
+.lantern-bench label {
+  display: block;
+  margin: 0.8rem 0 0.4rem;
+  color: #ffd18e;
+  font-weight: 700;
+}
+
+.lantern-bench textarea {
+  width: 100%;
+  resize: vertical;
+  border: 1px solid rgba(255, 184, 107, 0.28);
+  border-radius: 18px;
+  padding: 0.9rem 1rem;
+  background: rgba(4, 8, 13, 0.72);
+  color: #fff6dc;
+  font: inherit;
+}
+
+.tool-card button { margin-top: 0.75rem; }
+.bench-list { display: grid; gap: 0.55rem; margin: 1rem 0 0; padding-left: 1.1rem; }
+.bench-list li { padding-left: 0.25rem; }
+.tesla-note { white-space: pre-wrap; min-height: 9rem; margin: 1rem 0 0; padding: 1rem; line-height: 1.6; }
+
+@media (max-width: 900px) {
+  .lantern-body header { align-items: flex-start; flex-direction: column; }
+  .lantern-body .header-actions { justify-content: flex-start; }
+  .bench-grid, .bench-tools, .bench-panel { grid-template-columns: 1fr; }
+}
