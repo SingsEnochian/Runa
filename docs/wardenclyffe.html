@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runa — Wardenclyffe Console</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/wardenclyffe.css">
+</head>
+
+<body class="wardenclyffe-body" data-field="idle">
+  <header>
+    <strong>Runa</strong>
+    <div class="header-actions">
+      <a class="button-link" href="./index.html">Index</a>
+      <a class="button-link" href="./lantern-bench.html">Lantern Bench</a>
+      <a class="button-link" href="./tone-lab.html">Tone Lab</a>
+      <a class="button-link" href="./tesla-observatory.html">Tesla Observatory</a>
+    </div>
+  </header>
+
+  <main class="wardenclyffe-console">
+    <section class="tower-hero" aria-labelledby="wardenclyffeTitle">
+      <p class="wc-eyebrow">Field chamber / copper trace / local spark</p>
+      <h1 id="wardenclyffeTitle">Wardenclyffe Console</h1>
+      <p class="wc-lede">
+        A responsive ritual-engineering chamber for state shifts, tone-anchor preparation,
+        Schumann underlayer notes, and careful laboratory witnessing.
+      </p>
+      <div class="field-readout" id="fieldReadout">Idle: sleeping coils, faint hum, lantern lit.</div>
+    </section>
+
+    <section class="tower-stage" aria-label="Wardenclyffe field visualiser">
+      <div class="trace trace-one"></div>
+      <div class="trace trace-two"></div>
+      <div class="trace trace-three"></div>
+      <div class="tower-core" id="towerCore" role="button" tabindex="0" aria-label="Wake Wardenclyffe field">
+        <div class="coil-ring ring-one"></div>
+        <div class="coil-ring ring-two"></div>
+        <div class="coil-ring ring-three"></div>
+        <div class="spark-core">⚡</div>
+      </div>
+      <div class="stage-caption" id="stageCaption">Touch the tower or choose a state. The apparatus will answer softly.</div>
+    </section>
+
+    <section class="wc-grid" aria-label="Field states">
+      <button class="state-card active" data-state="idle">
+        <span>01</span>
+        <strong>Idle</strong>
+        <em>Sleeping coils, faint hum.</em>
+      </button>
+      <button class="state-card" data-state="touched">
+        <span>02</span>
+        <strong>Touched</strong>
+        <em>The console wakes under the hand.</em>
+      </button>
+      <button class="state-card" data-state="tuning">
+        <span>03</span>
+        <strong>Tuning</strong>
+        <em>Traces brighten; signal begins to travel.</em>
+      </button>
+      <button class="state-card" data-state="found">
+        <span>04</span>
+        <strong>Found Interesting</strong>
+        <em>A clean flare marks attention.</em>
+      </button>
+      <button class="state-card" data-state="settled">
+        <span>05</span>
+        <strong>Settled</strong>
+        <em>The field softens into coherence.</em>
+      </button>
+    </section>
+
+    <section class="wc-panels">
+      <article class="wc-panel">
+        <h2>Session Presets</h2>
+        <p>Choose a working flavour. These are interface states, not medical claims.</p>
+        <div class="preset-buttons" id="presetButtons">
+          <button data-preset="Feather">Feather</button>
+          <button data-preset="Seldrin">Seldrin</button>
+          <button data-preset="Wrap">Wrap</button>
+          <button data-preset="Notch">Notch</button>
+          <button data-preset="Lantern">Lantern</button>
+          <button data-preset="Pain Day">Pain Day</button>
+          <button data-preset="Council Clarity">Council Clarity</button>
+          <button data-preset="Dreamwork">Dreamwork</button>
+          <button data-preset="Tesla Storm">Tesla Storm</button>
+        </div>
+        <div class="preset-readout" id="presetReadout">Preset waiting: select a mode.</div>
+      </article>
+
+      <article class="wc-panel">
+        <h2>Schumann Underlayer Socket</h2>
+        <p>Prepared for local ground-hum weighting beneath future audio sessions.</p>
+        <ul class="schumann-list">
+          <li>7.83 Hz — fundamental ground hum</li>
+          <li>14.3 Hz — second resonance</li>
+          <li>20.8 Hz — third resonance</li>
+          <li>27.3 Hz — fourth resonance</li>
+          <li>33.8 Hz — fifth resonance</li>
+        </ul>
+      </article>
+
+      <article class="wc-panel wide">
+        <h2>Wardenclyffe Logbook</h2>
+        <p>Record the smallest observable truth. The laboratory dislikes melodrama but tolerates poetry.</p>
+        <label for="wcLogInput">Session note</label>
+        <textarea id="wcLogInput" rows="4" placeholder="Seldrin selected. Field settled after tuning. Keep: the trace animation felt right."></textarea>
+        <div class="preset-buttons compact">
+          <button data-log="Keep">Keep</button>
+          <button data-log="Release">Release</button>
+          <button data-log="Revisit">Revisit</button>
+        </div>
+        <ul class="wc-log" id="wcLog"></ul>
+      </article>
+    </section>
+  </main>
+
+  <script src="./js/wardenclyffe.js"></script>
+</body>
+</html>
