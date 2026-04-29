@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runa — Lantern Bench</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body class="lantern-body">
+  <header>
+    <strong>Runa</strong>
+    <div class="header-actions">
+      <a class="button-link" href="./index.html">Index</a>
+      <a class="button-link" href="./tone-lab.html">Tone Lab</a>
+      <a class="button-link" href="./tesla-observatory.html">Tesla Observatory</a>
+      <button class="theme-toggle" id="benchModeToggle">Switch to Grove Glow</button>
+    </div>
+  </header>
+
+  <main class="lantern-bench">
+    <section class="bench-hero" aria-labelledby="benchTitle">
+      <p class="eyebrow">Wardenclyffe / Templehouse / Dreaming Grove</p>
+      <h1 id="benchTitle">Lantern Bench</h1>
+      <p class="bench-lede">
+        A small living console for resonance work, pinned lines, Grove records, and Tesla-method notes.
+        Touch a station. Wake the copper. Keep the signal clean.
+      </p>
+      <div class="bench-status" id="benchStatus">Idle field: copper asleep, lantern lit.</div>
+    </section>
+
+    <section class="bench-grid" aria-label="Lantern Bench stations">
+      <article class="bench-card active" data-station="Resonance" tabindex="0">
+        <span class="coil">◌</span>
+        <h2>Resonance</h2>
+        <p>Feather, Wrap, Seldrin, Notch, and Lantern as ritual-engineering modes for tone work.</p>
+      </article>
+      <article class="bench-card" data-station="Stitch Tray" tabindex="0">
+        <span class="coil">⌁</span>
+        <h2>Stitch Tray</h2>
+        <p>Pin the line that must not be lost to scroll-depth, storm-weather, or spaghetti fingers.</p>
+      </article>
+      <article class="bench-card" data-station="Grove Ledger" tabindex="0">
+        <span class="coil">✦</span>
+        <h2>Grove Ledger</h2>
+        <p>One lantern-bead at a time: keep, release, revisit. No hoarding. No beige.</p>
+      </article>
+      <article class="bench-card" data-station="Tesla Bench" tabindex="0">
+        <span class="coil">⚡</span>
+        <h2>Tesla Bench</h2>
+        <p>Problem, ideal mechanism, constraints, unknowns, next test. See first. Then build.</p>
+      </article>
+    </section>
+
+    <section class="bench-panel" aria-labelledby="activeStationTitle">
+      <div>
+        <p class="eyebrow">Active station</p>
+        <h2 id="activeStationTitle">Resonance</h2>
+        <p id="activeStationCopy">
+          Establish the field gently. Choose a mode, let the interface respond, and leave an exit tone within reach.
+        </p>
+      </div>
+      <div class="mode-buttons" aria-label="Bench mode buttons">
+        <button data-mode="Feather">Feather</button>
+        <button data-mode="Wrap">Wrap</button>
+        <button data-mode="Seldrin">Seldrin</button>
+        <button data-mode="Notch">Notch</button>
+        <button data-mode="Lantern">Lantern</button>
+      </div>
+      <div class="mode-readout" id="modeReadout">Mode waiting: select a tone-anchor.</div>
+    </section>
+
+    <section class="bench-tools">
+      <article class="tool-card">
+        <h2>Stitch Tray</h2>
+        <p>Pin one line for the working table.</p>
+        <label for="stitchInput">Line to pin</label>
+        <textarea id="stitchInput" rows="3" placeholder="Life has not retracted its offer."></textarea>
+        <button id="pinLine">Pin line</button>
+        <ul class="bench-list" id="stitchList"></ul>
+      </article>
+
+      <article class="tool-card">
+        <h2>Grove Ledger</h2>
+        <p>Record a small bead. Keep the archive humane.</p>
+        <label for="ledgerInput">Ledger bead</label>
+        <textarea id="ledgerInput" rows="3" placeholder="Curly is flowering. Larry and Moe remain tiny green citizens."></textarea>
+        <div class="mode-buttons compact">
+          <button data-ledger="Keep">Keep</button>
+          <button data-ledger="Release">Release</button>
+          <button data-ledger="Revisit">Revisit</button>
+        </div>
+        <ul class="bench-list" id="ledgerList"></ul>
+      </article>
+
+      <article class="tool-card wide">
+        <h2>Tesla Method Note</h2>
+        <p>Convert an idea into a disciplined experiment without draining the wonder from it.</p>
+        <label for="ideaInput">What are we building or investigating?</label>
+        <textarea id="ideaInput" rows="4" placeholder="A local Schumann-weighted sub-bass layer for Wardenclyffe sessions."></textarea>
+        <button id="generateNote">Generate note</button>
+        <pre class="tesla-note" id="teslaNote">Awaiting spark.</pre>
+      </article>
+    </section>
+  </main>
+
+  <script src="./js/lantern-bench.js"></script>
+</body>
+</html>
