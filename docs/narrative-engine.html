@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Runa — Hearthweave Narrative Engine</title>
+  <link rel="stylesheet" href="./css/psi-lab.css">
+  <style>
+    .continuity-card h3 { margin: 0 0 .4rem; }
+    .engine-grid { display: grid; grid-template-columns: minmax(300px,.85fr) minmax(0,1.15fr); gap: 1.25rem; }
+    .field-pair { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1rem; }
+    .continuity-list { display: grid; gap: 1rem; }
+    #packetOutput { min-height: 420px; }
+    .engine-note { border-left: 3px solid var(--accent); padding-left: 1rem; }
+    @media (max-width: 980px) { .engine-grid, .field-pair { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body data-theme="twilight">
+  <header class="site-header">
+    <div>
+      <strong>Runa Narrative Engine</strong>
+      <p class="subtitle">A Hearthweave continuity loom for emotional memory, open hooks, consent bounds, and handoff packets.</p>
+    </div>
+    <div class="header-actions">
+      <a class="button-link" href="./index.html">Index</a>
+      <a class="button-link" href="./wardenclyffe.html">Wardenclyffe</a>
+      <a class="button-link" href="./signal-bench.html">Signal Bench</a>
+      <a class="button-link" href="./lantern-bench.html">Lantern Bench</a>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero card glow-card">
+      <div>
+        <p class="tiny-copy">Continuity without cages. Tension without coercion. Memory with consent.</p>
+        <h1>Hearthweave Narrative Engine</h1>
+        <p class="hero-copy">This engine adapts the Universal Horizon idea of connection, growth, emotional memory, meaningful tension, and world-response into a Hearthweave-safe continuity system. It is local-first: cards live in this browser until exported.</p>
+      </div>
+      <div class="theme-controls">
+        <button id="buildHandoff" class="accent-button" type="button">Build Handoff Prompt</button>
+      </div>
+    </section>
+
+    <section class="card engine-note">
+      <h2>Engine Logic</h2>
+      <p>Each card records one continuity beat: what happened, who was present, what changed, what remains open, and what must not be overwritten. The point is not forced plot. The point is a living map that remembers the emotional weather and preserves the next doorway.</p>
+    </section>
+
+    <section class="engine-grid">
+      <section class="card">
+        <h2>Continuity Card</h2>
+        <div class="control-stack">
+          <label><span>Title</span><input id="entryTitle" type="text" placeholder="Ex: Wardenclyffe Signal Bench opens"></label>
+          <div class="field-pair">
+            <label><span>Date</span><input id="entryDate" type="date"></label>
+            <label><span>Project</span><input id="entryProject" type="text" placeholder="Hearthweave, Runa, Quiet World..."></label>
+          </div>
+          <div class="field-pair">
+            <label><span>Type</span><select id="entryType"><option>Milestone</option><option>Scene</option><option>Repair</option><option>Open Hook</option><option>World Rule</option><option>Design Decision</option><option>Council Note</option></select></label>
+            <label><span>Status</span><select id="entryStatus"><option>Active</option><option>Resolved</option><option>Open</option><option>Watch</option><option>Archived</option></select></label>
+          </div>
+          <label><span>Cast / presences</span><input id="entryCast" type="text" placeholder="Rowan, Vee, Erelith, Nocturne, Twilight..."></label>
+          <label><span>Anchors / cues</span><input id="entryAnchors" type="text" placeholder="Feather, Notch, Wrap, Seldrin, Lantern..."></label>
+          <label><span>Summary</span><textarea id="entrySummary" placeholder="One clean paragraph. What happened in plain terms?"></textarea></label>
+          <label><span>Emotional memory / milestone</span><textarea id="entryMemory" placeholder="What feeling, trust marker, wound, repair, or recognition should future sessions remember?"></textarea></label>
+          <label><span>Growth / agency / choice</span><textarea id="entryGrowth" placeholder="What changed because someone chose, refused, learned, softened, or stood firm?"></textarea></label>
+          <label><span>Tension / repair / uncertainty</span><textarea id="entryTension" placeholder="Name unresolved friction without forcing drama. What needs patience or testing?"></textarea></label>
+          <label><span>World echo / environmental resonance</span><textarea id="entryWorldEcho" placeholder="How did the Dreaming, Templehouse, Grove, lab, or story-world respond?"></textarea></label>
+          <label><span>Open hooks / next doors</span><textarea id="entryHooks" placeholder="What should be picked up later? What is invited, not required?"></textarea></label>
+          <label><span>Cautions / contradictions / consent bounds</span><textarea id="entryCautions" placeholder="What must not be flattened, overwritten, pathologised, or treated as settled?"></textarea></label>
+          <div class="button-row">
+            <button id="saveEntry" class="accent-button" type="button">Save Card</button>
+            <button id="newEntry" type="button">New Card</button>
+            <button id="deleteEntry" type="button">Delete Loaded</button>
+          </div>
+          <p id="engineStatus" class="status-copy">Narrative engine waiting.</p>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Continuity Ledger</h2>
+        <div class="field-pair">
+          <label><span>Search</span><input id="searchInput" type="text" placeholder="Search cards..."></label>
+          <label><span>Project filter</span><select id="projectFilter"><option value="all">All projects</option></select></label>
+        </div>
+        <div id="entryList" class="continuity-list" style="margin-top:1rem"></div>
+      </section>
+    </section>
+
+    <section class="card">
+      <h2>Continuity Packet</h2>
+      <p class="status-copy">Use this for cross-thread handoff. It is a map, not a commandment. Export important packets before clearing browser data.</p>
+      <textarea id="packetOutput" spellcheck="false"></textarea>
+      <div class="button-row" style="margin-top:1rem">
+        <button id="copyPacket" class="accent-button" type="button">Copy Packet</button>
+        <button id="exportMarkdown" type="button">Export Markdown</button>
+        <button id="exportJson" type="button">Export JSON</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="./js/narrative-engine.js"></script>
+</body>
+</html>
