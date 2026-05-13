@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runa Flameclyffe Cellar</title>
+  <link rel="stylesheet" href="./css/tone-lab.css?v=6" />
+  <link rel="stylesheet" href="./css/lab-themes.css?v=2" />
+  <style>
+    .cellar-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(240px, 0.8fr);
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .cellar-status {
+      border-radius: 18px;
+      padding: 1rem;
+      border: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+      background:
+        radial-gradient(circle at 20% 15%, color-mix(in srgb, var(--accent) 25%, transparent), transparent 32%),
+        color-mix(in srgb, var(--card-strong) 78%, transparent);
+      display: grid;
+      gap: 0.7rem;
+    }
+
+    .cellar-status[data-tone="ready"] { box-shadow: 0 0 32px color-mix(in srgb, var(--accent) 24%, transparent); }
+    .cellar-status[data-tone="error"] { border-color: rgba(255, 120, 120, 0.65); }
+    .cellar-status[data-tone="playing"] { box-shadow: 0 0 42px rgba(45, 122, 95, 0.35); }
+
+    .count-row,
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .count-row span,
+    .chip-row span {
+      border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+      border-radius: 999px;
+      padding: 0.35rem 0.65rem;
+      background: color-mix(in srgb, var(--card) 75%, transparent);
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .cellar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 0.8rem;
+    }
+
+    .cellar-card {
+      border: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+      border-radius: 18px;
+      padding: 1rem;
+      background:
+        linear-gradient(135deg, color-mix(in srgb, var(--card-strong) 88%, transparent), color-mix(in srgb, var(--card) 70%, transparent));
+      min-height: 130px;
+    }
+
+    .patch-card {
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 0.8rem;
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .patch-card:hover {
+      transform: translateY(-2px);
+      border-color: color-mix(in srgb, var(--patch-shimmer, var(--accent)) 70%, var(--border));
+      box-shadow: 0 0 30px color-mix(in srgb, var(--patch-core, var(--accent)) 28%, transparent);
+    }
+
+    .patch-sigil {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      background:
+        radial-gradient(circle at 50% 35%, var(--patch-shimmer, var(--accent)), transparent 52%),
+        linear-gradient(135deg, var(--patch-core, var(--accent)), transparent);
+      border: 1px solid color-mix(in srgb, var(--patch-shimmer, var(--accent)) 70%, white 10%);
+    }
+
+    .eyebrow {
+      margin: 0 0 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+
+    .cellar-card h3,
+    .detail-head h2 {
+      margin: 0 0 0.4rem;
+    }
+
+    .cellar-card p,
+    .detail-head p {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .cellar-card strong {
+      display: block;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+      margin-bottom: 0.35rem;
+    }
+
+    .detail-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .layer-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.45rem 0.75rem;
+      padding: 0.7rem 0;
+      border-top: 1px solid color-mix(in srgb, var(--border) 45%, transparent);
+    }
+
+    .layer-row b {
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .layer-row em {
+      grid-column: 1 / -1;
+      color: var(--muted);
+      font-style: normal;
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    .toolbar select {
+      min-width: 220px;
+    }
+
+    code {
+      color: var(--accent);
+      overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 840px) {
+      .cellar-hero,
+      .detail-head {
+        grid-template-columns: 1fr;
+        display: grid;
+      }
+    }
+  </style>
+</head>
+<body data-theme="twilight">
+  <header class="site-header">
+    <div>
+      <strong>Runa Flameclyffe Cellar</strong>
+      <p class="subtitle">Supabase-backed constellation nervous system: public manifest above, circle drafts protected below.</p>
+    </div>
+    <div class="header-actions">
+      <a class="button-link" href="./index.html">Back to Runa</a>
+      <a class="button-link" href="./flameclyffe.html">Flameclyffe Engine</a>
+      <a class="button-link" href="./flameclyffe-dyad.html">Dyad Bench</a>
+      <a class="button-link" href="./wardenclyffe.html">Wardenclyffe</a>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero card glow-card cellar-hero">
+      <div>
+        <h1>Cellar Keep</h1>
+        <p class="hero-copy">The front room reads only public Flameclyffe rows through Supabase RLS. Circle-only tones, notes, and review drafts stay in the cellar until deliberately promoted.</p>
+        <div class="toolbar">
+          <label for="patchSelect">Patch</label>
+          <select id="patchSelect"></select>
+          <button id="playPatch" class="accent-button" type="button" disabled>Preview Patch</button>
+          <button id="stopPatch" type="button" disabled>Feather Stop</button>
+          <button id="refreshCellar" type="button">Refresh Cellar</button>
+        </div>
+      </div>
+      <div id="cellarStatus" class="cellar-status" data-tone="idle">
+        <strong>Waiting for cellar link…</strong>
+        <span class="tiny">Project ref: <code>rufrmjyusalnifpegllj</code></span>
+        <div id="cellarCounts" class="count-row"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-heading-row">
+        <h2>Selected Patch</h2>
+        <span class="section-pill">manifest</span>
+      </div>
+      <div id="patchDetail"></div>
+    </section>
+
+    <section class="card">
+      <div class="section-heading-row">
+        <h2>Public Patch Manifest</h2>
+        <span class="section-pill">RLS-lit</span>
+      </div>
+      <div id="patchGrid" class="cellar-grid"></div>
+    </section>
+
+    <section class="card">
+      <div class="section-heading-row">
+        <h2>Public Tone Catalogue</h2>
+        <span class="section-pill">tones</span>
+      </div>
+      <div id="toneGrid" class="cellar-grid"></div>
+    </section>
+
+    <section class="card">
+      <div class="section-heading-row">
+        <h2>Public Route Registry</h2>
+        <span class="section-pill">front end</span>
+      </div>
+      <div id="routeGrid" class="cellar-grid"></div>
+    </section>
+  </main>
+
+  <script src="./js/flameclyffe-cellar.js?v=1"></script>
+</body>
+</html>
