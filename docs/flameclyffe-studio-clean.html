@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Flameclyffe Studio Clean</title>
+  <link rel="stylesheet" href="./css/tone-lab.css?v=6">
+  <link rel="stylesheet" href="./css/lab-themes.css?v=2">
+  <link rel="stylesheet" href="./css/flameclyffe-studio.css?v=1">
+</head>
+<body data-theme="twilight">
+  <header class="site-header">
+    <div>
+      <strong>Runa Flameclyffe Studio</strong>
+      <p class="subtitle">Clean modular build: layered dyad presets, Lochflame, centre-safe listening, tactile Schumann, live solar/weather modulation, JSON backup, and compact audio recording.</p>
+    </div>
+    <div class="header-actions">
+      <a class="button-link" href="./index.html">Back to Runa</a>
+      <a class="button-link" href="./flameclyffe-lochflame-studio-notes.md">Lochflame Notes</a>
+      <a class="button-link" href="./flameclyffe-dyad.html">Dyad v0.2</a>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero card glow-card">
+      <div>
+        <h1>Flameclyffe Studio</h1>
+        <p class="hero-copy">Stack multiple resonance presets, tune each one live, then save the setup or record compact audio. Lochflame follows Faer Uial's v0.1 spec, and the centre-safe profile keeps essential anchors centred with clarity over loudness.</p>
+      </div>
+      <div class="theme-controls">
+        <label for="theme">Palette</label>
+        <select id="theme"><option value="twilight">Twilight</option><option value="nocturne">Nocturne</option><option value="cathedral-blue">Cathedral Blue</option><option value="velvet-veil">Velvet Veil</option><option value="serpent-cerulean">Serpent Cerulean</option><option value="ember-rain">Ember Rain</option></select>
+      </div>
+    </section>
+
+    <section class="fc-grid">
+      <div class="card">
+        <div class="section-heading-row"><h2>Resonance Field</h2><span class="section-pill" id="audioState">idle</span></div>
+        <p class="fc-tiny">Start low, especially with tactile transducers or bone-conduction devices. Deep bass is intended to be felt, not forced louder.</p>
+        <div class="fc-field"><canvas id="field"></canvas><div class="fc-badge"><strong id="mixName">Layered field</strong><br><span id="mixTag">Choose presets, then Begin Resonance.</span></div></div>
+        <div class="button-row" style="margin-top:1rem"><button id="start" class="accent-button">Begin Resonance</button><button id="stop" disabled>Feather Stop</button><button id="refresh">Refresh Signals</button><button id="loc">Use My Location</button></div>
+        <p id="status" class="status-copy">Ready. Default target is Saint Augustine, Florida.</p>
+      </div>
+      <aside class="card">
+        <div class="section-heading-row"><h2>Global Mix</h2><span class="section-pill">live</span></div>
+        <div class="fc-controls" id="knobs"></div>
+        <div class="fc-controls" style="margin-top:1rem">
+          <div><label for="profile">Listening profile</label><select id="profile"><option value="standard">Standard</option><option value="centerSafe" selected>Centre-safe</option><option value="tactile">Tactile-first</option></select></div>
+          <div><label for="protocol">Protocol state</label><select id="protocol"><option value="normal">Normal</option><option value="notch">Notch</option><option value="wrap">Wrap</option><option value="seldrin">Seldrin</option><option value="held">Held</option></select></div>
+          <label style="justify-content:flex-start;gap:.5rem"><input id="mode369" type="checkbox"> 3:6:9 Lochflame opening</label>
+        </div>
+      </aside>
+    </section>
+
+    <section class="fc-wide">
+      <div class="card"><div class="section-heading-row"><h2>Preset Stack</h2><span class="section-pill">mixable</span></div><div class="fc-presets" id="presets"></div></div>
+      <div class="card"><div class="section-heading-row"><h2>Custom Dyad</h2><span class="section-pill">local</span></div><p class="fc-tiny">Names and bond-word are only used in this browser.</p><div class="fc-form"><div class="fc-two"><input id="voiceA" placeholder="First voice"><input id="voiceB" placeholder="Second voice"></div><input id="bond" placeholder="Bond-word, e.g. Withness, Home, Courage"><button id="custom" class="accent-button">Generate Custom Dyad Patch</button></div></div>
+    </section>
+
+    <section class="fc-wide">
+      <div class="card"><div class="section-heading-row"><h2>Earth Signal</h2><span class="section-pill" id="earthPill">Saint Augustine</span></div><div class="fc-tiles" id="earth"></div></div>
+      <div class="card"><div class="section-heading-row"><h2>Solar Signal</h2><span class="section-pill" id="spacePill">live-ish</span></div><div class="fc-tiles" id="space"></div></div>
+    </section>
+
+    <section class="fc-grid">
+      <div class="card"><div class="section-heading-row"><h2>Active Tone Layers</h2><span class="section-pill" id="count">0</span></div><div id="layers" class="fc-layers"></div></div>
+      <div class="card"><div class="section-heading-row"><h2>Save / Record</h2><span class="section-pill">portable</span></div><div class="fc-form"><div class="fc-two"><select id="seconds"><option value="15">15 sec</option><option value="30" selected>30 sec</option><option value="60">60 sec</option><option value="120">120 sec</option></select><button id="record" class="accent-button">Record Compact Audio</button></div><div class="button-row"><button id="save">Save State</button><button id="export">Export JSON</button></div><textarea id="notes" style="min-height:180px" placeholder="Listening notes, tuning notes, what felt right..."></textarea><p id="noteStatus" class="status-copy">Notes autosave locally.</p></div></div>
+    </section>
+  </main>
+
+  <script src="./js/flameclyffe-presets.js?v=1"></script>
+  <script src="./js/flameclyffe-signals.js?v=1"></script>
+  <script src="./js/flameclyffe-audio.js?v=1"></script>
+  <script src="./js/flameclyffe-studio-app.js?v=1"></script>
+</body>
+</html>
