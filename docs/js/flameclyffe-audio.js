@@ -1,6 +1,6 @@
 window.FlameclyffeAudio = (() => {
   const TAU = Math.PI * 2;
-  const { SCHUMANN, SCHUMANN_PROXIES, TACTILE_ANCHORS, modulation, schumannWeight, clamp } = window.FlameclyffeSignals;
+  const sig = window.FlameclyffeSignals;
   const { presets } = window.FlameclyffePresets;
 
   function noiseBuffer(ctx, type = 'pink', seconds = 8) {
@@ -44,6 +44,8 @@ window.FlameclyffeAudio = (() => {
   }
 
   function panFor(state, layer, index) {
+    if (layer.channel === 'left') return -1;
+    if (layer.channel === 'right') return 1;
     if (state.profile !== 'standard' && (layer.essential || layer.frequency < 260 || layer.mono)) return 0;
     if (layer.wander) return Math.sin(Date.now() / 7000 + index) * 0.55;
     return Math.sin(Date.now() / 2400 + index) * (state.orbit * 0.9) * (layer.orbitSign || 1);
@@ -55,7 +57,7 @@ window.FlameclyffeAudio = (() => {
   }
 
   function buildLayers(state) {
-    const mod = modulation(state);
+    const mod = sig.modulation(state);
     const output = [];
     selectedPresets(state).forEach((preset) => {
       const presetGain = state.gains[preset.id] ?? 0.7;
@@ -88,6 +90,7 @@ window.FlameclyffeAudio = (() => {
           orbitSign: preset.orbit || 1,
         });
       });
+
       if (state.mode369 && preset.id === 'lochflame') {
         output.push({
           id: 'loch-top',
@@ -108,13 +111,13 @@ window.FlameclyffeAudio = (() => {
       output.push({ id: 'notch-forward', name: 'Protocol Notch 603 Hz', frequency: 603, role: 'Notch brought forward', gain: state.master * 0.055, waveform: 'sine', preset: 'protocol', presetName: 'Protocol', color: '#ffd58e' });
     }
 
-    SCHUMANN.forEach((frequency, index) => {
-      const weight = schumannWeight(state, index, mod);
+    sig.SCHUMANN.forEach((frequency, index) => {
+      const weight = sig.schumannWeight(state, index, mod);
       output.push({ id: `sch-${index}`, name: `Schumann ${frequency}`, frequency, role: 'Earth-ionosphere tactile layer', gain: state.master * state.schumann * 0.13 * weight * hearingScale(state, frequency, true), waveform: 'sine', preset: 'earth', presetName: 'Earth', color: '#91d2ff', essential: true, mono: true });
-      output.push({ id: `proxy-${index}`, name: `Schumann proxy ${SCHUMANN_PROXIES[index]}`, frequency: SCHUMANN_PROXIES[index], role: 'audible Schumann proxy', gain: state.master * state.schumann * 0.018 * weight * hearingScale(state, SCHUMANN_PROXIES[index], false), waveform: 'sine', preset: 'earth', presetName: 'Earth', color: '#91d2ff', detune: mod.timePhase * 4 });
+      output.push({ id: `proxy-${index}`, name: `Schumann proxy ${sig.SCHUMANN_PROXIES[index]}`, frequency: sig.SCHUMANN_PROXIES[index], role: 'audible Schumann proxy', gain: state.master * state.schumann * 0.018 * weight * hearingScale(state, sig.SCHUMANN_PROXIES[index], false), waveform: 'sine', preset: 'earth', presetName: 'Earth', color: '#91d2ff', detune: mod.timePhase * 4 });
     });
 
-    TACTILE_ANCHORS.forEach((frequency, index) => {
+    sig.TACTILE_ANCHORS.forEach((frequency, index) => {
       output.push({ id: `anchor-${index}`, name: `Tactile anchor ${frequency}`, frequency, role: 'Woojer-friendly Schumann/body anchor', gain: state.master * state.tactile * 0.025 * hearingScale(state, frequency, true), waveform: 'sine', preset: 'earth', presetName: 'Earth', color: '#91d2ff', essential: true, mono: true });
     });
 
@@ -255,7 +258,7 @@ window.FlameclyffeAudio = (() => {
     }
 
     createNoise() {
-      const mod = modulation(this.state);
+      const mod = sig.modulation(this.state);
       buildLayers(this.state).filter((layer) => layer.waveform === 'noise').forEach((layer) => {
         this.noise(900, layer.gain, 1.1, 'pink', 0.02 + mod.windTilt * 0.08, 80, layer.breath || 0);
       });
