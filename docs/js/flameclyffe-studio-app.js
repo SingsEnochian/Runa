@@ -3,17 +3,17 @@
   const presetApi = window.FlameclyffePresets;
   const audioApi = window.FlameclyffeAudio;
   const $ = (id) => document.getElementById(id);
-  const STORE = 'flameclyffe-studio.clean.v1';
-  const NOTES = 'flameclyffe-studio.clean.notes.v1';
+  const STORE = 'flameclyffe-studio.clean.v2';
+  const NOTES = 'flameclyffe-studio.clean.notes.v2';
   const TAU = Math.PI * 2;
 
   const state = {
     target: { ...sig.DEFAULT_TARGET },
     weather: null,
     space: {},
-    theme: 'twilight',
-    active: { virelya: true, hearthlight: true, lochflame: false, template: false, custom: false },
-    gains: { virelya: 0.72, hearthlight: 0.78, lochflame: 0.85, template: 0.65, custom: 0.65 },
+    theme: 'lochflame',
+    active: { virelya: true, hearthlight: true, lochflame: false, gateway: false, planetCluster: false, rainVeil: false, template: false, custom: false },
+    gains: { virelya: 0.72, hearthlight: 0.78, lochflame: 0.85, gateway: 0.55, planetCluster: 0.5, rainVeil: 0.45, template: 0.65, custom: 0.65 },
     custom: null,
     master: 0.14,
     orbit: 0.06,
@@ -33,7 +33,15 @@
 
   const engine = new audioApi.Engine(state);
 
+  function normaliseState() {
+    Object.keys(presetApi.presets).forEach((key) => {
+      if (state.active[key] == null) state.active[key] = false;
+      if (state.gains[key] == null) state.gains[key] = key === 'rainVeil' ? 0.45 : key === 'planetCluster' ? 0.5 : key === 'gateway' ? 0.55 : 0.65;
+    });
+  }
+
   function save() {
+    normaliseState();
     localStorage.setItem(STORE, JSON.stringify({
       ...state,
       voiceA: $('voiceA').value,
@@ -52,6 +60,7 @@
       if (saved.voiceB) $('voiceB').value = saved.voiceB;
       if (saved.bond) $('bond').value = saved.bond;
     } catch {}
+    normaliseState();
     try { $('notes').value = JSON.parse(localStorage.getItem(NOTES) || '""'); } catch {}
   }
 
@@ -147,7 +156,7 @@
     const layers = audioApi.buildLayers(state);
     $('count').textContent = layers.length;
     $('layers').innerHTML = '';
-    layers.slice(0, 90).forEach((layer) => {
+    layers.slice(0, 110).forEach((layer) => {
       const div = document.createElement('div');
       div.className = 'fc-layer';
       div.innerHTML = '<div><b></b><em></em></div><div class="fc-freq"></div>';
