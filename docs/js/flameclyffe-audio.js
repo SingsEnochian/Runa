@@ -82,7 +82,7 @@ window.FlameclyffeAudio = (() => {
           ...sourceLayer,
           preset: preset.id,
           presetName: preset.name,
-          color: preset.color,
+          color: sourceLayer.color || preset.color,
           frequency,
           gain,
           detune: (sourceLayer.detune || 0) + mod.pressureTilt * 2 + mod.windTilt - mod.stormTilt + mod.flareFactor * 0.8,
@@ -144,6 +144,10 @@ window.FlameclyffeAudio = (() => {
         this.streamDest = this.ctx.createMediaStreamDestination();
         const comp = this.ctx.createDynamicsCompressor();
         comp.threshold.value = -18;
+        comp.knee.value = 12;
+        comp.ratio.value = 10;
+        comp.attack.value = 0.003;
+        comp.release.value = 0.25;
         this.master.gain.value = 0.0001;
         this.master.connect(comp);
         comp.connect(this.ctx.destination);
@@ -260,7 +264,15 @@ window.FlameclyffeAudio = (() => {
     createNoise() {
       const mod = sig.modulation(this.state);
       buildLayers(this.state).filter((layer) => layer.waveform === 'noise').forEach((layer) => {
-        this.noise(900, layer.gain, 1.1, 'pink', 0.02 + mod.windTilt * 0.08, 80, layer.breath || 0);
+        this.noise(
+          layer.noiseFreq || 900,
+          layer.gain,
+          layer.noiseQ || 1.1,
+          layer.noiseType || 'pink',
+          layer.lfoFreq || (0.02 + mod.windTilt * 0.08),
+          layer.lfoDepth || 80,
+          layer.breath || 0,
+        );
       });
       this.noise(430 + mod.speedFactor * 280, this.state.solarWind * (0.012 + mod.speedFactor * 0.045 + mod.southFactor * 0.025), 0.55, 'pink', 0.05 + mod.densityFactor * 0.08, 34 + mod.magFactor * 36);
       this.noise(155 + mod.flareFactor * 90, this.state.solarRoar * (0.018 + mod.flareFactor * 0.075), 0.45, 'pink', 0.025 + mod.flareFactor * 0.22, 22 + mod.flareFactor * 58);
