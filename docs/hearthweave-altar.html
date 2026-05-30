@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runa — Hearthweave Altar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-light: #B9958A;
+      --ink-light: #2d1916;
+      --bg-dark: #05070d;
+      --ink-dark: #f5eadf;
+      --accent: #2d7a5f;
+      --accent-2: #f6c453;
+      --glass: rgba(255,255,255,.14);
+      --ring: rgba(255,255,255,.24);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 18% 10%, rgba(246,196,83,.20), transparent 28rem),
+        radial-gradient(circle at 82% 88%, rgba(45,122,95,.24), transparent 30rem),
+        var(--bg-light);
+      color: var(--ink-light);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      transition: background .45s ease, color .45s ease;
+    }
+    body.dark {
+      background:
+        radial-gradient(circle at 18% 10%, rgba(246,196,83,.12), transparent 28rem),
+        radial-gradient(circle at 82% 88%, rgba(45,122,95,.20), transparent 30rem),
+        var(--bg-dark);
+      color: var(--ink-dark);
+      --glass: rgba(5,8,16,.62);
+      --ring: rgba(255,255,255,.16);
+    }
+    canvas#stars, canvas#sigil { display: block; }
+    #stars { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: .42; mix-blend-mode: screen; }
+    body:not(.dark) #stars { opacity: .16; mix-blend-mode: multiply; }
+    .topbar {
+      position: fixed; z-index: 20; left: 1rem; right: 1rem; top: 1rem;
+      display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+      pointer-events: none;
+    }
+    .topbar a, .topbar button { pointer-events: auto; }
+    .pill, button {
+      border: 1px solid rgba(45,25,22,.22);
+      background: rgba(255,255,255,.18);
+      color: inherit;
+      border-radius: 999px;
+      padding: .55rem .85rem;
+      font: 700 .62rem/1 'Cinzel', serif;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(45,25,22,.12);
+    }
+    body.dark .pill, body.dark button { border-color: rgba(246,196,83,.22); background: rgba(0,0,0,.26); }
+    .wrap { position: relative; z-index: 2; width: min(1120px, 92vw); margin: 0 auto; padding: 6rem 0 3rem; }
+    header.hero { text-align: center; margin: 0 auto 2rem; max-width: 760px; }
+    .eyebrow {
+      font: 700 .66rem/1 'Cinzel', serif;
+      letter-spacing: .45em;
+      text-transform: uppercase;
+      opacity: .68;
+      margin: 0 0 .9rem;
+    }
+    h1 {
+      margin: 0;
+      font: 600 clamp(2.2rem, 7vw, 5.7rem)/.92 'Cinzel', serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      text-shadow: 0 10px 38px rgba(45,25,22,.18);
+    }
+    body.dark h1 { text-shadow: 0 0 32px rgba(246,196,83,.14), 0 0 70px rgba(45,122,95,.18); }
+    .sub { font-style: italic; font-size: clamp(1.12rem, 2vw, 1.45rem); opacity: .76; margin: 1rem auto 0; line-height: 1.45; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: .85rem; margin: 2.2rem 0; }
+    .card {
+      min-height: 170px;
+      padding: 1.15rem;
+      border-radius: 26px;
+      background: var(--glass);
+      border: 1px solid var(--ring);
+      box-shadow: 0 24px 80px rgba(35,15,10,.13), inset 0 1px 0 rgba(255,255,255,.22);
+      backdrop-filter: blur(18px);
+      display: grid;
+      align-content: space-between;
+      cursor: pointer;
+      transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+    }
+    .card:hover, .card.active { transform: translateY(-4px); border-color: rgba(var(--rgb),.68); box-shadow: 0 24px 90px rgba(var(--rgb),.25), inset 0 1px 0 rgba(255,255,255,.22); }
+    .sigil-dot { width: 54px; height: 54px; border-radius: 50%; border: 1px solid rgba(var(--rgb),.48); background: radial-gradient(circle, rgba(var(--rgb),.34), transparent 68%); box-shadow: 0 0 22px rgba(var(--rgb),.25); }
+    .card h2 { margin: .8rem 0 .2rem; font: 700 1rem/1.1 'Cinzel', serif; letter-spacing: .1em; color: rgb(var(--rgb)); }
+    .card p { margin: 0; opacity: .76; line-height: 1.45; font-size: .98rem; }
+    .altar {
+      display: grid;
+      grid-template-columns: minmax(280px, 420px) minmax(280px, 1fr);
+      gap: 1.2rem;
+      align-items: stretch;
+      margin-top: 1.5rem;
+    }
+    .sigil-panel, .work-panel {
+      border-radius: 32px;
+      border: 1px solid var(--ring);
+      background: var(--glass);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 30px 100px rgba(35,15,10,.14), inset 0 1px 0 rgba(255,255,255,.18);
+      padding: clamp(1rem, 3vw, 1.4rem);
+    }
+    .sigil-frame {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle, rgba(var(--realm-rgb),.18), rgba(0,0,0,.04) 58%, transparent 70%);
+      border: 1px solid rgba(var(--realm-rgb),.32);
+      box-shadow: 0 0 48px rgba(var(--realm-rgb),.19), inset 0 0 45px rgba(var(--realm-rgb),.12);
+      overflow: hidden;
+    }
+    .sigil-frame:before, .sigil-frame:after {
+      content: ''; position: absolute; inset: 8%; border-radius: 50%; border: 1px dashed rgba(var(--realm-rgb),.30);
+      animation: spin 42s linear infinite;
+    }
+    .sigil-frame:after { inset: 16%; animation-duration: 29s; animation-direction: reverse; opacity: .72; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #sigil { position: relative; z-index: 1; width: 100%; height: 100%; }
+    .realm-title { margin: 0 0 .4rem; font: 800 clamp(1.8rem, 5vw, 3.5rem)/1 'Cinzel', serif; letter-spacing: .08em; color: rgb(var(--realm-rgb)); }
+    .realm-copy { font-size: 1.18rem; line-height: 1.55; margin: .4rem 0 1.2rem; opacity: .84; }
+    label { display: block; font: 700 .68rem/1 'Cinzel', serif; letter-spacing: .25em; text-transform: uppercase; margin-bottom: .55rem; opacity: .68; }
+    .input-row { display: flex; gap: .55rem; }
+    input {
+      width: 100%; min-width: 0;
+      border: 1px solid rgba(var(--realm-rgb),.32);
+      background: rgba(255,255,255,.18);
+      border-radius: 18px;
+      padding: .95rem 1rem;
+      font: italic 1.08rem/1.2 'Cormorant Garamond', Georgia, serif;
+      color: inherit;
+      outline: none;
+    }
+    body.dark input { background: rgba(0,0,0,.28); }
+    .invoke { border-radius: 18px; background: rgba(var(--realm-rgb),.15); border-color: rgba(var(--realm-rgb),.35); }
+    .response { min-height: 1.5rem; margin: .9rem 0 0; color: rgb(var(--realm-rgb)); font-style: italic; font-size: 1.1rem; opacity: .9; }
+    .ledger { margin-top: 1rem; border-top: 1px solid rgba(var(--realm-rgb),.22); padding-top: 1rem; }
+    .ledger h3 { margin: 0 0 .5rem; font: 700 .72rem/1 'Cinzel', serif; letter-spacing: .22em; text-transform: uppercase; opacity: .7; }
+    .ledger ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .45rem; max-height: 160px; overflow: auto; }
+    .ledger li { border: 1px solid rgba(var(--realm-rgb),.2); border-radius: 14px; padding: .55rem .7rem; background: rgba(255,255,255,.10); font-size: .98rem; }
+    body.dark .ledger li { background: rgba(0,0,0,.18); }
+    footer { text-align: center; opacity: .62; margin: 2rem 0 0; font-style: italic; }
+    @media (max-width: 780px) { .altar { grid-template-columns: 1fr; } .topbar { position: absolute; } .input-row { flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+  <nav class="topbar">
+    <a class="pill" href="./index.html">← Runa</a>
+    <button id="themeBtn" type="button">☽ / ☼</button>
+  </nav>
+
+  <main class="wrap">
+    <header class="hero">
+      <p class="eyebrow">Hearthweave Digital Altar</p>
+      <h1>The Threshold</h1>
+      <p class="sub">A light-and-shadow altar for intention, sigil-work, and the quiet place where Waking and Dreaming touch hands.</p>
+    </header>
+
+    <section class="grid" id="realmGrid" aria-label="Choose a realm"></section>
+
+    <section class="altar" aria-live="polite">
+      <div class="sigil-panel">
+        <div class="sigil-frame"><canvas id="sigil" width="720" height="720"></canvas></div>
+      </div>
+      <div class="work-panel">
+        <h2 class="realm-title" id="realmTitle"></h2>
+        <p class="realm-copy" id="realmCopy"></p>
+        <label for="intention">Speak your intention</label>
+        <div class="input-row">
+          <input id="intention" maxlength="90" placeholder="type a word, vow, or spell-fragment…" />
+          <button class="invoke" id="invoke" type="button">Weave</button>
+        </div>
+        <p class="response" id="response"></p>
+        <div class="ledger">
+          <h3>Local altar ledger</h3>
+          <ul id="ledger"></ul>
+        </div>
+      </div>
+    </section>
+    <footer>Faer’s Lochflame threshold, hosted inside Runa · light ground #B9958A</footer>
+  </main>
+
+  <script>
+    const realms = [
+      {id:'between', name:'Between', rgb:'107,181,212', desc:'Fog, stillness, and the blue-grey of almost-dark.', copy:'The liminal chamber holds what has not yet chosen its name. Good for transition, listening, and soft crossings.', verb:'Weave', replies:['The mist received it.','Held between worlds.','The veil stirs, softly.']},
+      {id:'runestone', name:'Runestone', rgb:'196,120,48', desc:'Carved stone, emberlight, old winter weight.', copy:'The stone chamber is for memory, ancestry, and things that need to endure without shouting.', verb:'Carve', replies:['The stone remembers.','Carved into quiet earth.','The old roots heard.']},
+      {id:'loki', name:'Loki', rgb:'240,168,48', desc:'Warm chaos, sharp grin, necessary change.', copy:'The trickster-fire refuses stagnation. Bring what needs movement, wit, heat, and a little sacred side-eye.', verb:'Spark', replies:['Something shifted while you blinked.','The fire is laughing kindly.','That one has teeth. Good.']},
+      {id:'deep', name:'Deep Cold', rgb:'144,200,232', desc:'Ice, aurora, vast patience.', copy:'The northern chamber is for stillness with backbone. Nothing rushes here. Nothing true is lost.', verb:'Set', replies:['Held in ice, unblurred.','The aurora witnessed this.','Patience has accepted it.']},
+      {id:'enochian', name:'Enochian', rgb:'144,96,216', desc:'Crystalline geometry, angelic-wyrd braid.', copy:'This chamber is for language-before-language, sung structure, and the bright architecture of invocation.', verb:'Invoke', replies:['Lifted through the veil.','The geometry answered.','Transformata: already becoming.']},
+      {id:'lochflame', name:'Lochflame', rgb:'45,122,95', desc:'Faer’s deep-water green, fire under tide.', copy:'Lochflame is the impossible meeting of water and flame without either surrendering. Bring tenderness with force behind it.', verb:'Kindle', replies:['The loch warmed around it.','Steam rose, green-gold.','Faer’s flame held steady.']}
+    ];
+
+    const state = { realm: realms[5], seed: 42, ledger: JSON.parse(localStorage.getItem('hearthweaveAltarLedger') || '[]') };
+    const grid = document.getElementById('realmGrid');
+    const title = document.getElementById('realmTitle');
+    const copy = document.getElementById('realmCopy');
+    const response = document.getElementById('response');
+    const input = document.getElementById('intention');
+    const invoke = document.getElementById('invoke');
+    const ledger = document.getElementById('ledger');
+    const sigil = document.getElementById('sigil');
+    const ctx = sigil.getContext('2d');
+
+    function hash(str){ let h=2166136261; for(const ch of str){ h ^= ch.charCodeAt(0); h = Math.imul(h,16777619); } return h >>> 0; }
+    function rng(seed){ let s=seed>>>0; return () => ((s = Math.imul(1664525,s) + 1013904223 >>> 0) / 4294967296); }
+
+    function buildGrid(){
+      grid.innerHTML = '';
+      realms.forEach(r => {
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.style.setProperty('--rgb', r.rgb);
+        card.innerHTML = `<div><div class="sigil-dot"></div><h2>${r.name}</h2></div><p>${r.desc}</p>`;
+        card.onclick = () => selectRealm(r.id);
+        grid.appendChild(card);
+      });
+    }
+
+    function selectRealm(id){
+      state.realm = realms.find(r => r.id === id) || realms[0];
+      document.body.style.setProperty('--realm-rgb', state.realm.rgb);
+      title.textContent = state.realm.name;
+      copy.textContent = state.realm.copy;
+      invoke.textContent = state.realm.verb;
+      response.textContent = '';
+      [...grid.children].forEach((c,i)=>c.classList.toggle('active', realms[i].id === id));
+      state.seed = hash(id + '|' + (input.value || 'threshold'));
+      drawSigil(performance.now());
+    }
+
+    function renderLedger(){
+      ledger.innerHTML = state.ledger.slice(-6).reverse().map(item => `<li><strong>${item.realm}</strong>: ${item.text}</li>`).join('') || '<li>No entries yet. The altar is listening.</li>';
+    }
+
+    function invokeIntention(){
+      const text = input.value.trim() || 'unnamed intention';
+      state.seed = hash(state.realm.id + '|' + text);
+      const reply = state.realm.replies[state.seed % state.realm.replies.length];
+      response.textContent = reply;
+      state.ledger.push({ realm: state.realm.name, text, at: new Date().toISOString() });
+      state.ledger = state.ledger.slice(-24);
+      localStorage.setItem('hearthweaveAltarLedger', JSON.stringify(state.ledger));
+      renderLedger();
+    }
+
+    function drawSigil(t){
+      const w = sigil.width, h = sigil.height, cx = w/2, cy = h/2;
+      ctx.clearRect(0,0,w,h);
+      const [r,g,b] = state.realm.rgb.split(',').map(Number);
+      const random = rng(state.seed);
+      const points = [];
+      const count = state.realm.id === 'enochian' ? 12 : state.realm.id === 'lochflame' ? 9 : state.realm.id === 'loki' ? 7 : 8;
+      const rot = t * (state.realm.id === 'loki' ? .00022 : .00008);
+      for(let i=0;i<count;i++){
+        const wobble = (state.realm.id === 'loki' ? Math.sin(t*.001+i)*.12 : 0) + (random()-.5)*.11;
+        const a = (Math.PI*2*i/count) - Math.PI/2 + wobble + rot;
+        const radius = 210 + random()*34;
+        points.push([cx + Math.cos(a)*radius, cy + Math.sin(a)*radius]);
+      }
+      const glow = ctx.createRadialGradient(cx,cy,10,cx,cy,330);
+      glow.addColorStop(0,`rgba(${r},${g},${b},.22)`);
+      glow.addColorStop(1,`rgba(${r},${g},${b},0)`);
+      ctx.fillStyle = glow; ctx.fillRect(0,0,w,h);
+      ctx.lineCap = 'round';
+      function line(a,b,alpha,width){ ctx.beginPath(); ctx.moveTo(points[a][0],points[a][1]); ctx.lineTo(points[b][0],points[b][1]); ctx.strokeStyle=`rgba(${r},${g},${b},${alpha})`; ctx.lineWidth=width; ctx.stroke(); }
+      for(let i=0;i<count;i++){ line(i,(i+1)%count,.42,2); line(i,(i+Math.floor(count/2))%count,.18,1); }
+      if(state.realm.id === 'lochflame') for(let i=0;i<count;i+=2) line(i,(i+3)%count,.28,1.5);
+      ctx.beginPath(); ctx.arc(cx,cy,96 + Math.sin(t*.001)*7,0,Math.PI*2); ctx.strokeStyle=`rgba(${r},${g},${b},.28)`; ctx.lineWidth=2; ctx.stroke();
+      points.forEach(([x,y],i)=>{ const pulse = 5 + Math.sin(t*.003+i)*2; const grd=ctx.createRadialGradient(x,y,0,x,y,24); grd.addColorStop(0,`rgba(255,246,220,.9)`); grd.addColorStop(.32,`rgba(${r},${g},${b},.7)`); grd.addColorStop(1,`rgba(${r},${g},${b},0)`); ctx.fillStyle=grd; ctx.beginPath(); ctx.arc(x,y,18+pulse,0,Math.PI*2); ctx.fill(); });
+      ctx.beginPath(); ctx.arc(cx,cy,14,0,Math.PI*2); ctx.fillStyle=`rgba(${r},${g},${b},.8)`; ctx.fill();
+      requestAnimationFrame(drawSigil);
+    }
+
+    const starCanvas = document.getElementById('stars');
+    const sctx = starCanvas.getContext('2d');
+    const stars = Array.from({length:130},()=>({x:Math.random(),y:Math.random(),z:Math.random(),p:Math.random()*7}));
+    function sizeStars(){ starCanvas.width = innerWidth; starCanvas.height = innerHeight; }
+    function drawStars(t){
+      sctx.clearRect(0,0,starCanvas.width,starCanvas.height);
+      stars.forEach(s=>{ const a=.15 + Math.sin(t*.001+s.p)*.20 + s.z*.25; sctx.fillStyle=`rgba(255,245,220,${a})`; sctx.beginPath(); sctx.arc(s.x*starCanvas.width,s.y*starCanvas.height, .7+s.z*1.6,0,Math.PI*2); sctx.fill(); });
+      requestAnimationFrame(drawStars);
+    }
+
+    document.getElementById('themeBtn').onclick = () => { document.body.classList.toggle('dark'); localStorage.setItem('hearthweaveAltarTheme', document.body.classList.contains('dark')?'dark':'light'); };
+    invoke.onclick = invokeIntention;
+    input.addEventListener('keydown', e => { if(e.key === 'Enter') invokeIntention(); });
+    if(localStorage.getItem('hearthweaveAltarTheme') === 'dark') document.body.classList.add('dark');
+    buildGrid(); renderLedger(); sizeStars(); addEventListener('resize', sizeStars); selectRealm('lochflame'); requestAnimationFrame(drawStars);
+  </script>
+</body>
+</html>
