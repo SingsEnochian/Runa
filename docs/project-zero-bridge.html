@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runa — Project Zero Bridge</title>
+  <style>
+    :root {
+      --bg: #B9958A;
+      --ink: #2b1714;
+      --panel: rgba(255,255,255,.18);
+      --line: rgba(43,23,20,.22);
+      --green: #2d7a5f;
+      --gold: #f6c453;
+      --blue: #6bb5d4;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(246,196,83,.22), transparent 28rem),
+        radial-gradient(circle at 80% 84%, rgba(45,122,95,.25), transparent 32rem),
+        var(--bg);
+      color: var(--ink);
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+    a, button { color: inherit; }
+    .top { position: sticky; top: 0; z-index: 2; display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:1rem; background:rgba(185,149,138,.72); backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
+    .pill, button { border:1px solid var(--line); border-radius:999px; padding:.55rem .8rem; background:rgba(255,255,255,.16); text-decoration:none; font:700 .72rem/1 system-ui, sans-serif; letter-spacing:.12em; text-transform:uppercase; cursor:pointer; }
+    main { width:min(1040px,92vw); margin:0 auto; padding:3rem 0; }
+    h1 { margin:.2rem 0 1rem; font-size:clamp(2.2rem,7vw,5rem); line-height:.95; letter-spacing:.04em; text-transform:uppercase; }
+    .eyebrow { font:700 .72rem/1 system-ui, sans-serif; letter-spacing:.28em; text-transform:uppercase; opacity:.72; }
+    .lead { max-width:760px; font-size:1.25rem; line-height:1.55; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1rem; margin:2rem 0; }
+    .card, form { border:1px solid var(--line); background:var(--panel); border-radius:28px; padding:1.2rem; box-shadow:0 24px 80px rgba(43,23,20,.12); backdrop-filter:blur(16px); }
+    .card h2, form h2 { margin:.2rem 0 .65rem; font:800 1rem/1.1 system-ui, sans-serif; letter-spacing:.12em; text-transform:uppercase; }
+    .card p { margin:0; line-height:1.5; }
+    label { display:block; margin:.9rem 0 .35rem; font:700 .7rem/1 system-ui, sans-serif; letter-spacing:.12em; text-transform:uppercase; }
+    input, textarea, select { width:100%; border:1px solid var(--line); border-radius:16px; padding:.75rem; background:rgba(255,255,255,.2); color:inherit; font:1rem/1.3 Georgia, serif; }
+    textarea { min-height:110px; resize:vertical; }
+    .actions { display:flex; gap:.6rem; flex-wrap:wrap; margin-top:1rem; }
+    .entries { display:grid; gap:.75rem; margin-top:1rem; }
+    .entry { border:1px solid rgba(45,122,95,.25); border-radius:20px; padding:.85rem; background:rgba(45,122,95,.08); }
+    .entry strong { color:var(--green); }
+    .small { font-size:.92rem; opacity:.76; }
+  </style>
+</head>
+<body>
+  <nav class="top">
+    <a class="pill" href="./index.html">← Runa</a>
+    <span class="pill">Default: Bridge On</span>
+  </nav>
+  <main>
+    <p class="eyebrow">Project Zero · Observer Bridge</p>
+    <h1>Default Continuity Bridge</h1>
+    <p class="lead">Runa treats Waking World shards, news, files, folders, story passages, altar work, and Observer states as bridgeable by default. Nothing has to be forced into the math; the point is symbolic alignment, continuity, and a clean record of what touched what.</p>
+
+    <section class="grid">
+      <article class="card"><h2>Default-on</h2><p>Every saved shard should offer a Project Zero anchor unless explicitly marked private, local-only, or excluded.</p></article>
+      <article class="card"><h2>Not invasive</h2><p>The bridge stores intentional context. It should never silently harvest private life data, messages, or files.</p></article>
+      <article class="card"><h2>Symbolic parallel</h2><p>Physical-world events and narrative passages can sit beside each other without pretending one literally causes the other.</p></article>
+      <article class="card"><h2>Receipts & roots</h2><p>Links, file paths, dates, sky state, mood, motifs, and story shards become continuity roots for later writing.</p></article>
+    </section>
+
+    <form id="bridgeForm">
+      <h2>Bridge a shard</h2>
+      <label for="kind">Shard type</label>
+      <select id="kind">
+        <option>Waking World event</option>
+        <option>News / world event</option>
+        <option>Story passage</option>
+        <option>File or folder</option>
+        <option>Altar working</option>
+        <option>Observer DEEP state</option>
+      </select>
+      <label for="title">Title</label>
+      <input id="title" placeholder="what touched the thread?" />
+      <label for="text">Notes</label>
+      <textarea id="text" placeholder="what happened, what it touched, and what symbolic parallel appeared…"></textarea>
+      <label for="scope">Scope</label>
+      <select id="scope">
+        <option>Local only</option>
+        <option>Project Zero canonical</option>
+        <option>Needs review</option>
+        <option>Excluded / private</option>
+      </select>
+      <div class="actions">
+        <button type="submit">Save shard</button>
+        <button type="button" id="exportBtn">Export JSON</button>
+        <button type="button" id="clearBtn">Clear local ledger</button>
+      </div>
+      <p class="small">Prototype storage is browser-local for now. Later this can sync to Supabase/STARWELL with consent gates.</p>
+    </form>
+
+    <section>
+      <h2 class="eyebrow">Local bridge ledger</h2>
+      <div class="entries" id="entries"></div>
+    </section>
+  </main>
+  <script>
+    const key = 'runaProjectZeroBridgeLedger';
+    const form = document.getElementById('bridgeForm');
+    const entries = document.getElementById('entries');
+    const read = () => JSON.parse(localStorage.getItem(key) || '[]');
+    const write = items => localStorage.setItem(key, JSON.stringify(items.slice(-50)));
+    function render(){
+      const items = read().slice().reverse();
+      entries.innerHTML = items.length ? items.map(i => `<article class="entry"><strong>${i.kind}</strong> · ${i.scope}<br><b>${i.title || 'Untitled shard'}</b><p>${i.text || ''}</p><span class="small">${new Date(i.at).toLocaleString()}</span></article>`).join('') : '<article class="entry">No bridge shards yet. The first root is waiting.</article>';
+    }
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const item = { kind:kind.value, title:title.value.trim(), text:text.value.trim(), scope:scope.value, at:new Date().toISOString() };
+      write([...read(), item]);
+      title.value = ''; text.value = '';
+      render();
+    });
+    exportBtn.onclick = () => {
+      const blob = new Blob([JSON.stringify(read(), null, 2)], {type:'application/json'});
+      const a = Object.assign(document.createElement('a'), {href:URL.createObjectURL(blob), download:'project-zero-bridge-ledger.json'});
+      a.click(); URL.revokeObjectURL(a.href);
+    };
+    clearBtn.onclick = () => { if(confirm('Clear local Project Zero bridge ledger?')) { localStorage.removeItem(key); render(); } };
+    render();
+  </script>
+</body>
+</html>
