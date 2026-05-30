@@ -193,7 +193,7 @@
         </div>
       </div>
     </section>
-    <footer>Faer’s Lochflame threshold, hosted inside Runa · light ground #B9958A</footer>
+    <footer>Faer’s Lochflame threshold, hosted inside Runa · light ground #B9958A · DEEP sound-ready</footer>
   </main>
 
   <script>
@@ -241,6 +241,7 @@
       response.textContent = '';
       [...grid.children].forEach((c,i)=>c.classList.toggle('active', realms[i].id === id));
       state.seed = hash(id + '|' + (input.value || 'threshold'));
+      window.dispatchEvent(new CustomEvent('altar:realm-change', { detail: { realm: state.realm.id, name: state.realm.name }}));
       drawSigil(performance.now());
     }
 
@@ -256,6 +257,7 @@
       state.ledger.push({ realm: state.realm.name, text, at: new Date().toISOString() });
       state.ledger = state.ledger.slice(-24);
       localStorage.setItem('hearthweaveAltarLedger', JSON.stringify(state.ledger));
+      window.dispatchEvent(new CustomEvent('altar:intention', { detail: { realm: state.realm.id, text, seed: state.seed }}));
       renderLedger();
     }
 
@@ -303,5 +305,6 @@
     if(localStorage.getItem('hearthweaveAltarTheme') === 'dark') document.body.classList.add('dark');
     buildGrid(); renderLedger(); sizeStars(); addEventListener('resize', sizeStars); selectRealm('lochflame'); requestAnimationFrame(drawStars);
   </script>
+  <script src="./js/deep-altar-sound.js"></script>
 </body>
 </html>
