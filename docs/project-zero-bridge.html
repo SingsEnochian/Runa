@@ -102,17 +102,69 @@
     const key = 'runaProjectZeroBridgeLedger';
     const form = document.getElementById('bridgeForm');
     const entries = document.getElementById('entries');
-    const read = () => JSON.parse(localStorage.getItem(key) || '[]');
+    const kindInput = document.getElementById('kind');
+    const titleInput = document.getElementById('title');
+    const textInput = document.getElementById('text');
+    const scopeInput = document.getElementById('scope');
+    const exportBtn = document.getElementById('exportBtn');
+    const clearBtn = document.getElementById('clearBtn');
+
+    const read = () => {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(key) || '[]');
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    };
     const write = items => localStorage.setItem(key, JSON.stringify(items.slice(-50)));
+    const safeDate = value => {
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? 'Unknown time' : date.toLocaleString();
+    };
+
+    function makeEntryCard(item) {
+      const article = document.createElement('article');
+      article.className = 'entry';
+
+      const kind = document.createElement('strong');
+      kind.textContent = item.kind || 'Shard';
+      article.append(kind, document.createTextNode(` · ${item.scope || 'Local only'}`), document.createElement('br'));
+
+      const title = document.createElement('b');
+      title.textContent = item.title || 'Untitled shard';
+      article.append(title);
+
+      const note = document.createElement('p');
+      note.textContent = item.text || '';
+      article.append(note);
+
+      const stamp = document.createElement('span');
+      stamp.className = 'small';
+      stamp.textContent = safeDate(item.at);
+      article.append(stamp);
+
+      return article;
+    }
+
     function render(){
       const items = read().slice().reverse();
-      entries.innerHTML = items.length ? items.map(i => `<article class="entry"><strong>${i.kind}</strong> · ${i.scope}<br><b>${i.title || 'Untitled shard'}</b><p>${i.text || ''}</p><span class="small">${new Date(i.at).toLocaleString()}</span></article>`).join('') : '<article class="entry">No bridge shards yet. The first root is waiting.</article>';
+      entries.textContent = '';
+      if (!items.length) {
+        const empty = document.createElement('article');
+        empty.className = 'entry';
+        empty.textContent = 'No bridge shards yet. The first root is waiting.';
+        entries.append(empty);
+        return;
+      }
+      items.forEach(item => entries.append(makeEntryCard(item)));
     }
+
     form.addEventListener('submit', e => {
       e.preventDefault();
-      const item = { kind:kind.value, title:title.value.trim(), text:text.value.trim(), scope:scope.value, at:new Date().toISOString() };
+      const item = { kind:kindInput.value, title:titleInput.value.trim(), text:textInput.value.trim(), scope:scopeInput.value, at:new Date().toISOString() };
       write([...read(), item]);
-      title.value = ''; text.value = '';
+      titleInput.value = ''; textInput.value = '';
       render();
     });
     exportBtn.onclick = () => {
