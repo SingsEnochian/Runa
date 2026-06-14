@@ -3,14 +3,24 @@ window.WardenclyffeWasmBridge = (() => {
   let moduleExports = null;
   let status = "fallback";
 
-  async function load(url = "./wasm/wardenclyffe_fluid_kernel.wasm", imports = {}) {
-    if (!WebAssembly || !WebAssembly.instantiateStreaming) {
+  async function load(url = null, imports = {}) {
+    if (!url) {
+      status = "fallback";
+      return { ok: false, status, reason: "WASM artifact not configured yet." };
+    }
+
+    if (typeof WebAssembly === "undefined" || typeof WebAssembly.instantiateStreaming !== "function") {
       status = "fallback";
       return { ok: false, status, reason: "WebAssembly streaming is not available." };
     }
 
     try {
-      const result = await WebAssembly.instantiateStreaming(fetch(url), imports);
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`WASM artifact unavailable: ${response.status}`);
+      }
+
+      const result = await WebAssembly.instantiateStreaming(response, imports);
       moduleInstance = result.instance;
       moduleExports = moduleInstance.exports;
       status = "wasm";
