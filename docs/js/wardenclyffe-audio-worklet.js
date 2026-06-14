@@ -1,3 +1,5 @@
+/* global AudioWorkletProcessor, registerProcessor, sampleRate */
+
 class WardenclyffeEnvelopeProcessor extends AudioWorkletProcessor {
   static get parameterDescriptors() {
     return [
