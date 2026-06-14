@@ -48,6 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
   let compressor = null;
   let nodes = {};
   let raf = null;
+  let workletNode = null;
+  let workletGain = null;
+  let bridgeStatus = "JS fallback";
+  let bridgeReady = false;
 
   function setState(name) {
     const next = states[name] ? name : "idle";
@@ -155,13 +159,58 @@ document.addEventListener("DOMContentLoaded", () => {
     return true;
   }
 
+  async function initBridges() {
+    if (bridgeReady || !ctx) return bridgeStatus;
+    const notes = [];
+
+    if (window.WardenclyffeWasmBridge) {
+      const result = await window.WardenclyffeWasmBridge.load();
+      notes.push(result.ok ? "WASM ready" : "WASM fallback");
+    } else {
+      notes.push("WASM bridge missing");
+    }
+
+    if (ctx.audioWorklet) {
+      try {
+        await ctx.audioWorklet.addModule("./js/wardenclyffe-audio-worklet.js");
+        workletNode = new AudioWorkletNode(ctx, "wardenclyffe-envelope-processor", {
+          numberOfInputs: 0,
+          numberOfOutputs: 1,
+          outputChannelCount: [2],
+          parameterData: { rate: 0.369, depth: 0.35, level: 0.02 }
+        });
+        workletGain = ctx.createGain();
+        workletGain.gain.value = 0;
+        workletNode.connect(workletGain).connect(master);
+        notes.push("AudioWorklet ready");
+      } catch (error) {
+        notes.push("AudioWorklet fallback");
+      }
+    } else {
+      notes.push("AudioWorklet unavailable");
+    }
+
+    bridgeReady = true;
+    bridgeStatus = notes.join(" | ");
+    return bridgeStatus;
+  }
+
+  function updateWorkletParams() {
+    if (!workletNode || !ctx) return;
+    workletNode.parameters.get("rate")?.setTargetAtTime(0.369, ctx.currentTime, 0.08);
+    workletNode.parameters.get("depth")?.setTargetAtTime(layers.pulse.on ? 0.42 : 0, ctx.currentTime, 0.08);
+    workletNode.parameters.get("level")?.setTargetAtTime(0.02, ctx.currentTime, 0.08);
+  }
+
   async function openEngine() {
     if (!ctx && !buildGraph()) return;
     if (ctx.state === "suspended") await ctx.resume();
+    const runtime = await initBridges();
+    updateWorkletParams();
 
     body.dataset.audio = "open";
     master.gain.setTargetAtTime(Number(masterGainInput.value), ctx.currentTime, 0.08);
-    engineStatus.textContent = "Audio open: enabled layers are live.";
+    engineStatus.textContent = `Audio open: enabled layers are live. ${runtime}.`;
     Object.keys(layers).forEach(updateLayerUi);
     if (!raf) raf = requestAnimationFrame(tick);
   }
@@ -175,6 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     Object.keys(nodes).forEach((name) => setNodeGain(name, 0, 0.05));
+    if (workletGain) workletGain.gain.setTargetAtTime(0, ctx.currentTime, 0.05);
     master.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.05);
     const closing = ctx;
 
@@ -183,11 +233,16 @@ document.addEventListener("DOMContentLoaded", () => {
         try { node.osc?.stop(); } catch (error) {}
         try { node.source?.stop(); } catch (error) {}
       });
+      try { workletNode?.disconnect(); } catch (error) {}
+      try { workletGain?.disconnect(); } catch (error) {}
       closing.close();
       ctx = null;
       master = null;
       compressor = null;
       nodes = {};
+      workletNode = null;
+      workletGain = null;
+      bridgeReady = false;
       body.dataset.audio = "closed";
       engineStatus.textContent = message;
       if (virelyaStatus) virelyaStatus.textContent = "Doorway closed.";
@@ -233,18 +288,20 @@ document.addEventListener("DOMContentLoaded", () => {
     Object.entries(preset.set).forEach(([layer, data]) => applyLayer(layer, data));
     masterGainInput.value = preset.master;
     if (master && ctx) master.gain.setTargetAtTime(Number(masterGainInput.value), ctx.currentTime, 0.08);
+    updateWorkletParams();
     renderLayerList();
-    engineStatus.textContent = ctx ? `${name} loaded into the open engine.` : `${name} loaded. Open Audio Engine when ready.`;
+    engineStatus.textContent = ctx ? `${name} loaded into the open engine. ${bridgeStatus}.` : `${name} loaded. Open Audio Engine when ready.`;
     if (autoOpen) openEngine();
   }
 
   function tick(time) {
     if (ctx && body.dataset.audio === "open") {
-      const pulse = (Math.sin((time / 1000) * Math.PI * 0.369) + 1) / 2;
-      body.style.setProperty("--wc-flow-intensity", (0.55 + pulse * 0.32).toFixed(2));
+      const phase = (time / 1000) * Math.PI * 2 * 0.369;
+      const envelope = window.WardenclyffeWasmBridge?.envelope(phase, 0.65) || ((Math.sin(phase) + 1) * 0.5);
+      body.style.setProperty("--wc-flow-intensity", (0.48 + envelope * 0.4).toFixed(2));
 
-      if (nodes.pulse) setNodeGain("pulse", layers.pulse.on ? layers.pulse.gain * (0.35 + pulse * 0.65) : 0);
-      if (nodes.carrier) setNodeGain("carrier", layers.carrier.on ? layers.carrier.gain * (0.78 + pulse * 0.22) : 0);
+      if (nodes.pulse) setNodeGain("pulse", layers.pulse.on ? layers.pulse.gain * (0.35 + envelope * 0.65) : 0);
+      if (nodes.carrier) setNodeGain("carrier", layers.carrier.on ? layers.carrier.gain * (0.78 + envelope * 0.22) : 0);
     }
     raf = requestAnimationFrame(tick);
   }
@@ -287,6 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const name = toggle.dataset.layerToggle;
       layers[name].on = toggle.checked;
       if (ctx) setNodeGain(name, layers[name].on ? layers[name].gain : 0);
+      updateWorkletParams();
       updateLayerUi(name);
       renderLayerList();
     });
