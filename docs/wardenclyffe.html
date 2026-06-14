@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Runa — Wardenclyffe Console</title>
+  <title>Runa — Wardenclyffe Audio Engine</title>
   <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="./css/wardenclyffe.css">
 </head>
 
-<body class="wardenclyffe-body" data-field="idle">
+<body class="wardenclyffe-body" data-field="idle" data-audio="closed">
   <header>
     <strong>Runa</strong>
     <div class="header-actions">
@@ -21,26 +21,132 @@
 
   <main class="wardenclyffe-console">
     <section class="tower-hero" aria-labelledby="wardenclyffeTitle">
-      <p class="wc-eyebrow">Field chamber / copper trace / local spark</p>
+      <p class="wc-eyebrow">Field chamber / audio engine / liquid-light stack</p>
       <h1 id="wardenclyffeTitle">Wardenclyffe Console</h1>
       <p class="wc-lede">
-        A responsive ritual-engineering chamber for state shifts, tone-anchor preparation,
-        Schumann underlayer notes, and careful laboratory witnessing.
+        A consent-first multi-layer audio engine for tone-anchor preparation, Schumann underlayer shaping,
+        liquid-light feedback, and careful laboratory witnessing. No layer plays until the engine is opened.
       </p>
+
+      <div class="engine-consent-bar" aria-label="Wardenclyffe audio consent controls">
+        <button id="engineStart" type="button">Open Audio Engine</button>
+        <button id="engineFeather" type="button">Feather Fade</button>
+        <button id="engineStop" type="button">Close All Layers</button>
+        <label class="master-gain-control" for="masterGain">
+          Master gain
+          <input id="masterGain" type="range" min="0" max="0.8" value="0.22" step="0.01">
+        </label>
+      </div>
+
       <div class="field-readout" id="fieldReadout">Idle: sleeping coils, faint hum, lantern lit.</div>
+      <div class="engine-status" id="engineStatus">Audio closed: choose Open Audio Engine when ready.</div>
     </section>
 
     <section class="tower-stage" aria-label="Wardenclyffe field visualiser">
+      <div class="field-shell field-shell-one"></div>
+      <div class="field-shell field-shell-two"></div>
+      <div class="fluid-field" aria-hidden="true">
+        <div class="fluid-bloom bloom-a"></div>
+        <div class="fluid-bloom bloom-b"></div>
+        <div class="fluid-bloom bloom-c"></div>
+        <div class="fluid-vortex vortex-a"></div>
+        <div class="fluid-vortex vortex-b"></div>
+      </div>
       <div class="trace trace-one"></div>
       <div class="trace trace-two"></div>
       <div class="trace trace-three"></div>
+
       <div class="tower-core" id="towerCore" role="button" tabindex="0" aria-label="Wake Wardenclyffe field">
         <div class="coil-ring ring-one"></div>
         <div class="coil-ring ring-two"></div>
         <div class="coil-ring ring-three"></div>
-        <div class="spark-core">⚡</div>
+        <div class="spark-core" id="sparkCore">⚡</div>
       </div>
+
+      <div class="layer-orbit layer-ground" data-orbit="ground">Ground</div>
+      <div class="layer-orbit layer-carrier" data-orbit="carrier">Carrier</div>
+      <div class="layer-orbit layer-shimmer" data-orbit="shimmer">Shimmer</div>
+      <div class="layer-orbit layer-noise" data-orbit="noise">Noise</div>
       <div class="stage-caption" id="stageCaption">Touch the tower or choose a state. The apparatus will answer softly.</div>
+    </section>
+
+    <section class="engine-stack" aria-labelledby="engineStackTitle">
+      <div class="section-heading">
+        <p class="wc-eyebrow">Layer registry</p>
+        <h2 id="engineStackTitle">Audio Layers</h2>
+        <p>
+          Each layer has its own gain, frequency anchor, and visual response. Keep the master low first.
+          The goblin in the coil is enthusiastic but not in charge. You are.
+        </p>
+      </div>
+
+      <div class="layer-grid" id="layerGrid">
+        <article class="layer-card" data-layer-card="ground">
+          <div class="layer-card-head">
+            <span>01</span>
+            <strong>Schumann Ground</strong>
+          </div>
+          <p>Sub-audio pulse modelled as field modulation, with a quiet audible anchor for devices that can carry it.</p>
+          <label><input type="checkbox" data-layer-toggle="ground" checked> Enabled</label>
+          <label>Gain <input type="range" min="0" max="0.4" step="0.01" value="0.09" data-layer-gain="ground"></label>
+          <output data-layer-output="ground">7.83 Hz · modulation</output>
+        </article>
+
+        <article class="layer-card" data-layer-card="body">
+          <div class="layer-card-head">
+            <span>02</span>
+            <strong>Body Hum</strong>
+          </div>
+          <p>Low carrier for warmth, Woojer/Shokz experiments, and gentle somatic anchoring.</p>
+          <label><input type="checkbox" data-layer-toggle="body" checked> Enabled</label>
+          <label>Gain <input type="range" min="0" max="0.4" step="0.01" value="0.08" data-layer-gain="body"></label>
+          <output data-layer-output="body">174 Hz · sine</output>
+        </article>
+
+        <article class="layer-card" data-layer-card="carrier">
+          <div class="layer-card-head">
+            <span>03</span>
+            <strong>Tone Carrier</strong>
+          </div>
+          <p>Preset-following solfeggio and ritual tone spine: Feather, Wrap, Seldrin, Notch, Lantern, Virelya.</p>
+          <label><input type="checkbox" data-layer-toggle="carrier" checked> Enabled</label>
+          <label>Gain <input type="range" min="0" max="0.4" step="0.01" value="0.1" data-layer-gain="carrier"></label>
+          <output data-layer-output="carrier">432 Hz · triangle</output>
+        </article>
+
+        <article class="layer-card" data-layer-card="pulse">
+          <div class="layer-card-head">
+            <span>04</span>
+            <strong>3:6:9 Pulse</strong>
+          </div>
+          <p>Slow amplitude lanterning. This layer shapes attention; it does not shout.</p>
+          <label><input type="checkbox" data-layer-toggle="pulse" checked> Enabled</label>
+          <label>Gain <input type="range" min="0" max="0.4" step="0.01" value="0.07" data-layer-gain="pulse"></label>
+          <output data-layer-output="pulse">0.369 Hz · LFO gate</output>
+        </article>
+
+        <article class="layer-card" data-layer-card="shimmer">
+          <div class="layer-card-head">
+            <span>05</span>
+            <strong>North-Star Shimmer</strong>
+          </div>
+          <p>Filtered upper partial for bright edge, crystal thread, and Virelya flame-glint.</p>
+          <label><input type="checkbox" data-layer-toggle="shimmer"> Enabled</label>
+          <label>Gain <input type="range" min="0" max="0.25" step="0.01" value="0.03" data-layer-gain="shimmer"></label>
+          <output data-layer-output="shimmer">1728 Hz · filtered sine</output>
+        </article>
+
+        <article class="layer-card" data-layer-card="noise">
+          <div class="layer-card-head">
+            <span>06</span>
+            <strong>Lantern Noise</strong>
+          </div>
+          <p>Soft filtered noise bed for breath, air, and storm texture. Default-off for tender nervous systems.</p>
+          <label><input type="checkbox" data-layer-toggle="noise"> Enabled</label>
+          <label>Gain <input type="range" min="0" max="0.25" step="0.01" value="0.02" data-layer-gain="noise"></label>
+          <output data-layer-output="noise">pink-ish filtered noise</output>
+        </article>
+      </div>
     </section>
 
     <section class="wc-grid" aria-label="Field states">
@@ -74,7 +180,7 @@
     <section class="wc-panels">
       <article class="wc-panel">
         <h2>Session Presets</h2>
-        <p>Choose a working flavour. These are interface states, not medical claims.</p>
+        <p>Choose a working flavour. These are interface states and audio sketches, not medical claims.</p>
         <div class="preset-buttons" id="presetButtons">
           <button data-preset="Feather">Feather</button>
           <button data-preset="Seldrin">Seldrin</button>
@@ -91,6 +197,17 @@
       </article>
 
       <article class="wc-panel">
+        <h2>Iteration Bridge</h2>
+        <p>The page runs with JavaScript today. Python can generate preset iterations; C++ can later compile to WASM for DSP or fluid kernels.</p>
+        <ul class="bridge-list">
+          <li><strong>CSS</strong><span>Liquid-light stage, coil states, responsive panel skin.</span></li>
+          <li><strong>JavaScript</strong><span>Consent, Web Audio graph, layer gains, preset braids.</span></li>
+          <li><strong>Python</strong><span>Offline iteration recipes and JSON preset exports.</span></li>
+          <li><strong>C++</strong><span>Future WASM kernel for DSP envelopes and fluid advection.</span></li>
+        </ul>
+      </article>
+
+      <article class="wc-panel">
         <h2>Schumann Underlayer Socket</h2>
         <p>Prepared for local ground-hum weighting beneath future audio sessions.</p>
         <ul class="schumann-list">
@@ -103,6 +220,17 @@
         <p class="tiny-copy">
           Local pattern anchor: Saint Augustine, Florida · Wednesday, 13 May 2026 · 02:50 EDT.
         </p>
+      </article>
+
+      <article class="wc-panel">
+        <h2>Fluid Dynamics Socket</h2>
+        <p>
+          Current visual flow is CSS-driven liquid light. The planned kernel path is stable-fluid style:
+          inject, diffuse, advect, project, render. Tiny cauldron, tidy math.
+        </p>
+        <div class="fluid-meter" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
       </article>
 
       <article class="wc-panel wide virelya-panel" aria-labelledby="virelyaTitle">
