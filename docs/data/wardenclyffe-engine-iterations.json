@@ -1,0 +1,76 @@
+{
+  "schema": "wardenclyffe.engine.iterations.v1",
+  "description": "Seed recipe set for Wardenclyffe audio and liquid-light experiments. Regenerate with tools/wardenclyffe/wardenclyffe_iterations.py.",
+  "runtime": {
+    "css": "renders liquid-light and responsive field layers",
+    "javascript": "owns consent-first Web Audio graph",
+    "python": "generates deterministic iteration recipes",
+    "cpp_wasm": "future scalar-field/DSP kernel"
+  },
+  "iterations": [
+    {
+      "iteration": 0,
+      "name": "Wardenclyffe iteration 00",
+      "tempo_scalar": 1.0,
+      "flow_viscosity": 0.42,
+      "flow_dissipation": 0.982,
+      "master_gain": 0.225,
+      "layers": [
+        { "name": "ground", "frequency_hz": 117.024, "gain": 0.08, "enabled": true, "role": "Schumann modulation anchor" },
+        { "name": "body", "frequency_hz": 173.369, "gain": 0.08, "enabled": true, "role": "low body-hum carrier" },
+        { "name": "carrier", "frequency_hz": 526.087, "gain": 0.09, "enabled": true, "role": "main tone spine" },
+        { "name": "pulse", "frequency_hz": 369.0, "gain": 0.07, "enabled": true, "role": "3:6:9 pulse voice" },
+        { "name": "shimmer", "frequency_hz": 1721.738, "gain": 0.035, "enabled": true, "role": "north-star upper partial" },
+        { "name": "noise", "frequency_hz": 1195.651, "gain": 0.016, "enabled": true, "role": "filtered lantern air" }
+      ]
+    },
+    {
+      "iteration": 1,
+      "name": "Wardenclyffe iteration 01",
+      "tempo_scalar": 1.065,
+      "flow_viscosity": 0.466,
+      "flow_dissipation": 0.98,
+      "master_gain": 0.224,
+      "layers": [
+        { "name": "ground", "frequency_hz": 118.434, "gain": 0.0795, "enabled": true, "role": "Schumann modulation anchor" },
+        { "name": "body", "frequency_hz": 175.459, "gain": 0.0795, "enabled": true, "role": "low body-hum carrier" },
+        { "name": "carrier", "frequency_hz": 532.433, "gain": 0.0894, "enabled": true, "role": "main tone spine" },
+        { "name": "pulse", "frequency_hz": 369.0, "gain": 0.0695, "enabled": true, "role": "3:6:9 pulse voice" },
+        { "name": "shimmer", "frequency_hz": 1742.508, "gain": 0.0348, "enabled": true, "role": "north-star upper partial" },
+        { "name": "noise", "frequency_hz": 1210.075, "gain": 0.0159, "enabled": true, "role": "filtered lantern air" }
+      ]
+    },
+    {
+      "iteration": 2,
+      "name": "Wardenclyffe iteration 02",
+      "tempo_scalar": 1.1216,
+      "flow_viscosity": 0.4952,
+      "flow_dissipation": 0.978,
+      "master_gain": 0.2206,
+      "layers": [
+        { "name": "ground", "frequency_hz": 119.425, "gain": 0.0781, "enabled": true, "role": "Schumann modulation anchor" },
+        { "name": "body", "frequency_hz": 176.927, "gain": 0.0781, "enabled": true, "role": "low body-hum carrier" },
+        { "name": "carrier", "frequency_hz": 536.885, "gain": 0.0879, "enabled": true, "role": "main tone spine" },
+        { "name": "pulse", "frequency_hz": 369.0, "gain": 0.0684, "enabled": true, "role": "3:6:9 pulse voice" },
+        { "name": "shimmer", "frequency_hz": 1757.076, "gain": 0.0342, "enabled": true, "role": "north-star upper partial" },
+        { "name": "noise", "frequency_hz": 1220.192, "gain": 0.0156, "enabled": true, "role": "filtered lantern air" }
+      ]
+    },
+    {
+      "iteration": 3,
+      "name": "Wardenclyffe iteration 03",
+      "tempo_scalar": 1.1614,
+      "flow_viscosity": 0.4973,
+      "flow_dissipation": 0.976,
+      "master_gain": 0.2155,
+      "layers": [
+        { "name": "ground", "frequency_hz": 119.018, "gain": 0.0761, "enabled": true, "role": "Schumann modulation anchor" },
+        { "name": "body", "frequency_hz": 176.324, "gain": 0.0761, "enabled": true, "role": "low body-hum carrier" },
+        { "name": "carrier", "frequency_hz": 535.055, "gain": 0.0856, "enabled": true, "role": "main tone spine" },
+        { "name": "pulse", "frequency_hz": 369.0, "gain": 0.0666, "enabled": true, "role": "3:6:9 pulse voice" },
+        { "name": "shimmer", "frequency_hz": 1751.083, "gain": 0.0333, "enabled": true, "role": "north-star upper partial" },
+        { "name": "noise", "frequency_hz": 1216.03, "gain": 0.0152, "enabled": true, "role": "filtered lantern air" }
+      ]
+    }
+  ]
+}
