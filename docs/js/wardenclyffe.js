@@ -173,7 +173,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (ctx.audioWorklet) {
       try {
         await ctx.audioWorklet.addModule("./js/wardenclyffe-audio-worklet.js");
-        workletNode = new AudioWorkletNode(ctx, "wardenclyffe-envelope-processor", {
+        const AudioWorkletNodeCtor = window.AudioWorkletNode;
+        if (!AudioWorkletNodeCtor) throw new Error("AudioWorkletNode unavailable");
+        workletNode = new AudioWorkletNodeCtor(ctx, "wardenclyffe-envelope-processor", {
           numberOfInputs: 0,
           numberOfOutputs: 1,
           outputChannelCount: [2],
@@ -183,7 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
         workletGain.gain.value = 0;
         workletNode.connect(workletGain).connect(master);
         notes.push("AudioWorklet ready");
-      } catch (error) {
+      } catch {
         notes.push("AudioWorklet fallback");
       }
     } else {
@@ -230,11 +232,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.setTimeout(() => {
       Object.values(nodes).forEach((node) => {
-        try { node.osc?.stop(); } catch (error) {}
-        try { node.source?.stop(); } catch (error) {}
+        try { node.osc?.stop(); } catch {}
+        try { node.source?.stop(); } catch {}
       });
-      try { workletNode?.disconnect(); } catch (error) {}
-      try { workletGain?.disconnect(); } catch (error) {}
+      try { workletNode?.disconnect(); } catch {}
+      try { workletGain?.disconnect(); } catch {}
       closing.close();
       ctx = null;
       master = null;
