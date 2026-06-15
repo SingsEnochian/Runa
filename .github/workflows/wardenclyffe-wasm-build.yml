@@ -1,0 +1,36 @@
+name: Wardenclyffe WASM Build
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "tools/wardenclyffe/**"
+      - "docs/js/wardenclyffe-wasm-bridge.js"
+      - "docs/data/wardenclyffe-wasm-manifest.json"
+      - ".github/workflows/wardenclyffe-wasm-build.yml"
+
+jobs:
+  build-wasm:
+    name: Build Wardenclyffe fluid kernel
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build WASM with Emscripten
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/src" \
+            -w /src \
+            -e WARDENCLYFFE_WASM_ENABLE_MANIFEST=true \
+            emscripten/emsdk:3.1.64 \
+            bash tools/wardenclyffe/build_wasm.sh
+
+      - name: Upload Wardenclyffe WASM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wardenclyffe-fluid-kernel
+          path: |
+            docs/wasm/wardenclyffe_fluid_kernel.wasm
+            docs/data/wardenclyffe-wasm-manifest.json
