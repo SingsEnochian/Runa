@@ -54,6 +54,16 @@ It also updates the manifest to enable the artifact by default. To build without
 WARDENCLYFFE_WASM_ENABLE_MANIFEST=false tools/wardenclyffe/build_wasm.sh
 ```
 
+## Validation guard
+
+Use the socket validator before and after build changes:
+
+```bash
+node scripts/ci/validate-wardenclyffe-wasm-socket.mjs
+```
+
+It checks the manifest schema, expected artifact URL, bridge hooks, C++ export names, and the safety rule that `enabled: true` requires the `.wasm` file to exist.
+
 ## Exported kernel functions
 
 The first C++ socket exposes:
