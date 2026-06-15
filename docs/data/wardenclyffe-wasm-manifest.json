@@ -1,0 +1,14 @@
+{
+  "schema": "wardenclyffe.wasm-manifest.v0",
+  "enabled": false,
+  "artifact": {
+    "url": "../wasm/wardenclyffe_fluid_kernel.wasm",
+    "format": "wasm",
+    "exports": [
+      "wc_envelope",
+      "wc_step_scalar_field"
+    ]
+  },
+  "fallback": "js-fluid-field",
+  "notes": "WASM socket is prepared but disabled until docs/wasm/wardenclyffe_fluid_kernel.wasm is built and committed. JavaScript fallback remains canonical until then."
+}
