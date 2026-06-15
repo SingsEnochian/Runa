@@ -1,0 +1,30 @@
+name: Supabase Health Gate
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Runs after the database-side daily heartbeat at 14:17 UTC.
+    - cron: "27 14 * * *"
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  supabase-health:
+    name: Wait for Flameclyffe Supabase
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+      SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      SUPABASE_HEALTH_ATTEMPTS: "18"
+      SUPABASE_HEALTH_DELAY_MS: "10000"
+      SUPABASE_HEALTH_STRICT: "false"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Wait for Supabase health
+        run: node scripts/ci/wait-for-supabase.mjs
