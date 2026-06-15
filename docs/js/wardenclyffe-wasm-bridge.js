@@ -1,39 +1,103 @@
 window.WardenclyffeWasmBridge = (() => {
+  const DEFAULT_MANIFEST_URL = "./data/wardenclyffe-wasm-manifest.json";
+
   let moduleInstance = null;
   let moduleExports = null;
+  let manifest = null;
   let status = "fallback";
+  let reason = "WASM not loaded yet.";
 
-  async function load(url = null, imports = {}) {
-    if (!url) {
-      status = "fallback";
-      return { ok: false, status, reason: "WASM artifact not configured yet." };
+  async function loadJson(url) {
+    const response = await fetch(url, { headers: { accept: "application/json" } });
+    if (!response.ok) throw new Error(`WASM manifest unavailable: ${response.status}`);
+    return response.json();
+  }
+
+  function normalizeManifest(input) {
+    if (!input || typeof input !== "object") {
+      return { enabled: false, artifact: null, reason: "Manifest was empty." };
     }
 
-    if (typeof WebAssembly === "undefined" || typeof WebAssembly.instantiateStreaming !== "function") {
-      status = "fallback";
-      return { ok: false, status, reason: "WebAssembly streaming is not available." };
+    const artifact = input.artifact || {};
+    return {
+      schema: input.schema || "wardenclyffe.wasm-manifest.v0",
+      enabled: input.enabled === true,
+      artifact: {
+        url: artifact.url || null,
+        format: artifact.format || "wasm",
+        exports: Array.isArray(artifact.exports) ? artifact.exports : []
+      },
+      fallback: input.fallback || "js-fluid-field",
+      notes: input.notes || ""
+    };
+  }
+
+  function resolveArtifactUrl(manifestUrl, artifactUrl) {
+    if (!artifactUrl) return null;
+    return new URL(artifactUrl, new URL(manifestUrl, window.location.href)).toString();
+  }
+
+  async function instantiateArtifact(artifactUrl, imports) {
+    if (typeof WebAssembly === "undefined") {
+      throw new Error("WebAssembly is not available.");
     }
 
+    const response = await fetch(artifactUrl);
+    if (!response.ok) {
+      throw new Error(`WASM artifact unavailable: ${response.status}`);
+    }
+
+    if (typeof WebAssembly.instantiateStreaming === "function") {
+      try {
+        return WebAssembly.instantiateStreaming(response.clone(), imports);
+      } catch {
+        // Some static hosts serve .wasm with a generic MIME type. ArrayBuffer keeps Pages-friendly fallback intact.
+      }
+    }
+
+    const bytes = await response.arrayBuffer();
+    return WebAssembly.instantiate(bytes, imports);
+  }
+
+  function exported(name) {
+    if (!moduleExports) return null;
+    return moduleExports[name] || moduleExports[`_${name}`] || null;
+  }
+
+  async function load(manifestUrl = DEFAULT_MANIFEST_URL, imports = {}) {
     try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`WASM artifact unavailable: ${response.status}`);
+      manifest = normalizeManifest(await loadJson(manifestUrl));
+
+      if (!manifest.enabled) {
+        status = "fallback";
+        reason = manifest.notes || "WASM manifest is disabled; using JavaScript fallback.";
+        return { ok: false, status, reason, manifest };
       }
 
-      const result = await WebAssembly.instantiateStreaming(response, imports);
+      const artifactUrl = resolveArtifactUrl(manifestUrl, manifest.artifact.url);
+      if (!artifactUrl) {
+        status = "fallback";
+        reason = "WASM artifact URL is not configured.";
+        return { ok: false, status, reason, manifest };
+      }
+
+      const result = await instantiateArtifact(artifactUrl, imports);
       moduleInstance = result.instance;
       moduleExports = moduleInstance.exports;
       status = "wasm";
-      return { ok: true, status, exports: Object.keys(moduleExports) };
+      reason = "WASM artifact loaded.";
+      return { ok: true, status, reason, manifest, exports: Object.keys(moduleExports) };
     } catch (error) {
       status = "fallback";
-      return { ok: false, status, reason: error.message };
+      reason = error.message;
+      return { ok: false, status, reason, manifest };
     }
   }
 
   function envelope(phaseRadians, depth) {
-    if (moduleExports && typeof moduleExports.wc_envelope === "function") {
-      return moduleExports.wc_envelope(phaseRadians, depth);
+    const wasmEnvelope = exported("wc_envelope");
+    if (typeof wasmEnvelope === "function") {
+      return wasmEnvelope(phaseRadians, depth);
     }
 
     const clampedDepth = Math.max(0, Math.min(1, depth));
@@ -82,6 +146,12 @@ window.WardenclyffeWasmBridge = (() => {
     stepScalarField,
     get status() {
       return status;
+    },
+    get reason() {
+      return reason;
+    },
+    get manifest() {
+      return manifest;
     }
   };
 })();
