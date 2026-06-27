@@ -14,6 +14,9 @@ The `docs/` folder contains public/static pages such as:
 ```text
 index.html
 project-zero-bridge.html
+council-bell.html
+threshold-mirror.html
+sigil-loom.html
 hearthweave-altar.html
 flameclyffe-studio.html
 flameclyffe-dyad.html
@@ -27,6 +30,24 @@ zener-lab.html
 rv-capture.html
 tesla-observatory.html
 ```
+
+## Council Bell
+
+`docs/council-bell.html` is a local-first packet maker for Project Zero handoff review. It turns an intentional Runa note into a structured JSON packet with:
+
+- shard type and bridge direction
+- title, observation, subjective resonance, and optional interpretation
+- consent scope and status
+- proposed recipients, motifs, and evidence anchors
+- a clear rule that export is not sync
+
+It stores only the latest packet in browser local storage unless Rowan chooses to copy or export JSON.
+
+## Threshold Mirror and Sigil Loom
+
+`docs/threshold-mirror.html` reflects one shard into labelled views so evidence, resonance, story use, and review stay distinct.
+
+`docs/sigil-loom.html` turns title, scope, direction, motifs, note, and DEEP vector values into a deterministic SVG glyph.
 
 ## Claims policy
 

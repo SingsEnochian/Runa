@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runa — Council Bell</title>
+  <style>
+    :root {
+      --bg: #221513;
+      --ink: #f7ead9;
+      --muted: rgba(247,234,217,.72);
+      --panel: rgba(255,255,255,.08);
+      --panel-strong: rgba(255,255,255,.13);
+      --line: rgba(247,234,217,.18);
+      --gold: #f6c453;
+      --green: #2d7a5f;
+      --blue: #6bb5d4;
+      --rose: #d89a8c;
+      --shadow: rgba(0,0,0,.28);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: Georgia, 'Times New Roman', serif;
+      background:
+        radial-gradient(circle at 18% 10%, rgba(246,196,83,.22), transparent 24rem),
+        radial-gradient(circle at 86% 18%, rgba(107,181,212,.14), transparent 28rem),
+        radial-gradient(circle at 78% 82%, rgba(45,122,95,.22), transparent 32rem),
+        linear-gradient(145deg, #160d0c, var(--bg));
+    }
+
+    a, button, input, textarea, select { color: inherit; }
+
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border-bottom: 1px solid var(--line);
+      background: rgba(22,13,12,.72);
+      backdrop-filter: blur(16px);
+    }
+
+    .pill, button {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: .62rem .9rem;
+      background: rgba(255,255,255,.08);
+      text-decoration: none;
+      font: 800 .72rem/1 system-ui, sans-serif;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    button:hover, .pill:hover { background: rgba(246,196,83,.16); }
+
+    main {
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 3rem 0 4rem;
+    }
+
+    h1 {
+      margin: .2rem 0 1rem;
+      font-size: clamp(2.4rem, 8vw, 5.8rem);
+      line-height: .9;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: .2rem 0 .75rem;
+      font: 900 1rem/1.1 system-ui, sans-serif;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow {
+      font: 800 .72rem/1 system-ui, sans-serif;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .lead {
+      max-width: 780px;
+      color: var(--muted);
+      font-size: 1.24rem;
+      line-height: 1.55;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 390px);
+      gap: 1rem;
+      align-items: start;
+      margin-top: 2rem;
+    }
+
+    .card, form, .output {
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: var(--panel);
+      box-shadow: 0 24px 90px var(--shadow);
+      backdrop-filter: blur(16px);
+      padding: 1.15rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: .8rem;
+      margin: 1.5rem 0;
+    }
+
+    .card p { margin: 0; color: var(--muted); line-height: 1.45; }
+
+    label {
+      display: block;
+      margin: .9rem 0 .35rem;
+      font: 800 .7rem/1 system-ui, sans-serif;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--rose);
+    }
+
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: .75rem;
+      background: rgba(255,255,255,.1);
+      font: 1rem/1.3 Georgia, serif;
+    }
+
+    textarea { min-height: 115px; resize: vertical; }
+
+    .row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .8rem;
+    }
+
+    .actions { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: 1rem; }
+
+    pre {
+      max-height: 520px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #fbeedb;
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 18px;
+      padding: 1rem;
+      font: .86rem/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .bell {
+      display: inline-grid;
+      place-items: center;
+      width: 4.4rem;
+      height: 4.4rem;
+      margin: 1rem 0;
+      border: 1px solid rgba(246,196,83,.45);
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(246,196,83,.25), rgba(246,196,83,.04));
+      box-shadow: 0 0 34px rgba(246,196,83,.18);
+      font-size: 2rem;
+    }
+
+    .small { color: var(--muted); font-size: .92rem; line-height: 1.45; }
+
+    .status {
+      margin-top: .75rem;
+      min-height: 1.4rem;
+      color: var(--gold);
+      font: 800 .78rem/1.4 system-ui, sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 820px) {
+      .layout, .row { grid-template-columns: 1fr; }
+      .top { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="top">
+    <a class="pill" href="./index.html">← Runa</a>
+    <span class="pill">Council Bell · local-first</span>
+  </nav>
+
+  <main>
+    <p class="eyebrow">Project Zero · API Council Packet</p>
+    <h1>Council Bell</h1>
+    <p class="lead">Ring the bell when a Runa shard is ready to enter the wider room. This page turns an intentional note into a clean packet for Flameclyffe, Project Zero, Yggdrasil, STARWELL, Supabase, Notion, GitHub, or the local ledger. It does not send anything. It prepares the invitation.</p>
+    <div class="bell" aria-hidden="true">🔔</div>
+
+    <section class="grid" aria-label="Council Bell rules">
+      <article class="card"><h2>Invitation</h2><p>The packet asks who should receive the shard. Nothing is presumed.</p></article>
+      <article class="card"><h2>Consent</h2><p>Scopes include local-only, needs-review, canonical, and excluded/private.</p></article>
+      <article class="card"><h2>Evidence</h2><p>Observation, source, feeling, and interpretation are kept apart.</p></article>
+      <article class="card"><h2>No side effects</h2><p>Exporting a packet is not a commit, upload, sync, or message.</p></article>
+    </section>
+
+    <section class="layout">
+      <form id="bellForm">
+        <h2>Prepare packet</h2>
+
+        <div class="row">
+          <div>
+            <label for="kind">Shard type</label>
+            <select id="kind">
+              <option>Runa lab note</option>
+              <option>Project Zero bridge shard</option>
+              <option>Hearthweave altar working</option>
+              <option>Sound / tone experiment</option>
+              <option>Observer DEEP state</option>
+              <option>Story passage</option>
+              <option>News / world event</option>
+              <option>File or folder anchor</option>
+            </select>
+          </div>
+          <div>
+            <label for="direction">Bridge direction</label>
+            <select id="direction">
+              <option>waking_to_aeterna</option>
+              <option>aeterna_to_waking</option>
+              <option>bidirectional</option>
+              <option>internal_lab_only</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="title">Title</label>
+        <input id="title" placeholder="what is ringing the bell?" />
+
+        <label for="observation">Observation</label>
+        <textarea id="observation" placeholder="What happened, plainly? No prophecy required." ></textarea>
+
+        <label for="subjective">Subjective / mythic resonance</label>
+        <textarea id="subjective" placeholder="How did it feel, what did it touch, what did it rhyme with?" ></textarea>
+
+        <label for="interpretation">Interpretation, optional</label>
+        <textarea id="interpretation" placeholder="Leave blank when the answer is not cooked yet." ></textarea>
+
+        <div class="row">
+          <div>
+            <label for="scope">Scope</label>
+            <select id="scope">
+              <option>local_only</option>
+              <option>needs_review</option>
+              <option>project_zero_canonical</option>
+              <option>excluded_private</option>
+            </select>
+          </div>
+          <div>
+            <label for="status">Status</label>
+            <select id="status">
+              <option>draft</option>
+              <option>logged</option>
+              <option>needs_review</option>
+              <option>ready_for_sync</option>
+              <option>excluded</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="recipients">Proposed recipients</label>
+        <input id="recipients" value="runa, project-zero, flameclyffe" />
+        <p class="small">Comma-separated. Try: yggdrasil, starwell, supabase, notion, github, writer-room, deep-observer.</p>
+
+        <label for="motifs">Motifs</label>
+        <input id="motifs" placeholder="threshold, sound, moon, mending" />
+
+        <label for="links">Links / evidence anchors</label>
+        <textarea id="links" placeholder="URLs, local aliases, filenames, Supabase row ids, Notion pages, commits. One per line." ></textarea>
+
+        <div class="actions">
+          <button type="submit">Ring bell</button>
+          <button type="button" id="copyBtn">Copy packet</button>
+          <button type="button" id="downloadBtn">Export JSON</button>
+          <button type="button" id="seedBtn">Seed from bridge ledger</button>
+        </div>
+        <div class="status" id="statusLine" aria-live="polite"></div>
+      </form>
+
+      <aside class="output">
+        <h2>Packet preview</h2>
+        <p class="small">This is the object Runa can hand to the council. It is local text until Rowan chooses otherwise.</p>
+        <pre id="packetPreview"></pre>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById('bellForm');
+    const preview = document.getElementById('packetPreview');
+    const statusLine = document.getElementById('statusLine');
+    const fields = ['kind','direction','title','observation','subjective','interpretation','scope','status','recipients','motifs','links']
+      .reduce((acc, id) => ({...acc, [id]: document.getElementById(id)}), {});
+
+    const bellKey = 'runaCouncilBellLastPacket';
+    const bridgeKey = 'runaProjectZeroBridgeLedger';
+
+    function splitList(value) {
+      return String(value || '')
+        .split(/[\n,]/)
+        .map(item => item.trim())
+        .filter(Boolean);
+    }
+
+    function buildPacket() {
+      const now = new Date().toISOString();
+      return {
+        packet_type: 'runa_council_bell_v0_1',
+        created_at: now,
+        source: {
+          app: 'Runa',
+          surface: 'Council Bell',
+          storage: 'browser-local until explicitly exported or synced'
+        },
+        consent: {
+          scope: fields.scope.value,
+          status: fields.status.value,
+          rule: 'No side effects. Export is not sync. Sync requires explicit consent.'
+        },
+        bridge: {
+          kind: fields.kind.value,
+          direction: fields.direction.value,
+          title: fields.title.value.trim() || 'Untitled council packet',
+          recipients: splitList(fields.recipients.value),
+          motifs: splitList(fields.motifs.value)
+        },
+        record: {
+          observation: fields.observation.value.trim(),
+          subjective_resonance: fields.subjective.value.trim(),
+          interpretation: fields.interpretation.value.trim(),
+          evidence_anchors: splitList(fields.links.value)
+        },
+        suggested_next_actions: [
+          'review_scope',
+          'attach_to_project_zero_if_approved',
+          'route_to_flameclyffe_or_yggdrasil_only_after_consent'
+        ],
+        law: 'Data sets atmosphere, not fate.'
+      };
+    }
+
+    function render(packet = buildPacket()) {
+      preview.textContent = JSON.stringify(packet, null, 2);
+      return packet;
+    }
+
+    function save(packet) {
+      localStorage.setItem(bellKey, JSON.stringify(packet));
+    }
+
+    function flash(message) {
+      statusLine.textContent = message;
+      window.clearTimeout(flash.timer);
+      flash.timer = window.setTimeout(() => { statusLine.textContent = ''; }, 3200);
+    }
+
+    function downloadPacket(packet) {
+      const blob = new Blob([JSON.stringify(packet, null, 2)], { type: 'application/json' });
+      const safe = (packet.bridge.title || 'runa-council-bell').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'runa-council-bell';
+      const a = Object.assign(document.createElement('a'), {
+        href: URL.createObjectURL(blob),
+        download: `${safe}-council-packet.json`
+      });
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    form.addEventListener('input', () => render());
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      const packet = render();
+      save(packet);
+      flash('Bell rung locally. Packet prepared, not sent.');
+    });
+
+    document.getElementById('copyBtn').onclick = async () => {
+      const packet = render();
+      save(packet);
+      try {
+        await navigator.clipboard.writeText(JSON.stringify(packet, null, 2));
+        flash('Packet copied. The goblins were supervised.');
+      } catch {
+        flash('Copy blocked by browser. JSON is still visible.');
+      }
+    };
+
+    document.getElementById('downloadBtn').onclick = () => {
+      const packet = render();
+      save(packet);
+      downloadPacket(packet);
+      flash('Packet exported as JSON.');
+    };
+
+    document.getElementById('seedBtn').onclick = () => {
+      try {
+        const ledger = JSON.parse(localStorage.getItem(bridgeKey) || '[]');
+        const latest = Array.isArray(ledger) ? ledger[ledger.length - 1] : null;
+        if (!latest) {
+          flash('No Project Zero bridge shard found yet.');
+          return;
+        }
+        fields.kind.value = latest.kind || 'Project Zero bridge shard';
+        fields.title.value = latest.title || '';
+        fields.observation.value = latest.text || '';
+        fields.scope.value = scopeToPacketScope(latest.scope);
+        fields.status.value = fields.scope.value === 'excluded_private' ? 'excluded' : 'needs_review';
+        render();
+        flash('Seeded from latest local bridge shard.');
+      } catch {
+        flash('Could not read local bridge ledger.');
+      }
+    };
+
+    function scopeToPacketScope(scope = '') {
+      const normal = String(scope).toLowerCase();
+      if (normal.includes('canonical')) return 'project_zero_canonical';
+      if (normal.includes('review')) return 'needs_review';
+      if (normal.includes('excluded') || normal.includes('private')) return 'excluded_private';
+      return 'local_only';
+    }
+
+    try {
+      const last = JSON.parse(localStorage.getItem(bellKey) || 'null');
+      if (last) {
+        fields.kind.value = last.bridge?.kind || fields.kind.value;
+        fields.direction.value = last.bridge?.direction || fields.direction.value;
+        fields.title.value = last.bridge?.title || '';
+        fields.observation.value = last.record?.observation || '';
+        fields.subjective.value = last.record?.subjective_resonance || '';
+        fields.interpretation.value = last.record?.interpretation || '';
+        fields.scope.value = last.consent?.scope || fields.scope.value;
+        fields.status.value = last.consent?.status || fields.status.value;
+        fields.recipients.value = (last.bridge?.recipients || []).join(', ') || fields.recipients.value;
+        fields.motifs.value = (last.bridge?.motifs || []).join(', ');
+        fields.links.value = (last.record?.evidence_anchors || []).join('\n');
+      }
+    } catch {}
+
+    render();
+  </script>
+</body>
+</html>
