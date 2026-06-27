@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runa — Threshold Mirror</title>
+  <style>
+    :root {
+      --bg: #10171f;
+      --ink: #f4efe7;
+      --muted: rgba(244,239,231,.74);
+      --panel: rgba(255,255,255,.08);
+      --line: rgba(244,239,231,.18);
+      --gold: #f6c453;
+      --green: #2d7a5f;
+      --blue: #6bb5d4;
+      --violet: #a99ad9;
+      --rose: #d89a8c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: Georgia, 'Times New Roman', serif;
+      background:
+        radial-gradient(circle at 12% 12%, rgba(107,181,212,.22), transparent 26rem),
+        radial-gradient(circle at 80% 18%, rgba(246,196,83,.16), transparent 28rem),
+        radial-gradient(circle at 58% 92%, rgba(169,154,217,.22), transparent 34rem),
+        linear-gradient(145deg, #071018, var(--bg));
+    }
+
+    a, button, input, textarea, select { color: inherit; }
+
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border-bottom: 1px solid var(--line);
+      background: rgba(7,16,24,.72);
+      backdrop-filter: blur(16px);
+    }
+
+    .pill, button {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: .62rem .9rem;
+      background: rgba(255,255,255,.08);
+      text-decoration: none;
+      font: 800 .72rem/1 system-ui, sans-serif;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    button:hover, .pill:hover { background: rgba(107,181,212,.16); }
+
+    main { width: min(1120px, 92vw); margin: 0 auto; padding: 3rem 0 4rem; }
+
+    h1 {
+      margin: .2rem 0 1rem;
+      font-size: clamp(2.4rem, 8vw, 5.8rem);
+      line-height: .9;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: .2rem 0 .75rem;
+      font: 900 1rem/1.1 system-ui, sans-serif;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow { font: 800 .72rem/1 system-ui, sans-serif; letter-spacing: .28em; text-transform: uppercase; color: var(--blue); }
+    .lead { max-width: 790px; color: var(--muted); font-size: 1.24rem; line-height: 1.55; }
+
+    .layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 1rem; align-items: start; margin-top: 2rem; }
+    form, .mirror-card, .output { border: 1px solid var(--line); border-radius: 28px; background: var(--panel); box-shadow: 0 24px 90px rgba(0,0,0,.25); backdrop-filter: blur(16px); padding: 1.15rem; }
+    .mirror-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: .85rem; }
+
+    label { display: block; margin: .9rem 0 .35rem; font: 800 .7rem/1 system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--rose); }
+    input, textarea, select { width: 100%; border: 1px solid var(--line); border-radius: 16px; padding: .75rem; background: rgba(255,255,255,.1); font: 1rem/1.3 Georgia, serif; }
+    textarea { min-height: 145px; resize: vertical; }
+    .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+    .actions { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: 1rem; }
+
+    .mirror-card p { margin: 0; color: var(--muted); line-height: 1.5; white-space: pre-wrap; }
+    .mirror-card[data-kind="science"] h2 { color: var(--blue); }
+    .mirror-card[data-kind="myth"] h2 { color: var(--gold); }
+    .mirror-card[data-kind="story"] h2 { color: var(--violet); }
+    .mirror-card[data-kind="packet"] h2 { color: var(--green); }
+
+    pre { max-height: 360px; overflow: auto; white-space: pre-wrap; word-break: break-word; color: #fbeedb; background: rgba(0,0,0,.22); border: 1px solid rgba(255,255,255,.12); border-radius: 18px; padding: 1rem; font: .86rem/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .small { color: var(--muted); font-size: .92rem; line-height: 1.45; }
+    .status { margin-top: .75rem; min-height: 1.4rem; color: var(--blue); font: 800 .78rem/1.4 system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase; }
+    .mirror-glyph { font-size: 3rem; margin: 1rem 0; filter: drop-shadow(0 0 18px rgba(107,181,212,.28)); }
+
+    @media (max-width: 900px) { .layout, .mirror-grid, .row { grid-template-columns: 1fr; } .top { align-items: flex-start; flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <nav class="top">
+    <a class="pill" href="./index.html">← Runa</a>
+    <a class="pill" href="./sigil-loom.html">Sigil Loom →</a>
+  </nav>
+
+  <main>
+    <p class="eyebrow">Runa · meaning splitter</p>
+    <h1>Threshold Mirror</h1>
+    <p class="lead">Place one shard before the mirror. Runa reflects it four ways: scientific label, mythic resonance, creative prompt, and Project Zero packet. The point is not to flatten the strange. The point is to label the shelf before calling anything proof.</p>
+    <div class="mirror-glyph" aria-hidden="true">◈</div>
+
+    <section class="layout">
+      <form id="mirrorForm">
+        <h2>Shard before the mirror</h2>
+        <label for="title">Title</label>
+        <input id="title" placeholder="what stands at the threshold?" />
+
+        <label for="note">Note</label>
+        <textarea id="note" placeholder="Write the event, experiment, passage, mood, signal, dream, or observation here." ></textarea>
+
+        <div class="row">
+          <div>
+            <label for="shelf">Claims shelf</label>
+            <select id="shelf">
+              <option>Evidence-backed finding</option>
+              <option>Established science</option>
+              <option>Active research</option>
+              <option>Speculative theory</option>
+              <option>Fringe inspiration</option>
+              <option>Implementation task</option>
+              <option>Subjective experiment note</option>
+            </select>
+          </div>
+          <div>
+            <label for="scope">Scope</label>
+            <select id="scope">
+              <option>local_only</option>
+              <option>needs_review</option>
+              <option>project_zero_canonical</option>
+              <option>excluded_private</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="motifs">Motifs</label>
+        <input id="motifs" placeholder="threshold, sound, moon, mending" />
+
+        <label for="evidence">Evidence anchors</label>
+        <textarea id="evidence" placeholder="Links, filenames, measurements, screenshots, commits, rows. One per line." ></textarea>
+
+        <div class="actions">
+          <button type="submit">Reflect shard</button>
+          <button type="button" id="copyBtn">Copy mirror JSON</button>
+          <button type="button" id="downloadBtn">Export JSON</button>
+          <button type="button" id="seedBtn">Seed from Council Bell</button>
+        </div>
+        <div class="status" id="statusLine" aria-live="polite"></div>
+      </form>
+
+      <section class="output">
+        <h2>Four reflections</h2>
+        <div class="mirror-grid">
+          <article class="mirror-card" data-kind="science"><h2>Scientific label</h2><p id="scienceText"></p></article>
+          <article class="mirror-card" data-kind="myth"><h2>Mythic resonance</h2><p id="mythText"></p></article>
+          <article class="mirror-card" data-kind="story"><h2>Creative prompt</h2><p id="storyText"></p></article>
+          <article class="mirror-card" data-kind="packet"><h2>Project Zero packet</h2><p id="packetText"></p></article>
+        </div>
+        <h2 style="margin-top:1rem">Mirror object</h2>
+        <pre id="jsonPreview"></pre>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const mirrorKey = 'runaThresholdMirrorLast';
+    const councilKey = 'runaCouncilBellLastPacket';
+    const ids = ['title','note','shelf','scope','motifs','evidence'];
+    const fields = ids.reduce((acc, id) => ({...acc, [id]: document.getElementById(id)}), {});
+    const outputs = {
+      science: document.getElementById('scienceText'),
+      myth: document.getElementById('mythText'),
+      story: document.getElementById('storyText'),
+      packet: document.getElementById('packetText'),
+      json: document.getElementById('jsonPreview'),
+      status: document.getElementById('statusLine')
+    };
+
+    function list(value) { return String(value || '').split(/[\n,]/).map(v => v.trim()).filter(Boolean); }
+    function clip(value, fallback) { return String(value || '').trim() || fallback; }
+
+    function buildMirror() {
+      const title = clip(fields.title.value, 'Untitled threshold shard');
+      const note = clip(fields.note.value, 'No note entered yet.');
+      const shelf = fields.shelf.value;
+      const scope = fields.scope.value;
+      const motifs = list(fields.motifs.value);
+      const evidence = list(fields.evidence.value);
+      const motifLine = motifs.length ? motifs.join(', ') : 'none named yet';
+      const evidenceLine = evidence.length ? evidence.join('\n') : 'No evidence anchors supplied.';
+
+      return {
+        mirror_type: 'runa_threshold_mirror_v0_1',
+        created_at: new Date().toISOString(),
+        title,
+        shelf,
+        scope,
+        motifs,
+        evidence_anchors: evidence,
+        source_note: note,
+        reflections: {
+          scientific_label: `${shelf}. Treat this shard as a labelled record, not a conclusion. Evidence anchors:\n${evidenceLine}`,
+          mythic_resonance: `Threshold tone: ${motifLine}. Let the shard remain symbolic unless later evidence asks for a stronger claim. Data sets atmosphere, not fate.`,
+          creative_prompt: `Write from the moment when ${title} pauses at the threshold. Use these motifs as weather: ${motifLine}. Let observation and interpretation sit in separate cups.`,
+          project_zero_packet: {
+            suggested_kind: 'threshold_mirror_reflection',
+            consent_scope: scope,
+            title,
+            motifs,
+            observation: note,
+            interpretation_status: shelf,
+            evidence_anchors: evidence,
+            next_step: scope === 'excluded_private' ? 'keep_private' : 'review_before_bridge'
+          }
+        }
+      };
+    }
+
+    function render() {
+      const mirror = buildMirror();
+      outputs.science.textContent = mirror.reflections.scientific_label;
+      outputs.myth.textContent = mirror.reflections.mythic_resonance;
+      outputs.story.textContent = mirror.reflections.creative_prompt;
+      outputs.packet.textContent = JSON.stringify(mirror.reflections.project_zero_packet, null, 2);
+      outputs.json.textContent = JSON.stringify(mirror, null, 2);
+      return mirror;
+    }
+
+    function save(mirror) { localStorage.setItem(mirrorKey, JSON.stringify(mirror)); }
+    function flash(text) { outputs.status.textContent = text; clearTimeout(flash.timer); flash.timer = setTimeout(() => outputs.status.textContent = '', 3200); }
+
+    document.getElementById('mirrorForm').addEventListener('input', render);
+    document.getElementById('mirrorForm').addEventListener('submit', event => { event.preventDefault(); const mirror = render(); save(mirror); flash('Mirror held locally. Nothing sent.'); });
+    document.getElementById('copyBtn').onclick = async () => { const mirror = render(); save(mirror); try { await navigator.clipboard.writeText(JSON.stringify(mirror, null, 2)); flash('Mirror JSON copied.'); } catch { flash('Copy blocked. JSON is visible.'); } };
+    document.getElementById('downloadBtn').onclick = () => { const mirror = render(); save(mirror); const blob = new Blob([JSON.stringify(mirror, null, 2)], {type:'application/json'}); const safe = mirror.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'threshold-mirror'; const a = Object.assign(document.createElement('a'), {href: URL.createObjectURL(blob), download: `${safe}-threshold-mirror.json`}); a.click(); URL.revokeObjectURL(a.href); flash('Mirror exported.'); };
+    document.getElementById('seedBtn').onclick = () => {
+      try {
+        const packet = JSON.parse(localStorage.getItem(councilKey) || 'null');
+        if (!packet) { flash('No Council Bell packet found yet.'); return; }
+        fields.title.value = packet.bridge?.title || '';
+        fields.note.value = [packet.record?.observation, packet.record?.subjective_resonance].filter(Boolean).join('\n\n');
+        fields.scope.value = packet.consent?.scope || 'needs_review';
+        fields.motifs.value = (packet.bridge?.motifs || []).join(', ');
+        fields.evidence.value = (packet.record?.evidence_anchors || []).join('\n');
+        render();
+        flash('Seeded from Council Bell.');
+      } catch { flash('Could not read Council Bell packet.'); }
+    };
+
+    try {
+      const last = JSON.parse(localStorage.getItem(mirrorKey) || 'null');
+      if (last) {
+        fields.title.value = last.title || '';
+        fields.note.value = last.source_note || '';
+        fields.shelf.value = last.shelf || fields.shelf.value;
+        fields.scope.value = last.scope || fields.scope.value;
+        fields.motifs.value = (last.motifs || []).join(', ');
+        fields.evidence.value = (last.evidence_anchors || []).join('\n');
+      }
+    } catch {}
+
+    render();
+  </script>
+</body>
+</html>
