@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runa — Threadline</title>
+  <style>
+    :root {
+      --bg: #13100f;
+      --ink: #faeddc;
+      --muted: rgba(250,237,220,.74);
+      --panel: rgba(255,255,255,.08);
+      --line: rgba(250,237,220,.18);
+      --gold: #f6c453;
+      --green: #2d7a5f;
+      --blue: #6bb5d4;
+      --rose: #d89a8c;
+      --violet: #a99ad9;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: Georgia, 'Times New Roman', serif;
+      background:
+        radial-gradient(circle at 14% 12%, rgba(246,196,83,.18), transparent 25rem),
+        radial-gradient(circle at 78% 20%, rgba(45,122,95,.18), transparent 28rem),
+        radial-gradient(circle at 55% 96%, rgba(107,181,212,.18), transparent 32rem),
+        linear-gradient(145deg, #0b0807, var(--bg));
+    }
+    a, button { color: inherit; }
+    .top { position: sticky; top: 0; z-index: 2; display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:1rem; border-bottom:1px solid var(--line); background:rgba(11,8,7,.72); backdrop-filter:blur(16px); }
+    .nav { display:flex; gap:.5rem; flex-wrap:wrap; }
+    .pill, button { border:1px solid var(--line); border-radius:999px; padding:.62rem .9rem; background:rgba(255,255,255,.08); text-decoration:none; font:800 .72rem/1 system-ui,sans-serif; letter-spacing:.12em; text-transform:uppercase; cursor:pointer; }
+    button:hover, .pill:hover { background:rgba(246,196,83,.16); }
+    main { width:min(1160px,92vw); margin:0 auto; padding:3rem 0 4rem; }
+    h1 { margin:.2rem 0 1rem; font-size:clamp(2.4rem,8vw,5.8rem); line-height:.9; letter-spacing:.04em; text-transform:uppercase; }
+    h2 { margin:.2rem 0 .75rem; font:900 1rem/1.1 system-ui,sans-serif; letter-spacing:.13em; text-transform:uppercase; }
+    .eyebrow { font:800 .72rem/1 system-ui,sans-serif; letter-spacing:.28em; text-transform:uppercase; color:var(--gold); }
+    .lead { max-width:820px; color:var(--muted); font-size:1.24rem; line-height:1.55; }
+    .thread { position:relative; display:grid; gap:1rem; margin-top:2rem; }
+    .thread:before { content:""; position:absolute; left:1.6rem; top:1.2rem; bottom:1.2rem; width:2px; background:linear-gradient(var(--gold), var(--blue), var(--green)); opacity:.55; }
+    .node { position:relative; display:grid; grid-template-columns:3.2rem minmax(0,1fr); gap:1rem; align-items:start; }
+    .dot { position:relative; z-index:1; display:grid; place-items:center; width:3.2rem; height:3.2rem; border:1px solid var(--line); border-radius:50%; background:rgba(255,255,255,.1); box-shadow:0 0 24px rgba(246,196,83,.16); font-size:1.3rem; }
+    .card { border:1px solid var(--line); border-radius:28px; background:var(--panel); box-shadow:0 24px 90px rgba(0,0,0,.25); backdrop-filter:blur(16px); padding:1.15rem; min-height:8rem; }
+    .card p { color:var(--muted); line-height:1.5; margin:.35rem 0; white-space:pre-wrap; }
+    .meta { display:flex; gap:.45rem; flex-wrap:wrap; margin:.75rem 0; }
+    .tag { border:1px solid rgba(255,255,255,.14); border-radius:999px; padding:.35rem .55rem; color:var(--muted); font:800 .68rem/1 system-ui,sans-serif; letter-spacing:.08em; text-transform:uppercase; }
+    .actions { display:flex; gap:.6rem; flex-wrap:wrap; margin:1.5rem 0; }
+    pre { max-height:360px; overflow:auto; white-space:pre-wrap; word-break:break-word; color:#fbeedb; background:rgba(0,0,0,.22); border:1px solid rgba(255,255,255,.12); border-radius:18px; padding:1rem; font:.84rem/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+    .svg-slot svg { max-width:260px; width:100%; height:auto; display:block; margin:.5rem 0; border-radius:18px; }
+    .empty { color:var(--rose); }
+    .status { min-height:1.4rem; color:var(--gold); font:800 .78rem/1.4 system-ui,sans-serif; letter-spacing:.08em; text-transform:uppercase; }
+    @media (max-width:760px){ .top{align-items:flex-start; flex-direction:column;} .thread:before{left:1.35rem;} .node{grid-template-columns:2.7rem minmax(0,1fr);} .dot{width:2.7rem;height:2.7rem;} }
+  </style>
+</head>
+<body>
+  <nav class="top">
+    <a class="pill" href="./index.html">← Runa</a>
+    <div class="nav">
+      <a class="pill" href="./council-bell.html">Bell</a>
+      <a class="pill" href="./threshold-mirror.html">Mirror</a>
+      <a class="pill" href="./sigil-loom.html">Loom</a>
+    </div>
+  </nav>
+
+  <main>
+    <p class="eyebrow">Runa · local working spine</p>
+    <h1>Threadline</h1>
+    <p class="lead">Threadline gathers the latest Council Bell packet, Threshold Mirror reflection, and Sigil Loom glyph into one local working. It shows the path: what entered, what it meant, and what shape it became.</p>
+
+    <div class="actions">
+      <button id="refreshBtn">Refresh thread</button>
+      <button id="copyBtn">Copy thread JSON</button>
+      <button id="downloadBtn">Export thread JSON</button>
+      <button id="clearBtn">Clear threadline view</button>
+    </div>
+    <div class="status" id="statusLine" aria-live="polite"></div>
+
+    <section class="thread" id="thread"></section>
+
+    <h2 style="margin-top:1.5rem">Thread object</h2>
+    <pre id="jsonPreview"></pre>
+  </main>
+
+  <script>
+    const keys = {
+      bell: 'runaCouncilBellLastPacket',
+      mirror: 'runaThresholdMirrorLast',
+      loom: 'runaSigilLoomLast'
+    };
+    const thread = document.getElementById('thread');
+    const preview = document.getElementById('jsonPreview');
+    const statusLine = document.getElementById('statusLine');
+
+    function read(key) {
+      try { return JSON.parse(localStorage.getItem(key) || 'null'); }
+      catch { return null; }
+    }
+
+    function buildThread() {
+      const bell = read(keys.bell);
+      const mirror = read(keys.mirror);
+      const loom = read(keys.loom);
+      return {
+        threadline_type: 'runa_threadline_v0_1',
+        created_at: new Date().toISOString(),
+        storage: 'browser-local view over existing Runa local records',
+        stages: { bell, mirror, loom },
+        continuity: {
+          title: loom?.title || mirror?.title || bell?.bridge?.title || 'Untitled threadline',
+          motifs: loom?.motifs || mirror?.motifs || bell?.bridge?.motifs || [],
+          scope: loom?.scope || mirror?.scope || bell?.consent?.scope || 'local_only',
+          direction: loom?.direction || bell?.bridge?.direction || 'unthreaded'
+        },
+        law: 'Data sets atmosphere, not fate.'
+      };
+    }
+
+    function stageCard(name, icon, data, renderBody) {
+      const node = document.createElement('article');
+      node.className = 'node';
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      dot.textContent = icon;
+      const card = document.createElement('div');
+      card.className = 'card';
+      const h = document.createElement('h2');
+      h.textContent = name;
+      card.append(h);
+      if (!data) {
+        const p = document.createElement('p');
+        p.className = 'empty';
+        p.textContent = 'No local record found yet.';
+        card.append(p);
+      } else {
+        renderBody(card, data);
+      }
+      node.append(dot, card);
+      return node;
+    }
+
+    function tags(items = []) {
+      const wrap = document.createElement('div');
+      wrap.className = 'meta';
+      items.filter(Boolean).forEach(item => {
+        const span = document.createElement('span');
+        span.className = 'tag';
+        span.textContent = item;
+        wrap.append(span);
+      });
+      return wrap;
+    }
+
+    function addPara(card, text) {
+      const p = document.createElement('p');
+      p.textContent = text || '—';
+      card.append(p);
+    }
+
+    function render() {
+      const current = buildThread();
+      thread.textContent = '';
+      thread.append(
+        stageCard('Council Bell', '🔔', current.stages.bell, (card, data) => {
+          card.append(tags([data.consent?.scope, data.consent?.status, data.bridge?.direction]));
+          addPara(card, data.bridge?.title || 'Untitled packet');
+          addPara(card, data.record?.observation || data.record?.subjective_resonance || 'Packet prepared.');
+        }),
+        stageCard('Threshold Mirror', '🪞', current.stages.mirror, (card, data) => {
+          card.append(tags([data.shelf, data.scope, ...(data.motifs || [])]));
+          addPara(card, data.title);
+          addPara(card, data.reflections?.mythic_resonance || data.source_note);
+        }),
+        stageCard('Sigil Loom', '🔮', current.stages.loom, (card, data) => {
+          card.append(tags([data.scope, data.direction, ...(data.motifs || [])]));
+          addPara(card, data.title);
+          if (data.render_svg) {
+            const slot = document.createElement('div');
+            slot.className = 'svg-slot';
+            slot.innerHTML = data.render_svg;
+            card.append(slot);
+          }
+        })
+      );
+      preview.textContent = JSON.stringify({...current, stages: {...current.stages, loom: current.stages.loom ? {...current.stages.loom, render_svg: '[inline SVG omitted from preview]'} : null}}, null, 2);
+      return current;
+    }
+
+    function flash(text) { statusLine.textContent = text; clearTimeout(flash.timer); flash.timer = setTimeout(() => statusLine.textContent = '', 3200); }
+    function download(name, text) { const blob = new Blob([text], {type:'application/json'}); const a = Object.assign(document.createElement('a'), {href: URL.createObjectURL(blob), download: name}); a.click(); URL.revokeObjectURL(a.href); }
+
+    document.getElementById('refreshBtn').onclick = () => { render(); flash('Thread refreshed.'); };
+    document.getElementById('copyBtn').onclick = async () => { const current = render(); try { await navigator.clipboard.writeText(JSON.stringify(current, null, 2)); flash('Thread JSON copied.'); } catch { flash('Copy blocked. JSON is visible.'); } };
+    document.getElementById('downloadBtn').onclick = () => { const current = render(); const safe = current.continuity.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'runa-threadline'; download(`${safe}-threadline.json`, JSON.stringify(current, null, 2)); flash('Thread JSON exported.'); };
+    document.getElementById('clearBtn').onclick = () => { thread.textContent = ''; preview.textContent = '{\n  "threadline": "view cleared; local source records remain untouched"\n}'; flash('View cleared. Source records kept.'); };
+
+    render();
+  </script>
+</body>
+</html>
