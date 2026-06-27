@@ -15,6 +15,8 @@ The `docs/` folder contains public/static pages such as:
 index.html
 project-zero-bridge.html
 council-bell.html
+threshold-mirror.html
+sigil-loom.html
 hearthweave-altar.html
 flameclyffe-studio.html
 flameclyffe-dyad.html
@@ -40,6 +42,12 @@ tesla-observatory.html
 - a clear rule that export is not sync
 
 It stores only the latest packet in browser local storage unless Rowan chooses to copy or export JSON.
+
+## Threshold Mirror and Sigil Loom
+
+`docs/threshold-mirror.html` reflects one shard into labelled views so evidence, resonance, story use, and review stay distinct.
+
+`docs/sigil-loom.html` turns title, scope, direction, motifs, note, and DEEP vector values into a deterministic SVG glyph.
 
 ## Claims policy
 
