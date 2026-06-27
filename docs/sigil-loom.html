@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runa — Sigil Loom</title>
+  <style>
+    :root {
+      --bg: #18110f;
+      --ink: #f9ecd8;
+      --muted: rgba(249,236,216,.72);
+      --panel: rgba(255,255,255,.08);
+      --line: rgba(249,236,216,.18);
+      --gold: #f6c453;
+      --green: #2d7a5f;
+      --blue: #6bb5d4;
+      --rose: #d89a8c;
+      --violet: #a99ad9;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: Georgia, 'Times New Roman', serif;
+      background:
+        radial-gradient(circle at 14% 16%, rgba(246,196,83,.20), transparent 24rem),
+        radial-gradient(circle at 86% 20%, rgba(45,122,95,.20), transparent 30rem),
+        radial-gradient(circle at 50% 95%, rgba(169,154,217,.18), transparent 34rem),
+        linear-gradient(145deg, #0d0908, var(--bg));
+    }
+    a, button, input, textarea, select { color: inherit; }
+    .top { position: sticky; top: 0; z-index: 2; display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:1rem; border-bottom:1px solid var(--line); background:rgba(13,9,8,.72); backdrop-filter:blur(16px); }
+    .pill, button { border:1px solid var(--line); border-radius:999px; padding:.62rem .9rem; background:rgba(255,255,255,.08); text-decoration:none; font:800 .72rem/1 system-ui,sans-serif; letter-spacing:.12em; text-transform:uppercase; cursor:pointer; }
+    button:hover, .pill:hover { background:rgba(246,196,83,.16); }
+    main { width:min(1160px,92vw); margin:0 auto; padding:3rem 0 4rem; }
+    h1 { margin:.2rem 0 1rem; font-size:clamp(2.4rem,8vw,5.8rem); line-height:.9; letter-spacing:.04em; text-transform:uppercase; }
+    h2 { margin:.2rem 0 .75rem; font:900 1rem/1.1 system-ui,sans-serif; letter-spacing:.13em; text-transform:uppercase; }
+    .eyebrow { font:800 .72rem/1 system-ui,sans-serif; letter-spacing:.28em; text-transform:uppercase; color:var(--gold); }
+    .lead { max-width:790px; color:var(--muted); font-size:1.24rem; line-height:1.55; }
+    .layout { display:grid; grid-template-columns:minmax(300px,.75fr) minmax(320px,1.25fr); gap:1rem; align-items:start; margin-top:2rem; }
+    form, .loom-panel { border:1px solid var(--line); border-radius:28px; background:var(--panel); box-shadow:0 24px 90px rgba(0,0,0,.25); backdrop-filter:blur(16px); padding:1.15rem; }
+    label { display:block; margin:.9rem 0 .35rem; font:800 .7rem/1 system-ui,sans-serif; letter-spacing:.12em; text-transform:uppercase; color:var(--rose); }
+    input, textarea, select { width:100%; border:1px solid var(--line); border-radius:16px; padding:.75rem; background:rgba(255,255,255,.1); font:1rem/1.3 Georgia,serif; }
+    textarea { min-height:96px; resize:vertical; }
+    .row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.8rem; }
+    .actions { display:flex; gap:.6rem; flex-wrap:wrap; margin-top:1rem; }
+    .sigil-wrap { display:grid; place-items:center; min-height:430px; border:1px solid rgba(255,255,255,.12); border-radius:28px; background:radial-gradient(circle, rgba(246,196,83,.08), rgba(0,0,0,.18)); overflow:hidden; }
+    svg { width:min(560px,100%); height:auto; display:block; }
+    pre { max-height:260px; overflow:auto; white-space:pre-wrap; word-break:break-word; color:#fbeedb; background:rgba(0,0,0,.22); border:1px solid rgba(255,255,255,.12); border-radius:18px; padding:1rem; font:.84rem/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+    .small { color:var(--muted); font-size:.92rem; line-height:1.45; }
+    .status { margin-top:.75rem; min-height:1.4rem; color:var(--gold); font:800 .78rem/1.4 system-ui,sans-serif; letter-spacing:.08em; text-transform:uppercase; }
+    .sliders { display:grid; gap:.65rem; margin-top:.8rem; }
+    .slider-row { display:grid; grid-template-columns:2rem 1fr 2.5rem; gap:.5rem; align-items:center; font:800 .75rem/1 system-ui,sans-serif; color:var(--muted); }
+    input[type="range"] { padding:0; accent-color: var(--gold); }
+    @media (max-width:900px){ .layout,.row{grid-template-columns:1fr;} .top{align-items:flex-start; flex-direction:column;} }
+  </style>
+</head>
+<body>
+  <nav class="top">
+    <a class="pill" href="./index.html">← Runa</a>
+    <a class="pill" href="./threshold-mirror.html">Threshold Mirror</a>
+  </nav>
+
+  <main>
+    <p class="eyebrow">Runa · visible compression</p>
+    <h1>Sigil Loom</h1>
+    <p class="lead">Give the shard motifs, scope, direction, and a DEEP vector. Runa weaves a simple SVG sigil: not proof, not fate, just a visible receipt for a bridgeable field.</p>
+
+    <section class="layout">
+      <form id="loomForm">
+        <h2>Thread the loom</h2>
+        <label for="title">Title</label>
+        <input id="title" placeholder="sigil title" />
+
+        <div class="row">
+          <div>
+            <label for="scope">Scope</label>
+            <select id="scope">
+              <option>local_only</option>
+              <option>needs_review</option>
+              <option>project_zero_canonical</option>
+              <option>excluded_private</option>
+            </select>
+          </div>
+          <div>
+            <label for="direction">Direction</label>
+            <select id="direction">
+              <option>waking_to_aeterna</option>
+              <option>aeterna_to_waking</option>
+              <option>bidirectional</option>
+              <option>internal_lab_only</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="motifs">Motifs</label>
+        <input id="motifs" placeholder="threshold, sound, moon, mending" />
+
+        <label for="note">Note</label>
+        <textarea id="note" placeholder="Optional note woven into the export object." ></textarea>
+
+        <h2 style="margin-top:1rem">DEEP vector</h2>
+        <div class="sliders" id="sliders"></div>
+
+        <div class="actions">
+          <button type="submit">Weave sigil</button>
+          <button type="button" id="copySvgBtn">Copy SVG</button>
+          <button type="button" id="copyJsonBtn">Copy JSON</button>
+          <button type="button" id="downloadSvgBtn">Export SVG</button>
+          <button type="button" id="seedBtn">Seed from Threshold Mirror</button>
+        </div>
+        <div class="status" id="statusLine" aria-live="polite"></div>
+      </form>
+
+      <section class="loom-panel">
+        <h2>Woven sigil</h2>
+        <div class="sigil-wrap" id="sigilWrap"></div>
+        <h2 style="margin-top:1rem">Sigil object</h2>
+        <pre id="jsonPreview"></pre>
+        <p class="small">The sigil is deterministic from the current field. Change a motif, scope, direction, or vector and the glyph shifts.</p>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const mirrorKey = 'runaThresholdMirrorLast';
+    const loomKey = 'runaSigilLoomLast';
+    const vectorKeys = ['P','C','R','E','M','A'];
+    const defaults = { P:.55, C:.60, R:.62, E:.28, M:.40, A:.66 };
+    const fields = ['title','scope','direction','motifs','note'].reduce((acc,id)=>({...acc,[id]:document.getElementById(id)}),{});
+    const sliders = document.getElementById('sliders');
+    const wrap = document.getElementById('sigilWrap');
+    const preview = document.getElementById('jsonPreview');
+    const statusLine = document.getElementById('statusLine');
+
+    vectorKeys.forEach(key => {
+      const row = document.createElement('label');
+      row.className = 'slider-row';
+      row.innerHTML = `<span>${key}</span><input id="v-${key}" type="range" min="0" max="1" step="0.01" value="${defaults[key]}"><span id="n-${key}">${defaults[key].toFixed(2)}</span>`;
+      sliders.append(row);
+    });
+
+    function list(value){ return String(value||'').split(/[\n,]/).map(v=>v.trim()).filter(Boolean); }
+    function hash(text){ let h = 2166136261; for (const ch of text) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+    function pickPalette(scope){
+      if (scope === 'project_zero_canonical') return ['#f6c453','#2d7a5f','#f9ecd8'];
+      if (scope === 'needs_review') return ['#a99ad9','#6bb5d4','#f9ecd8'];
+      if (scope === 'excluded_private') return ['#6d5a7d','#d89a8c','#f9ecd8'];
+      return ['#6bb5d4','#2d7a5f','#f9ecd8'];
+    }
+    function vector(){
+      return Object.fromEntries(vectorKeys.map(k => [k, Number(document.getElementById(`v-${k}`).value)]));
+    }
+    function build(){
+      const motifs = list(fields.motifs.value);
+      const v = vector();
+      const title = fields.title.value.trim() || 'Untitled sigil';
+      const scope = fields.scope.value;
+      const direction = fields.direction.value;
+      const seed = hash([title, scope, direction, motifs.join('|'), Object.values(v).join('|')].join('::'));
+      const palette = pickPalette(scope);
+      const arms = Math.max(3, Math.min(12, 3 + motifs.length + Math.round(v.R * 4)));
+      const rings = 2 + Math.round(v.M * 4);
+      const twist = (seed % 360) + v.E * 90;
+      const pulse = 70 + v.A * 70;
+      const coherence = 40 + v.C * 110;
+      return { sigil_type:'runa_sigil_loom_v0_1', created_at:new Date().toISOString(), title, scope, direction, motifs, note:fields.note.value.trim(), deep_vector:v, geometry:{seed, arms, rings, twist:Number(twist.toFixed(2)), pulse:Number(pulse.toFixed(2)), coherence:Number(coherence.toFixed(2))}, palette, law:'Data sets atmosphere, not fate.' };
+    }
+    function point(cx, cy, r, deg){ const rad=(deg-90)*Math.PI/180; return [cx + Math.cos(rad)*r, cy + Math.sin(rad)*r]; }
+    function svgFor(s){
+      const [a,b,c] = s.palette;
+      const cx=300, cy=300;
+      let lines = [];
+      for(let i=0;i<s.geometry.arms;i++){
+        const deg = (360/s.geometry.arms)*i + s.geometry.twist;
+        const [x1,y1]=point(cx,cy,46,deg);
+        const [x2,y2]=point(cx,cy,s.geometry.coherence,deg + s.deep_vector.E*28);
+        lines.push(`<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${a}" stroke-width="2.5" stroke-linecap="round" opacity=".9"/>`);
+      }
+      let rings=[];
+      for(let i=1;i<=s.geometry.rings;i++){
+        const r = 36 + i * (s.geometry.pulse / (s.geometry.rings + 1));
+        rings.push(`<circle cx="${cx}" cy="${cy}" r="${r.toFixed(2)}" fill="none" stroke="${i%2?a:b}" stroke-width="${(1.2 + s.deep_vector.C*1.8).toFixed(2)}" opacity="${(.26 + i*.08).toFixed(2)}"/>`);
+      }
+      const motifText = s.motifs.slice(0,4).map((m,i)=>{
+        const [x,y]=point(cx,cy,190,90*i + s.geometry.twist/4);
+        return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" fill="${c}" opacity=".72" font-size="13" font-family="Georgia">${escapeXml(m)}</text>`;
+      }).join('');
+      const pathR = 92 + s.deep_vector.P * 60;
+      const wobble = s.deep_vector.E * 38;
+      const d = Array.from({length:s.geometry.arms},(_,i)=>{
+        const deg=(360/s.geometry.arms)*i+s.geometry.twist;
+        const [x,y]=point(cx,cy,pathR + (i%2?wobble:-wobble/2),deg);
+        return `${i?'L':'M'} ${x.toFixed(2)} ${y.toFixed(2)}`;
+      }).join(' ') + ' Z';
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Runa sigil for ${escapeXml(s.title)}">
+  <rect width="600" height="600" rx="34" fill="#120d0c"/>
+  <circle cx="300" cy="300" r="238" fill="none" stroke="${b}" stroke-width="1" opacity=".22"/>
+  ${rings.join('\n  ')}
+  <path d="${d}" fill="${b}" opacity=".12" stroke="${a}" stroke-width="2"/>
+  ${lines.join('\n  ')}
+  <circle cx="300" cy="300" r="34" fill="${a}" opacity=".22"/>
+  <circle cx="300" cy="300" r="13" fill="${c}" opacity=".86"/>
+  ${motifText}
+  <text x="300" y="548" text-anchor="middle" fill="${c}" opacity=".78" font-size="18" font-family="Georgia">${escapeXml(s.title)}</text>
+  <text x="300" y="572" text-anchor="middle" fill="${a}" opacity=".70" font-size="11" font-family="ui-monospace, monospace">${escapeXml(s.scope)} · ${escapeXml(s.direction)}</text>
+</svg>`;
+    }
+    function escapeXml(value){ return String(value||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;'); }
+    function render(){
+      vectorKeys.forEach(k => document.getElementById(`n-${k}`).textContent = Number(document.getElementById(`v-${k}`).value).toFixed(2));
+      const sigil=build();
+      sigil.render_svg = svgFor(sigil);
+      wrap.innerHTML = sigil.render_svg;
+      preview.textContent = JSON.stringify({...sigil, render_svg:'[inline SVG omitted from preview]'}, null, 2);
+      return sigil;
+    }
+    function save(s){ localStorage.setItem(loomKey, JSON.stringify(s)); }
+    function flash(text){ statusLine.textContent=text; clearTimeout(flash.timer); flash.timer=setTimeout(()=>statusLine.textContent='',3200); }
+    function download(name, text, type){ const blob=new Blob([text],{type}); const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:name}); a.click(); URL.revokeObjectURL(a.href); }
+
+    document.getElementById('loomForm').addEventListener('input', render);
+    document.getElementById('loomForm').addEventListener('submit', e => { e.preventDefault(); const s=render(); save(s); flash('Sigil woven locally.'); });
+    document.getElementById('copySvgBtn').onclick = async () => { const s=render(); save(s); try{ await navigator.clipboard.writeText(s.render_svg); flash('SVG copied.'); }catch{ flash('Copy blocked. SVG is exportable.'); } };
+    document.getElementById('copyJsonBtn').onclick = async () => { const s=render(); save(s); try{ await navigator.clipboard.writeText(JSON.stringify(s,null,2)); flash('Sigil JSON copied.'); }catch{ flash('Copy blocked. JSON is visible.'); } };
+    document.getElementById('downloadSvgBtn').onclick = () => { const s=render(); save(s); const safe=s.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'runa-sigil'; download(`${safe}.svg`, s.render_svg, 'image/svg+xml'); flash('SVG exported.'); };
+    document.getElementById('seedBtn').onclick = () => {
+      try {
+        const mirror = JSON.parse(localStorage.getItem(mirrorKey) || 'null');
+        if(!mirror){ flash('No Threshold Mirror shard found yet.'); return; }
+        fields.title.value = mirror.title || '';
+        fields.scope.value = mirror.scope || 'needs_review';
+        fields.direction.value = 'bidirectional';
+        fields.motifs.value = (mirror.motifs || []).join(', ');
+        fields.note.value = mirror.source_note || '';
+        render(); flash('Seeded from Threshold Mirror.');
+      } catch { flash('Could not read Threshold Mirror.'); }
+    };
+
+    try {
+      const last = JSON.parse(localStorage.getItem(loomKey) || 'null');
+      if(last){
+        fields.title.value = last.title || '';
+        fields.scope.value = last.scope || fields.scope.value;
+        fields.direction.value = last.direction || fields.direction.value;
+        fields.motifs.value = (last.motifs || []).join(', ');
+        fields.note.value = last.note || '';
+        Object.entries(last.deep_vector || {}).forEach(([k,v]) => { const el=document.getElementById(`v-${k}`); if(el) el.value = v; });
+      }
+    } catch {}
+    render();
+  </script>
+</body>
+</html>
