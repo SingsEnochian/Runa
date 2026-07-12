@@ -532,3 +532,84 @@ input[type="range"] {
     grid-template-columns: 1fr;
   }
 }
+
+/* ═══════════════════════════════════════════════════
+   Futuristic HUD Layer
+   ═══════════════════════════════════════════════════ */
+
+body::after {
+  background:
+    linear-gradient(to bottom, rgba(255,255,255,0.02), transparent 20%, transparent 80%, rgba(255,255,255,0.015)),
+    repeating-linear-gradient(0deg,  transparent, transparent 59px, rgba(255,255,255,0.024) 60px),
+    repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(255,255,255,0.016) 60px);
+  opacity: 0.6;
+}
+
+.card {
+  position: relative;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    linear-gradient(to right,  color-mix(in srgb, var(--accent) 58%, transparent), transparent) top    left   / 22px 1px  no-repeat,
+    linear-gradient(to bottom, color-mix(in srgb, var(--accent) 58%, transparent), transparent) top    left   / 1px  22px no-repeat,
+    linear-gradient(to left,   color-mix(in srgb, var(--accent) 58%, transparent), transparent) top    right  / 22px 1px  no-repeat,
+    linear-gradient(to bottom, color-mix(in srgb, var(--accent) 58%, transparent), transparent) top    right  / 1px  22px no-repeat,
+    linear-gradient(to right,  color-mix(in srgb, var(--accent) 58%, transparent), transparent) bottom left   / 22px 1px  no-repeat,
+    linear-gradient(to top,    color-mix(in srgb, var(--accent) 58%, transparent), transparent) bottom left   / 1px  22px no-repeat,
+    linear-gradient(to left,   color-mix(in srgb, var(--accent) 58%, transparent), transparent) bottom right  / 22px 1px  no-repeat,
+    linear-gradient(to top,    color-mix(in srgb, var(--accent) 58%, transparent), transparent) bottom right  / 1px  22px no-repeat;
+}
+
+.section-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0.22rem 0.75rem 0.22rem 1.3rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
+  background: color-mix(in srgb, var(--accent) 10%, rgba(0,0,0,0.35));
+  color: var(--accent-2);
+  white-space: nowrap;
+  position: relative;
+}
+
+.section-pill::before {
+  content: "";
+  position: absolute;
+  left: 0.52rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 7px var(--glow);
+  animation: hud-dot-pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes hud-dot-pulse {
+  0%, 100% { opacity: 1;    box-shadow: 0 0 7px var(--glow); }
+  50%       { opacity: 0.4; box-shadow: 0 0 2px var(--glow); }
+}
+
+.site-header {
+  border-bottom-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--glow) 35%, transparent), 0 10px 32px rgba(0,0,0,0.3);
+}
+
+.glow-card {
+  transition: box-shadow 0.3s ease;
+}
+.glow-card:hover {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 0 0 1px rgba(255,255,255,0.03), 0 0 44px var(--glow), 0 24px 56px rgba(0,0,0,0.38);
+}
