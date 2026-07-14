@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sacred Geometry v3 Runtime — Test Harness</title>
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      margin: 0; padding: 32px;
+      background: #020706; color: #f7efd9;
+      font-family: ui-monospace, 'Cascadia Code', monospace;
+      font-size: 14px; line-height: 1.6;
+    }
+    h1 { color: #e4c36d; letter-spacing: -0.03em; margin: 0 0 8px; }
+    .summary { font-size: 1.2em; margin: 12px 0 24px; }
+    .all-pass { color: #1b8a68; }
+    .some-fail { color: #d66b7c; }
+    table { border-collapse: collapse; width: 100%; max-width: 700px; }
+    td { padding: 5px 12px; border-bottom: 1px solid rgba(247,239,217,0.07); }
+    td:first-child { width: 24px; font-size: 1.1em; }
+    td:last-child { color: rgba(247,239,217,0.5); font-size: 0.88em; }
+    tr.pass td:first-child { color: #1b8a68; }
+    tr.fail td:first-child { color: #d66b7c; }
+    tr.fail td:nth-child(2) { color: #d66b7c; }
+    .group { color: #02a4d3; padding-top: 18px; font-size: 0.8em; letter-spacing: 0.1em; text-transform: uppercase; }
+    .group td { border-bottom: 1px solid rgba(2,164,211,0.25); }
+  </style>
+</head>
+<body>
+  <!--
+    This page intentionally omits the SVG runtime layers.
+    sacred-geometry-lab.js init() bails early when #sg-layer-lines is absent,
+    so the geometry builder functions can be tested without starting the app.
+    Builder functions (buildSeed, buildFlower, etc.) are top-level function
+    declarations — globally accessible from a classic script load.
+  -->
+  <main id="test-output">Loading…</main>
+
+  <script src="./sacred-geometry-lab.js"></script>
+  <script>
+    'use strict';
+
+    // ── Minimal test harness ────────────────────────────────────────────────
+    const results = [];
+    let currentGroup = null;
+
+    function group(name) {
+      currentGroup = name;
+    }
+
+    function eq(desc, actual, expected) {
+      results.push({ group: currentGroup, desc, pass: actual === expected, actual, expected: String(expected) });
+    }
+
+    function gte(desc, actual, min) {
+      results.push({ group: currentGroup, desc, pass: actual >= min, actual, expected: `≥ ${min}` });
+    }
+
+    function near(desc, actual, expected, tol = 1e-5) {
+      const pass = Math.abs(actual - expected) <= tol;
+      results.push({ group: currentGroup, desc, pass, actual: actual.toFixed(6), expected: expected.toFixed(6) });
+    }
+
+    // ── Tests ───────────────────────────────────────────────────────────────
+
+    group('Vesica Piscis');
+    const v = buildVesica();
+    eq('2 circles',           v.loops3D.length, 2);
+    eq('1 axis edge',         v.edges3D.length, 1);
+    eq('2 lens arc polylines', v.paths3D.length, 2);
+    gte('lens arc has ≥ 48 points', v.paths3D[0].length, 48);
+    eq('circles at z > 0 (dome-mapped)', v.loops3D[0].z > 0, true);
+
+    group('Seed of Life');
+    const seed = buildSeed();
+    eq('7 circles (1 centre + 6 petals)',     seed.loops3D.length, 7);
+    eq('12 edges (6 spokes + 6 petal-ring)',  seed.edges3D.length, 12);
+    eq('centre circle at dome z',             seed.loops3D[0].z > 0, true);
+    eq('petal circles at lower z than centre', seed.loops3D[1].z < seed.loops3D[0].z, true);
+
+    group('Flower of Life');
+    const fl = buildFlower();
+    eq('19 circles',          fl.loops3D.length, 19);
+    gte('adjacency edges',    fl.edges3D.length, 18);
+    eq('centre is highest z', fl.loops3D[0].z > fl.loops3D[fl.loops3D.length - 1].z, true);
+
+    group("Metatron's Cube");
+    const m = buildMetatron();
+    eq('13 circles (1 + 6 + 6)',  m.loops3D.length, 13);
+    eq('78 connecting lines (13 choose 2)', m.edges3D.length, 78);
+    eq('meta edge count matches', m.meta.edges, 78);
+    // Spot-check: every edge has two distinct endpoints
+    const badEdge = m.edges3D.find(e => e.a.x === e.b.x && e.a.y === e.b.y);
+    eq('no self-loop edges', badEdge, undefined);
+
+    group('Sri Yantra');
+    const sri = buildSriYantra();
+    eq('1 bindu',                  sri.loops3D.length, 1);
+    eq('4 Shiva + 5 Shakti + gate = 10 paths', sri.paths3D.length, 10);
+    eq('all Sri paths at z = 0',   sri.paths3D.every(p => p.every(pt => pt.z === 0)), true);
+    eq('bindu at origin',          sri.loops3D[0].x === 0 && sri.loops3D[0].y === 0, true);
+
+    group('Fibonacci Spiral');
+    const fib = buildFibonacci();
+    eq('1 spiral path',                fib.paths3D.length, 1);
+    gte('≥ 361 spiral points',         fib.paths3D[0].length, 361);
+    near('φ correct to 6dp',           fib.meta.phi, (1 + Math.sqrt(5)) / 2);
+    eq('spiral stays in z=0 plane',    fib.paths3D[0].every(p => p.z === 0), true);
+    // Spiral should grow — last point should be further from origin than first
+    const spts = fib.paths3D[0];
+    const r0 = Math.hypot(spts[0].x, spts[0].y);
+    const rN = Math.hypot(spts[spts.length - 1].x, spts[spts.length - 1].y);
+    eq('spiral grows outward (last r > first r)', rN > r0, true);
+
+    group('Torus');
+    const tor = buildTorus();
+    eq('no static geometry (JS-rendered at runtime)', tor.edges3D.length, 0);
+    eq('no loops',                                    tor.loops3D.length, 0);
+    eq('meta name',                                   tor.meta.name, 'Torus');
+
+    group('Dome mapping');
+    // Centre (0,0) should have max dome z; outer points should be lower
+    const seedCentre  = seed.loops3D[0].z;  // (0,0) → max dome
+    const seedOuter   = seed.loops3D[1].z;  // r=1 away → lower
+    eq('dome(0,0) > dome(1,0)', seedCentre > seedOuter, true);
+    eq('dome(0,0) is positive',  seedCentre > 0, true);
+    eq('dome(0,0) ≤ 0.52',      seedCentre <= 0.52, true);
+
+    // ── Render ──────────────────────────────────────────────────────────────
+    const pass = results.filter(r => r.pass).length;
+    const total = results.length;
+    const allPass = pass === total;
+
+    let rows = '';
+    let lastGroup = null;
+    results.forEach(r => {
+      if (r.group !== lastGroup) {
+        rows += `<tr class="group"><td colspan="3">${r.group}</td></tr>`;
+        lastGroup = r.group;
+      }
+      const note = r.pass ? '' : ` (expected ${r.expected})`;
+      rows += `<tr class="${r.pass ? 'pass' : 'fail'}">
+        <td>${r.pass ? '✓' : '✗'}</td>
+        <td>${r.desc}</td>
+        <td>${r.actual}${note}</td>
+      </tr>`;
+    });
+
+    document.getElementById('test-output').innerHTML = `
+      <h1>Sacred Geometry v3 Runtime — Test Results</h1>
+      <p class="summary ${allPass ? 'all-pass' : 'some-fail'}">${pass} / ${total} passed${allPass ? ' — all green ✓' : ''}</p>
+      <table>${rows}</table>
+    `;
+  </script>
+</body>
+</html>

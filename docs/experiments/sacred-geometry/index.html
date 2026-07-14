@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sacred Geometry Lab — Runa</title>
+  <link rel="stylesheet" href="./sacred-geometry.css" />
+</head>
+<body>
+  <main class="sg-shell">
+    <header class="sg-hero">
+      <p class="eyebrow">Runa · Sacred Geometry Lab</p>
+      <h1>Living Forms</h1>
+      <p class="subtitle">Mathematical geometry driven by DEEP state. Drag to rotate. Switch forms. Feel the field shift.</p>
+    </header>
+
+    <section class="sg-grid">
+
+      <section class="sg-stage" aria-labelledby="stage-title">
+        <div class="stage-header">
+          <h2 id="stage-title" class="stage-title">Field</h2>
+          <span class="geometry-name" id="geometry-name">Flower of Life</span>
+        </div>
+
+        <div class="sg-canvas-wrap" aria-describedby="field-note">
+
+          <!-- Holographic atmosphere: decorative only, hidden from assistive tech -->
+          <div class="holo-field" aria-hidden="true">
+            <div class="holo-bloom bloom-a"></div>
+            <div class="holo-bloom bloom-b"></div>
+            <div class="holo-bloom bloom-c"></div>
+            <div class="holo-vortex vortex-a"></div>
+            <div class="holo-vortex vortex-b"></div>
+            <div class="holo-trace trace-one"></div>
+            <div class="holo-trace trace-two"></div>
+            <div class="holo-trace trace-three"></div>
+          </div>
+
+          <!-- 3D rotation stage — drag or use arrow keys -->
+          <div class="sg-3d-wrap" id="sg-3d-wrap"
+               tabindex="0"
+               aria-label="Sacred geometry field. Drag or use arrow keys to rotate in 3D.">
+            <svg id="sg-svg"
+              class="sg-svg"
+              viewBox="-2 -2 4 4"
+              role="img"
+              aria-labelledby="sg-svg-title">
+              <title id="sg-svg-title">Sacred geometry field</title>
+              <defs>
+                <filter id="sg-glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="0.035" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+                <filter id="sg-glow-strong" x="-60%" y="-60%" width="220%" height="220%">
+                  <feGaussianBlur stdDeviation="0.07" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+              <g id="sg-layer-lines"   class="sg-lines"></g>
+              <g id="sg-layer-paths"   class="sg-paths"></g>
+              <g id="sg-layer-circles" class="sg-circles"></g>
+              <g id="sg-layer-energy"  class="sg-energy"></g>
+            </svg>
+          </div>
+
+          <div class="sg-orb" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <aside class="sg-panel" aria-label="Sacred geometry controls">
+
+        <section class="sg-card">
+          <h2>Form</h2>
+          <div class="form-buttons" id="form-buttons" role="group" aria-label="Geometry mode"></div>
+        </section>
+
+        <section class="sg-card">
+          <h2>DEEP State</h2>
+          <div class="deep-controls" id="deep-controls"></div>
+        </section>
+
+        <section class="sg-card">
+          <h2>Field Notes</h2>
+          <p class="field-note" id="field-note">Select a form to begin.</p>
+          <div class="meta-pills" id="meta-pills"></div>
+        </section>
+
+        <section class="sg-card sg-card--actions">
+          <button id="btn-breathe" class="btn-primary" type="button">Breathe</button>
+          <button id="btn-rotate"  class="btn-ghost"   type="button">Pause</button>
+          <button id="btn-reset"   class="btn-ghost"   type="button">Reset</button>
+          <button id="btn-sound"   class="btn-ghost btn-sound" type="button">Sound: Off</button>
+        </section>
+
+      </aside>
+    </section>
+  </main>
+
+  <script src="./sacred-geometry-lab.js"></script>
+</body>
+</html>
