@@ -1,0 +1,17 @@
+{
+  "protocol": "hearthfire.place/v1",
+  "place": { "id": "runa", "label": "Runa" },
+  "type": "threshold",
+  "parent": { "id": "hearthfire", "label": "Hearthfire" },
+  "sky": "universal-horizon",
+  "inhabitants": ["Rowan"],
+  "capabilities": [
+    "public-experiments",
+    "ritual-labs",
+    "sound-work",
+    "observation-packets",
+    "consent-review"
+  ],
+  "worlds": ["earth", "terra-aeterna", "luna", "feather-and-flame"],
+  "bridges": ["flameclyffe", "hearthfire"]
+}
