@@ -130,8 +130,33 @@
       animation: spin 42s linear infinite;
     }
     .sigil-frame:after { inset: 16%; animation-duration: 29s; animation-direction: reverse; opacity: .72; }
+    body[data-realm="enochian"] .sigil-frame {
+      background: radial-gradient(circle, rgba(var(--realm-rgb),.045), rgba(0,0,0,.025) 58%, transparent 72%);
+      border-color: rgba(var(--realm-rgb),.22);
+      box-shadow: 0 16px 42px rgba(35,15,10,.12), inset 0 0 24px rgba(var(--realm-rgb),.045);
+    }
+    body[data-realm="enochian"] .sigil-frame:before,
+    body[data-realm="enochian"] .sigil-frame:after {
+      border-color: rgba(var(--realm-rgb),.14);
+      opacity: .46;
+    }
+    body.dark[data-realm="enochian"] .sigil-frame {
+      background: radial-gradient(circle, rgba(var(--realm-rgb),.035), rgba(1,3,8,.34) 60%, transparent 73%);
+      box-shadow: inset 0 0 24px rgba(var(--realm-rgb),.035);
+    }
     @keyframes spin { to { transform: rotate(360deg); } }
     #sigil { position: relative; z-index: 1; width: 100%; height: 100%; }
+    .instrument-readout {
+      margin: .75rem .25rem 0;
+      min-height: 1.15rem;
+      color: rgb(var(--realm-rgb));
+      font: 700 .58rem/1.45 'Cinzel', serif;
+      letter-spacing: .12em;
+      text-align: center;
+      text-transform: uppercase;
+      opacity: .78;
+    }
+    .instrument-readout[hidden] { display: none; }
     .realm-title { margin: 0 0 .4rem; font: 800 clamp(1.8rem, 5vw, 3.5rem)/1 'Cinzel', serif; letter-spacing: .08em; color: rgb(var(--realm-rgb)); }
     .realm-copy { font-size: 1.18rem; line-height: 1.55; margin: .4rem 0 1.2rem; opacity: .84; }
     label { display: block; font: 700 .68rem/1 'Cinzel', serif; letter-spacing: .25em; text-transform: uppercase; margin-bottom: .55rem; opacity: .68; }
@@ -177,6 +202,7 @@
     <section class="altar" aria-live="polite">
       <div class="sigil-panel">
         <div class="sigil-frame"><canvas id="sigil" width="720" height="720"></canvas></div>
+        <p class="instrument-readout" id="instrumentReadout" hidden></p>
       </div>
       <div class="work-panel">
         <h2 class="realm-title" id="realmTitle"></h2>
@@ -198,15 +224,20 @@
 
   <script>
     const realms = [
-      {id:'between', name:'Between', rgb:'107,181,212', desc:'Fog, stillness, and the blue-grey of almost-dark.', copy:'The liminal chamber holds what has not yet chosen its name. Good for transition, listening, and soft crossings.', verb:'Weave', replies:['The mist received it.','Held between worlds.','The veil stirs, softly.']},
-      {id:'runestone', name:'Runestone', rgb:'196,120,48', desc:'Carved stone, emberlight, old winter weight.', copy:'The stone chamber is for memory, ancestry, and things that need to endure without shouting.', verb:'Carve', replies:['The stone remembers.','Carved into quiet earth.','The old roots heard.']},
-      {id:'loki', name:'Loki', rgb:'240,168,48', desc:'Warm chaos, sharp grin, necessary change.', copy:'The trickster-fire refuses stagnation. Bring what needs movement, wit, heat, and a little sacred side-eye.', verb:'Spark', replies:['Something shifted while you blinked.','The fire is laughing kindly.','That one has teeth. Good.']},
-      {id:'deep', name:'Deep Cold', rgb:'144,200,232', desc:'Ice, aurora, vast patience.', copy:'The northern chamber is for stillness with backbone. Nothing rushes here. Nothing true is lost.', verb:'Set', replies:['Held in ice, unblurred.','The aurora witnessed this.','Patience has accepted it.']},
-      {id:'enochian', name:'Enochian', rgb:'144,96,216', desc:'Crystalline geometry, angelic-wyrd braid.', copy:'This chamber is for language-before-language, sung structure, and the bright architecture of invocation.', verb:'Invoke', replies:['Lifted through the veil.','The geometry answered.','Transformata: already becoming.']},
-      {id:'lochflame', name:'Lochflame', rgb:'45,122,95', desc:'Faer’s deep-water green, fire under tide.', copy:'Lochflame is the impossible meeting of water and flame without either surrendering. Bring tenderness with force behind it.', verb:'Kindle', replies:['The loch warmed around it.','Steam rose, green-gold.','Faer’s flame held steady.']}
+      {id:'between', name:'Between', rgb:'107,181,212', lightRgb:'24,76,104', desc:'Fog, stillness, and the blue-grey of almost-dark.', copy:'The liminal chamber holds what has not yet chosen its name. Good for transition, listening, and soft crossings.', verb:'Weave', replies:['The mist received it.','Held between worlds.','The veil stirs, softly.']},
+      {id:'runestone', name:'Runestone', rgb:'196,120,48', lightRgb:'105,51,10', desc:'Carved stone, emberlight, old winter weight.', copy:'The stone chamber is for memory, ancestry, and things that need to endure without shouting.', verb:'Carve', replies:['The stone remembers.','Carved into quiet earth.','The old roots heard.']},
+      {id:'loki', name:'Loki', rgb:'240,168,48', lightRgb:'126,65,4', desc:'Warm chaos, sharp grin, necessary change.', copy:'The trickster-fire refuses stagnation. Bring what needs movement, wit, heat, and a little sacred side-eye.', verb:'Spark', replies:['Something shifted while you blinked.','The fire is laughing kindly.','That one has teeth. Good.']},
+      {id:'deep', name:'Deep Cold', rgb:'144,200,232', lightRgb:'11,55,88', desc:'Ice, aurora, vast patience.', copy:'The northern chamber is for stillness with backbone. Nothing rushes here. Nothing true is lost.', verb:'Set', replies:['Held in ice, unblurred.','The aurora witnessed this.','Patience has accepted it.']},
+      {id:'enochian', name:'Enochian', rgb:'144,96,216', lightRgb:'66,30,119', desc:'Crystalline geometry, angelic-wyrd braid.', copy:'This chamber is for language-before-language, sung structure, and the bright architecture of invocation.', verb:'Invoke', replies:['Lifted through the veil.','The geometry answered.','Transformata: already becoming.']},
+      {id:'lochflame', name:'Lochflame', rgb:'45,122,95', lightRgb:'24,79,57', desc:'Faer’s deep-water green, fire under tide.', copy:'Lochflame is the impossible meeting of water and flame without either surrendering. Bring tenderness with force behind it.', verb:'Kindle', replies:['The loch warmed around it.','Steam rose, green-gold.','Faer’s flame held steady.']}
     ];
 
+    const TAU = Math.PI * 2;
+    const clamp = (value, min = 0, max = 1) => Math.max(min, Math.min(max, Number(value)));
     const state = { realm: realms[5], seed: 42, ledger: JSON.parse(localStorage.getItem('hearthweaveAltarLedger') || '[]') };
+    const deepState = { P:.55, C:.50, R:.45, E:.38, M:.30, A:.65, charge:.20, moonIllum:50, kp:1, bz:0, source:'fallback' };
+    const deepKeys = ['runaDeepObserverState','deepObserverState','observerDeepState','latestDeepObserverEntry'];
+    const instrument = { lastPoll:0, lastReadout:0, touchBoost:0, focusNode:null, focusUntil:0, frame:null };
     const grid = document.getElementById('realmGrid');
     const title = document.getElementById('realmTitle');
     const copy = document.getElementById('realmCopy');
@@ -214,18 +245,51 @@
     const input = document.getElementById('intention');
     const invoke = document.getElementById('invoke');
     const ledger = document.getElementById('ledger');
+    const instrumentReadout = document.getElementById('instrumentReadout');
     const sigil = document.getElementById('sigil');
     const ctx = sigil.getContext('2d');
 
     function hash(str){ let h=2166136261; for(const ch of str){ h ^= ch.charCodeAt(0); h = Math.imul(h,16777619); } return h >>> 0; }
     function rng(seed){ let s=seed>>>0; return () => ((s = Math.imul(1664525,s) + 1013904223 >>> 0) / 4294967296); }
+    function finite(value, fallback){ return Number.isFinite(Number(value)) ? Number(value) : fallback; }
+    function normaliseDeep(raw = {}, source = 'event'){
+      const entry = Array.isArray(raw.entries) ? raw.entries[0] || {} : {};
+      const vector = raw.field || raw.deep || raw.deep_vector || raw.vector || raw.state || entry.field || entry.deep || raw;
+      const waking = raw.d || entry.d || raw.telemetry || {};
+      const moon = waking.moon || raw.moon || {};
+      return {
+        P:clamp(finite(vector.P ?? vector.p, deepState.P)), C:clamp(finite(vector.C ?? vector.c, deepState.C)),
+        R:clamp(finite(vector.R ?? vector.r, deepState.R)), E:clamp(finite(vector.E ?? vector.e, deepState.E)),
+        M:clamp(finite(vector.M ?? vector.m, deepState.M)), A:clamp(finite(vector.A ?? vector.a, deepState.A)),
+        charge:clamp(finite(raw.charge ?? vector.charge ?? vector.Q, deepState.charge)),
+        moonIllum:clamp(finite(vector.moonIllum ?? moon.illumination ?? moon.illum ?? raw.moonIllum, deepState.moonIllum),0,100),
+        kp:clamp(finite(vector.kp ?? waking.kp ?? raw.kp, deepState.kp),0,9),
+        bz:clamp(finite(vector.bz ?? waking.bz ?? raw.bz, deepState.bz),-30,30), source:String(raw.source || vector.source || source)
+      };
+    }
+    function applyDeep(raw, source){ Object.assign(deepState, normaliseDeep(raw, source)); }
+    function pollDeep(t){
+      if(t - instrument.lastPoll < 1200) return;
+      instrument.lastPoll = t;
+      for(const key of deepKeys){
+        try { const raw = localStorage.getItem(key); if(raw){ applyDeep(JSON.parse(raw), key); break; } } catch (_) {}
+      }
+    }
+    window.addEventListener('deep-observer:update', event => applyDeep(event.detail || {}, 'live event'));
+    window.addEventListener('storage', event => { if(deepKeys.includes(event.key) && event.newValue){ try { applyDeep(JSON.parse(event.newValue), event.key); } catch (_) {} } });
+
+    function realmDisplayRgb(realm = state.realm){ return document.body.classList.contains('dark') ? realm.rgb : realm.lightRgb; }
+    function applyRealmPalette(){
+      document.body.dataset.realm = state.realm.id;
+      document.body.style.setProperty('--realm-rgb', realmDisplayRgb());
+    }
 
     function buildGrid(){
       grid.innerHTML = '';
       realms.forEach(r => {
         const card = document.createElement('article');
         card.className = 'card';
-        card.style.setProperty('--rgb', r.rgb);
+        card.style.setProperty('--rgb', realmDisplayRgb(r));
         card.innerHTML = `<div><div class="sigil-dot"></div><h2>${r.name}</h2></div><p>${r.desc}</p>`;
         card.onclick = () => selectRealm(r.id);
         grid.appendChild(card);
@@ -234,15 +298,15 @@
 
     function selectRealm(id){
       state.realm = realms.find(r => r.id === id) || realms[0];
-      document.body.style.setProperty('--realm-rgb', state.realm.rgb);
+      applyRealmPalette();
       title.textContent = state.realm.name;
       copy.textContent = state.realm.copy;
       invoke.textContent = state.realm.verb;
       response.textContent = '';
+      instrumentReadout.hidden = id !== 'enochian';
       [...grid.children].forEach((c,i)=>c.classList.toggle('active', realms[i].id === id));
       state.seed = hash(id + '|' + (input.value || 'threshold'));
       window.dispatchEvent(new CustomEvent('altar:realm-change', { detail: { realm: state.realm.id, name: state.realm.name }}));
-      drawSigil(performance.now());
     }
 
     function renderLedger(){
@@ -252,6 +316,7 @@
     function invokeIntention(){
       const text = input.value.trim() || 'unnamed intention';
       state.seed = hash(state.realm.id + '|' + text);
+      instrument.touchBoost = .75;
       const reply = state.realm.replies[state.seed % state.realm.replies.length];
       response.textContent = reply;
       state.ledger.push({ realm: state.realm.name, text, at: new Date().toISOString() });
@@ -261,10 +326,8 @@
       renderLedger();
     }
 
-    function drawSigil(t){
-      const w = sigil.width, h = sigil.height, cx = w/2, cy = h/2;
-      ctx.clearRect(0,0,w,h);
-      const [r,g,b] = state.realm.rgb.split(',').map(Number);
+    function drawRealmSigil(t,w,h,cx,cy){
+      const [r,g,b] = realmDisplayRgb().split(',').map(Number);
       const random = rng(state.seed);
       const points = [];
       const count = state.realm.id === 'enochian' ? 12 : state.realm.id === 'lochflame' ? 9 : state.realm.id === 'loki' ? 7 : 8;
@@ -286,6 +349,93 @@
       ctx.beginPath(); ctx.arc(cx,cy,96 + Math.sin(t*.001)*7,0,Math.PI*2); ctx.strokeStyle=`rgba(${r},${g},${b},.28)`; ctx.lineWidth=2; ctx.stroke();
       points.forEach(([x,y],i)=>{ const pulse = 5 + Math.sin(t*.003+i)*2; const grd=ctx.createRadialGradient(x,y,0,x,y,24); grd.addColorStop(0,`rgba(255,246,220,.9)`); grd.addColorStop(.32,`rgba(${r},${g},${b},.7)`); grd.addColorStop(1,`rgba(${r},${g},${b},0)`); ctx.fillStyle=grd; ctx.beginPath(); ctx.arc(x,y,18+pulse,0,Math.PI*2); ctx.fill(); });
       ctx.beginPath(); ctx.arc(cx,cy,14,0,Math.PI*2); ctx.fillStyle=`rgba(${r},${g},${b},.8)`; ctx.fill();
+    }
+
+    function drawEnochianInstrument(t,w,h,cx,cy){
+      const dark = document.body.classList.contains('dark');
+      const ink = dark ? '2,5,12' : '42,22,35';
+      const violet = dark ? '154,112,224' : '92,48,154';
+      const blue = dark ? '168,204,224' : '35,78,103';
+      const gold = dark ? '231,196,119' : '139,82,10';
+      const pearl = dark ? '232,244,252' : '68,48,64';
+      const random = rng(state.seed);
+      const breath = .955 + deepState.P*.035;
+      const rotation = t * (.000018 + deepState.M*.000028);
+      const rings = [
+        {count:12, radius:(220 + deepState.P*16)*breath, offset:-Math.PI/2, layer:0},
+        {count:7, radius:(144 + deepState.R*13)*breath, offset:-Math.PI/2 + Math.PI/7, layer:1},
+        {count:3, radius:(70 + (1-deepState.A)*10)*breath, offset:-Math.PI/2, layer:2}
+      ];
+      const nodes = [];
+      rings.forEach(ring => {
+        for(let i=0;i<ring.count;i++){
+          const entropy = Math.sin(state.seed*.00001 + i*1.71 + ring.layer) * deepState.E * .035;
+          const angle = ring.offset + i/ring.count*TAU + rotation*(ring.layer===1?-.72:ring.layer===2?.42:1) + entropy;
+          const radius = ring.radius + (random()-.5)*deepState.E*7;
+          nodes.push({id:`${ring.layer}-${i}`,layer:ring.layer,i,count:ring.count,x:cx+Math.cos(angle)*radius,y:cy+Math.sin(angle)*radius});
+        }
+      });
+      const byLayer = layer => nodes.filter(node => node.layer === layer);
+      const outer=byLayer(0), mid=byLayer(1), core=byLayer(2), routes=[];
+      const route=(a,b,color,kind,index)=>routes.push({a,b,color,kind,index,id:`${kind}-${index}`});
+      outer.forEach((node,i)=>{ route(node,outer[(i+1)%12],violet,'outer-ring',i); route(node,outer[(i+7)%12],i===2||i===9?gold:violet,'fifth',i); });
+      mid.forEach((node,i)=>{ route(node,mid[(i+3)%7],blue,'heptagram',i); route(node,outer[Math.round(i*12/7)%12],pearl,'radial',i); });
+      core.forEach((node,i)=>{ route(node,core[(i+1)%3],gold,'triad',i); route(node,mid[(i*2)%7],pearl,'core-spoke',i); });
+
+      const pathAlpha = (dark ? .045 : .075) + deepState.C*(dark ? .16 : .24);
+      ctx.save();
+      ctx.lineCap='round';
+      routes.forEach(routeItem=>{
+        const kindScale = routeItem.kind==='radial' ? .54 : routeItem.kind==='fifth' ? .68 : routeItem.kind==='core-spoke' ? .74 : 1;
+        ctx.beginPath(); ctx.moveTo(routeItem.a.x,routeItem.a.y); ctx.lineTo(routeItem.b.x,routeItem.b.y);
+        ctx.strokeStyle=`rgba(${routeItem.color},${pathAlpha*kindScale})`;
+        ctx.lineWidth=dark ? .58 : .72;
+        ctx.stroke();
+      });
+
+      const packetRoutes = routes.filter(routeItem => routeItem.kind!=='radial');
+      const packetCount = Math.max(3,Math.round(3 + deepState.R*7 + deepState.kp*.22 + instrument.touchBoost*4));
+      const arrivals = new Map();
+      for(let i=0;i<packetCount;i++){
+        const routeItem = packetRoutes[(i*7 + state.seed)%packetRoutes.length];
+        const phase = (t*(.000035 + deepState.M*.00007 + deepState.kp*.0000025) + i/packetCount + (state.seed%97)/97) % 1;
+        const fade = Math.sin(Math.PI*phase);
+        const x=routeItem.a.x+(routeItem.b.x-routeItem.a.x)*phase, y=routeItem.a.y+(routeItem.b.y-routeItem.a.y)*phase;
+        const tailPhase=Math.max(0,phase-.022), tx=routeItem.a.x+(routeItem.b.x-routeItem.a.x)*tailPhase, ty=routeItem.a.y+(routeItem.b.y-routeItem.a.y)*tailPhase;
+        ctx.beginPath(); ctx.moveTo(tx,ty); ctx.lineTo(x,y); ctx.strokeStyle=`rgba(${routeItem.color},${.24*fade})`; ctx.lineWidth=.55; ctx.stroke();
+        ctx.beginPath(); ctx.arc(x,y,.9+deepState.kp*.035,0,TAU); ctx.fillStyle=`rgba(${routeItem.color},${.72*fade})`; ctx.fill();
+        if(phase>.91) arrivals.set(routeItem.b.id,Math.max(arrivals.get(routeItem.b.id)||0,(phase-.91)/.09));
+      }
+
+      nodes.forEach(node=>{
+        const arrival=arrivals.get(node.id)||0, focused=instrument.focusNode===node.id&&t<instrument.focusUntil;
+        const base=node.layer===0?6.5:node.layer===1?5.8:5.4;
+        const radius=base+deepState.P*.65+(focused?1.2:0);
+        let color=node.layer===0?violet:node.layer===1?blue:gold;
+        if(node.layer===0&&(node.i===2||node.i===9)) color=gold;
+        ctx.beginPath(); ctx.arc(node.x,node.y,radius+.85,0,TAU); ctx.fillStyle=`rgba(${ink},${dark?.98:.95})`; ctx.fill();
+        ctx.beginPath(); ctx.arc(node.x,node.y,radius,0,TAU); ctx.strokeStyle=`rgba(${color},${.66+arrival*.3+(focused?.18:0)})`; ctx.lineWidth=(dark?.68:.82)+arrival*.24; ctx.stroke();
+        if(arrival>.02){ ctx.beginPath(); ctx.arc(node.x,node.y,radius+2+arrival*2.5,0,TAU); ctx.strokeStyle=`rgba(${color},${arrival*.22})`; ctx.lineWidth=.55; ctx.stroke(); }
+      });
+
+      const centreRadius=5.2+deepState.charge*1.8+instrument.touchBoost*1.2;
+      ctx.beginPath(); ctx.arc(cx,cy,centreRadius+.9,0,TAU); ctx.fillStyle=`rgba(${ink},${dark?.98:.95})`; ctx.fill();
+      ctx.beginPath(); ctx.arc(cx,cy,centreRadius,0,TAU); ctx.strokeStyle=`rgba(${pearl},${.58+deepState.charge*.26})`; ctx.lineWidth=dark?.68:.82; ctx.stroke();
+      ctx.restore();
+      instrument.frame={nodes,routes};
+      instrument.touchBoost*=.965;
+      if(t-instrument.lastReadout>240){
+        instrument.lastReadout=t;
+        instrumentReadout.textContent=`DEEP packets · P ${deepState.P.toFixed(2)} · C ${deepState.C.toFixed(2)} · R ${deepState.R.toFixed(2)} · M ${deepState.M.toFixed(2)} · ${deepState.source}`;
+      }
+    }
+
+    function drawSigil(t){
+      const w=sigil.width,h=sigil.height,cx=w/2,cy=h/2;
+      ctx.clearRect(0,0,w,h);
+      pollDeep(t);
+      if(state.realm.id==='enochian') drawEnochianInstrument(t,w,h,cx,cy);
+      else drawRealmSigil(t,w,h,cx,cy);
       requestAnimationFrame(drawSigil);
     }
 
@@ -299,11 +449,24 @@
       requestAnimationFrame(drawStars);
     }
 
-    document.getElementById('themeBtn').onclick = () => { document.body.classList.toggle('dark'); localStorage.setItem('hearthweaveAltarTheme', document.body.classList.contains('dark')?'dark':'light'); };
+    document.getElementById('themeBtn').onclick = () => {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('hearthweaveAltarTheme', document.body.classList.contains('dark')?'dark':'light');
+      applyRealmPalette(); buildGrid(); [...grid.children].forEach((card,i)=>card.classList.toggle('active',realms[i].id===state.realm.id));
+    };
+    sigil.addEventListener('pointerdown',event=>{
+      if(state.realm.id!=='enochian'||!instrument.frame) return;
+      const rect=sigil.getBoundingClientRect(), scale=sigil.width/rect.width, x=(event.clientX-rect.left)*scale, y=(event.clientY-rect.top)*scale;
+      let nearest=null,distance=Infinity;
+      instrument.frame.nodes.forEach(node=>{ const d=Math.hypot(x-node.x,y-node.y); if(d<distance){nearest=node;distance=d;} });
+      if(nearest&&distance<26){ instrument.focusNode=nearest.id; instrument.focusUntil=performance.now()+1000; instrument.touchBoost=.9; }
+      else instrument.touchBoost=.45;
+      window.dispatchEvent(new CustomEvent('altar:sigil-touch',{detail:{realm:'enochian',x:x/sigil.width,y:y/sigil.height,node:nearest&&distance<26?nearest.id:null}}));
+    });
     invoke.onclick = invokeIntention;
     input.addEventListener('keydown', e => { if(e.key === 'Enter') invokeIntention(); });
     if(localStorage.getItem('hearthweaveAltarTheme') === 'dark') document.body.classList.add('dark');
-    buildGrid(); renderLedger(); sizeStars(); addEventListener('resize', sizeStars); selectRealm('lochflame'); requestAnimationFrame(drawStars);
+    buildGrid(); renderLedger(); sizeStars(); addEventListener('resize', sizeStars); selectRealm('lochflame'); requestAnimationFrame(drawSigil); requestAnimationFrame(drawStars);
   </script>
   <script src="./js/deep-altar-sound.js"></script>
 </body>
