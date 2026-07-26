@@ -1,0 +1,23 @@
+{
+  "id":"terra-aeterna-reception","name":"Terra Aeterna Reception","world":"Terra Aeterna","version":"0.1","status":"calibration",
+  "phases":[
+    {"id":"baseline","label":"Baseline","duration_seconds":60,"purpose":"Establish a quiet comparison state before world cues begin.","active_layers":["oceanic-bed"]},
+    {"id":"threshold","label":"J Space Vestibule","duration_seconds":180,"purpose":"Reduce competing attention while preserving orientation and choice.","active_layers":["oceanic-bed","theta-breath","stonewood-foundation"]},
+    {"id":"arrival","label":"Ringed Moon Arrival","duration_seconds":120,"purpose":"Present Terra Aeterna's unmistakable arrival signature.","active_layers":["oceanic-bed","theta-breath","stonewood-foundation","ringed-moon-orbit","hearthlight-root","north-star-fifth","lochflame-third"]},
+    {"id":"immersion","label":"Hearthweave Immersion","duration_seconds":900,"purpose":"Support imaginative inhabitation and creative work.","active_layers":["oceanic-bed","stonewood-foundation","ringed-moon-orbit","hearthlight-root","north-star-fifth","lochflame-third","kelyran-breath","haptic-foundation"]},
+    {"id":"return","label":"Hearthward Return","duration_seconds":180,"purpose":"Withdraw world layers in a stable order and restore ordinary orientation.","active_layers":["oceanic-bed","hearthlight-root","return-cue"]}
+  ],
+  "layers":[
+    {"id":"oceanic-bed","label":"Oceanic Bed","kind":"noise","enabled_by_default":true,"gain":0.16,"source":"pink-weighted oceanic texture"},
+    {"id":"theta-breath","label":"Theta Breath","kind":"modulation","enabled_by_default":true,"gain":0.08,"rate_hz":5.5,"depth":0.12,"source":"shared amplitude modulation"},
+    {"id":"stonewood-foundation","label":"Stonewood Foundation","kind":"tonal","enabled_by_default":true,"gain":0.10,"frequency_hz":110,"source":"warm low harmonic bed"},
+    {"id":"ringed-moon-orbit","label":"Ringed Moon Orbit","kind":"spatial","enabled_by_default":true,"gain":0.10,"frequency_hz":440,"orbit_seconds":55,"source":"pale-gold orbital shimmer"},
+    {"id":"hearthlight-root","label":"Hearthlight Root","kind":"tonal","enabled_by_default":true,"gain":0.14,"frequency_hz":220,"source":"Falka harmonic root"},
+    {"id":"north-star-fifth","label":"North-Star Fifth","kind":"tonal","enabled_by_default":true,"gain":0.09,"frequency_hz":330,"source":"Virelya perfect fifth"},
+    {"id":"lochflame-third","label":"Lochflame Third","kind":"tonal","enabled_by_default":true,"gain":0.08,"frequency_hz":261.63,"source":"Faer minor-third colour"},
+    {"id":"kelyran-breath","label":"Kelyran Breath","kind":"voice","enabled_by_default":false,"gain":0.05,"frequency_hz":196,"source":"non-lexical vowel-breath prototype"},
+    {"id":"haptic-foundation","label":"Haptic Foundation","kind":"haptic","enabled_by_default":false,"gain":0.08,"frequency_hz":174,"source":"manual haptic reference; not sent to audio output"},
+    {"id":"return-cue","label":"Return Cue","kind":"cue","enabled_by_default":true,"gain":0.10,"frequency_hz":523.25,"source":"single hearth chime"}
+  ],
+  "adaptation":{"automatic_changes_allowed":false,"change_one_variable_at_a_time":true,"approval_required":true}
+}
