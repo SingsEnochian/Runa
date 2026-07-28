@@ -1,0 +1,49 @@
+{
+  "schema_version":"1.0",
+  "id":"orbital-modes-v0-1",
+  "slug":"orbital-modes",
+  "name":"Orbital Modes: Suspension & Clarity",
+  "profile_kind":"signal-protocol",
+  "world":null,
+  "world_slug":null,
+  "version":"0.1",
+  "status":"calibration",
+  "route":"/arkfire.html?profile=orbital-modes",
+  "identity":{
+    "tone":"Detached, spacious, black-sky quiet, with an optional crystalline attention mode",
+    "shape":"A low suspension rail opens into a dark orbital chamber; clarity arrives as a separate bright ring, never as a forced merge",
+    "intention":"Provide Earth-reference-reduced sound design for fictional orbital, vacuum, and astronaut-perspective scenes",
+    "arrival_signature":"Earth-resonance layers remain absent; a 1.5 Hz protected dyad enters over a thin black-sky field",
+    "return_signature":"Clarity ring closes first, suspension rail recedes, then a centred ordinary-room tone returns",
+    "palette":["black sky","cold silver","Earth-blue point","white instrument light"],
+    "canon_sources":["Rowan orbital/deep-space frequency blueprint 2026-07-28"],
+    "must_avoid":["claiming Delta causes weightlessness or bodily detachment","claiming 40 Hz creates the overview effect","attempting blind 7.83 Hz cancellation with an unrelated inverse sine","treating 777 or 528 Hz as scientifically privileged space frequencies"]
+  },
+  "master_clock":{"base_hz":1.5,"sync_mode":"mixed","macro_cycle_seconds":90},
+  "claims":[
+    {"label":"implementation-task","text":"100 Hz left and 101.5 Hz right form a 1.5 Hz binaural difference over headphones."},
+    {"label":"active-research","text":"Binaural-beat EEG and behavioural effects remain inconsistent across studies; perceptual and neural responses depend on carrier, beat rate, listener, and method."},
+    {"label":"evidence-backed-finding","text":"A measurable 40 Hz auditory steady-state response has been recorded from 400/440 Hz dichotic tones, although it is not equivalent to producing hyper-awareness or the overview effect."},
+    {"label":"symbolic-canon","text":"777 Hz is retained as an optional bright orbital carrier because of the requested aesthetic, not because it is an established cosmic frequency."},
+    {"label":"implementation-task","text":"Polarity inversion cancels only audio that is otherwise identical in waveform, amplitude, timing, phase, and channel path. An independently generated 7.83 Hz sine will not reliably remove an unknown baked layer.","source_language":"adding a +pi phase shift will flatten the Earth wave to absolute silence"}
+  ],
+  "layers":[
+    {"id":"void-delta-low","label":"Void Delta Low","type":"true-binaural","role":"primary deep-space suspension rail","gain_db":-31,"enabled_by_default":true,"signal":{"waveform":"sine","left_hz":100,"right_hz":101.5,"beat_hz":1.5},"routing":{"mode":"protected-stereo"},"phase_continuous":true,"symbolic_meaning":"uncoupling from the familiar horizon","experiential_intention":"slow, low, spacious suspension","evidence_label":"implementation-task","collision_policy":"none","accessibility_notes":["Headphones required","Do not use while driving or when rapid alertness is required"]},
+    {"id":"void-delta-777","label":"777 Bright Suspension","type":"true-binaural","role":"optional high-carrier suspension rail","gain_db":-44,"enabled_by_default":false,"signal":{"waveform":"sine","left_hz":777,"right_hz":778.5,"beat_hz":1.5},"routing":{"mode":"protected-stereo"},"phase_continuous":true,"symbolic_meaning":"bright orbital harmonic","experiential_intention":"thin luminous suspension rather than bass-heavy void","evidence_label":"symbolic-canon","collision_policy":"none","accessibility_notes":["High-frequency-sensitive and migraine-sensitive users should leave disabled","Lower carrier is the primary version"]},
+    {"id":"clarity-binaural-40","label":"Orbital Clarity 40","type":"true-binaural","role":"experimental gamma-range central beat","gain_db":-42,"enabled_by_default":false,"signal":{"waveform":"sine","left_hz":400,"right_hz":440,"beat_hz":40},"routing":{"mode":"protected-stereo"},"phase_continuous":true,"symbolic_meaning":"instrument-ring clarity","experiential_intention":"bright, rougher, high-attention contrast","evidence_label":"active-research","collision_policy":"none","accessibility_notes":["May sound rough rather than like a slow beat","Use briefly and at low level"]},
+    {"id":"clarity-am-40","label":"Orbital Clarity AM","type":"isochronic","role":"more explicit 40 Hz amplitude-modulated alternative","gain_db":-40,"enabled_by_default":false,"signal":{"waveform":"triangle","frequency_hz":432},"modulation":{"kind":"isochronic","rate_hz":40,"depth":0.55},"routing":{"mode":"center","pan":0},"phase_continuous":true,"symbolic_meaning":"instrument panel and crystalline attention","experiential_intention":"clear externally present 40 Hz rhythm","evidence_label":"active-research","collision_policy":"none","accessibility_notes":["Do not enable simultaneously with 40 Hz binaural during first calibration"]},
+    {"id":"void-pad-528","label":"Void Pad 528","type":"pad","role":"optional non-Earth-centred ambient pad","gain_db":-42,"enabled_by_default":false,"signal":{"waveform":"triangle","frequency_hz":528,"filter":{"type":"lowpass","min_hz":540,"max_hz":980,"cycle_seconds":90}},"routing":{"mode":"center","pan":0},"phase_continuous":true,"symbolic_meaning":"fictional orbital light","experiential_intention":"soft luminous bed","evidence_label":"symbolic-canon","collision_policy":"none","accessibility_notes":[]},
+    {"id":"black-sky-noise","label":"Black-Sky Drift","type":"noise","role":"thin vacuum-imagery field","gain_db":-39,"enabled_by_default":true,"signal":{"noise_type":"pink","filter":{"type":"lowpass","min_hz":180,"max_hz":620,"cycle_seconds":90}},"modulation":{"kind":"stereo-drift","rate_hz":0.0111111,"depth":0.18},"routing":{"mode":"stereo-drift","pan":0},"phase_continuous":true,"symbolic_meaning":"darkness beyond the hull","experiential_intention":"sparse environmental texture","evidence_label":"subjective-intention","collision_policy":"none","accessibility_notes":["Reduced-motion centres the field"]},
+    {"id":"earth-point","label":"Earth Point Return","type":"cue","role":"ordinary-orientation and Earth-reference return","gain_db":-36,"enabled_by_default":true,"signal":{"waveform":"sine","frequency_hz":136.1},"routing":{"mode":"center","pan":0},"phase_continuous":true,"symbolic_meaning":"Earth as a visible point of home","experiential_intention":"restore centred orientation","evidence_label":"symbolic-canon","collision_policy":"none","accessibility_notes":["No sharp transient"]}
+  ],
+  "phases":[
+    {"id":"baseline","label":"Cabin Baseline","duration_seconds":60,"purpose":"Establish a sparse chamber with no Schumann layer.","layer_states":{"black-sky-noise":{"enabled":true,"gain_db":-44}}},
+    {"id":"vestibule","label":"Launch Vestibule","duration_seconds":180,"purpose":"Introduce the 1.5 Hz suspension rail while preserving a quiet centre.","layer_states":{"black-sky-noise":{"enabled":true},"void-delta-low":{"enabled":true}}},
+    {"id":"arrival","label":"Orbital Arrival","duration_seconds":120,"purpose":"Open the visual-imagery chamber; optionally choose one clarity layer.","layer_states":{"black-sky-noise":{"enabled":true},"void-delta-low":{"enabled":true},"void-pad-528":{"enabled":false},"clarity-binaural-40":{"enabled":false},"clarity-am-40":{"enabled":false}}},
+    {"id":"immersion","label":"Deep-Space Immersion","duration_seconds":900,"purpose":"Support fictional orbital suspension, vacuum imagery, or overview-oriented visualisation without claiming to reproduce spaceflight.","layer_states":{"black-sky-noise":{"enabled":true},"void-delta-low":{"enabled":true},"void-delta-777":{"enabled":false},"void-pad-528":{"enabled":false},"clarity-binaural-40":{"enabled":false},"clarity-am-40":{"enabled":false}}},
+    {"id":"return","label":"Earthpoint Return","duration_seconds":180,"purpose":"Close clarity first, recede suspension, and restore a centred home reference.","layer_states":{"black-sky-noise":{"enabled":true,"gain_db":-46},"earth-point":{"enabled":true}}}
+  ],
+  "variants":{"suspension-low":{"description":"Primary 100/101.5 Hz Delta rail.","layer_overrides":{}},"suspension-bright":{"description":"Uses 777/778.5 Hz instead of the low rail.","layer_overrides":{"void-delta-low":{"enabled_by_default":false},"void-delta-777":{"enabled_by_default":true}}},"clarity-binaural":{"description":"Adds the 400/440 Hz experimental 40 Hz pair.","layer_overrides":{"clarity-binaural-40":{"enabled_by_default":true}}},"clarity-am":{"description":"Uses 40 Hz amplitude modulation instead of the binaural pair.","layer_overrides":{"clarity-am-40":{"enabled_by_default":true}}}},
+  "safety":{"default_master_gain_db":-22,"maximum_master_gain_db":-12,"maximum_duration_minutes":30,"fade_seconds":10,"headphones_required":true,"automatic_start_allowed":false,"notes":["No Schumann cancellation is attempted","Choose one clarity method at a time","Start low and keep the 777 carrier optional"]},
+  "change_control":{"automatic_changes_allowed":false,"change_one_variable_at_a_time":true,"approval_required":true,"calibration_assumptions":["Suspension and clarity are designed sensations, not guaranteed brain states"],"open_questions":["Does 528 belong in the default orbital worldshape or remain optional?","Should the return tone use 136.1 Hz or a world-specific home cue?"]}
+}
