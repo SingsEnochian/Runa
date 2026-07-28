@@ -23,7 +23,8 @@
   "claims":[
     {"label":"implementation-task","text":"100 Hz left and 101.5 Hz right form a 1.5 Hz binaural difference over headphones."},
     {"label":"active-research","text":"Binaural-beat EEG and behavioural effects remain inconsistent across studies; perceptual and neural responses depend on carrier, beat rate, listener, and method."},
-    {"label":"evidence-backed-finding","text":"A measurable 40 Hz auditory steady-state response has been recorded from 400/440 Hz dichotic tones, although it is not equivalent to producing hyper-awareness or the overview effect."},
+    {"label":"evidence-backed-finding","text":"A measurable 40 Hz auditory steady-state response has been recorded from 400/440 Hz dichotic tones."},
+    {"label":"subjective-intention","text":"The measured auditory response is not treated as proof of hyper-awareness or as a reproduction of an astronaut's perspective shift."},
     {"label":"symbolic-canon","text":"777 Hz is retained as an optional bright orbital carrier because of the requested aesthetic, not because it is an established cosmic frequency."},
     {"label":"implementation-task","text":"Polarity inversion cancels only audio that is otherwise identical in waveform, amplitude, timing, phase, and channel path. An independently generated 7.83 Hz sine will not reliably remove an unknown baked layer.","source_language":"adding a +pi phase shift will flatten the Earth wave to absolute silence"}
   ],
