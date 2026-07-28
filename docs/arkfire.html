@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Hearthgate: Arkfire world-native sound profile loader and five-phase passage engine.">
+  <title>Hearthgate: Arkfire</title>
+  <link rel="stylesheet" href="./css/arkfire.css">
+</head>
+<body>
+  <header class="site-header">
+    <strong>Hearthgate: Arkfire</strong>
+    <nav class="header-actions" aria-label="Arkfire navigation">
+      <a class="button-link secondary" href="./world-reception-loader.html">Terra Prototype</a>
+      <a class="button-link secondary" href="./wardenclyffe.html">Wardenclyffe</a>
+      <a class="button-link secondary" href="./index.html">Runa Index</a>
+    </nav>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">World-native signal architecture</p>
+          <h1 id="profileTitle">Loading Arkfire…</h1>
+          <p id="profileMeta" class="tiny"></p>
+          <p id="profileIntention">The registry is opening.</p>
+          <div class="button-row">
+            <span class="pill" id="headphonePill">Checking routing…</span>
+            <span class="pill">Explicit start only</span>
+            <span class="pill">No automatic adaptation</span>
+          </div>
+        </div>
+        <div class="panel inset">
+          <div class="controls">
+            <label for="profileSelect">World or signal profile
+              <select id="profileSelect" aria-label="Select an Arkfire profile"></select>
+            </label>
+            <label for="variantSelect">Accessibility or signal variant
+              <select id="variantSelect" aria-label="Select a profile variant"><option>Default</option></select>
+            </label>
+            <label for="masterDb">Master output
+              <input id="masterDb" type="range" min="-48" max="-6" step="1" value="-22">
+              <output id="masterDbOutput" for="masterDb">-22 dB</output>
+            </label>
+          </div>
+          <div class="button-row">
+            <button id="openAudio">Open Audio Engine</button>
+            <button id="runPhases" class="secondary">Run Five Phases</button>
+            <button id="featherPause" class="secondary">Feather / Pause</button>
+            <button id="stopClose" class="danger">Stop &amp; Close</button>
+          </div>
+          <div class="clock" id="phaseClock" aria-live="polite">00:00</div>
+          <p class="status" id="status" aria-live="polite">Loading registry. Audio is closed.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="two-column">
+      <article class="panel">
+        <div class="section-heading-row"><h2>Worldshape</h2><span class="pill">tone + form</span></div>
+        <div class="identity-list">
+          <article><strong>Tone</strong><span id="profileTone"></span></article>
+          <article><strong>Shape</strong><span id="profileShape"></span></article>
+          <article><strong>Arrival</strong><span id="arrivalSignature"></span></article>
+          <article><strong>Return</strong><span id="returnSignature"></span></article>
+        </div>
+      </article>
+
+      <article class="panel warning">
+        <div class="section-heading-row"><h2>Signal Charter</h2><span class="pill">Mythience</span></div>
+        <p><strong>The arithmetic, experience, and symbolism remain separate.</strong></p>
+        <p>A left/right frequency difference is signal engineering. A hoped-for state is an experiential intention. A third-eye, moon, hearth, or Pattern correspondence is symbolic canon. None is silently promoted into medical proof.</p>
+        <p class="tiny">Haptic references never enter the audible browser bus. True binaural pairs remain hard-routed to their assigned ears.</p>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading-row"><h2>Five-Phase Passage</h2><span class="pill">phase-continuous</span></div>
+      <p class="tiny">Sources remain alive beneath the threshold. Phases change gain, filtering, and motion instead of restarting the world.</p>
+      <div id="phases" class="phase-grid"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading-row"><h2>Independent Layers</h2><span class="pill">manual control</span></div>
+      <p class="tiny">Every layer may be muted or adjusted. Phase buttons set the declared profile state, then manual controls remain available.</p>
+      <div id="layers" class="layer-grid"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading-row"><h2>Claims Shelf</h2><span class="pill">label before proof</span></div>
+      <div id="claims" class="claims-grid"></div>
+    </section>
+
+    <section id="journeyPanel" class="panel"></section>
+
+    <section class="panel">
+      <div class="section-heading-row"><h2>Arkfire Use Rules</h2><span class="pill">consent-led</span></div>
+      <div class="two-column">
+        <div>
+          <h3>Feather / Icarus</h3>
+          <p>Pauses phase progression for a consent check without destroying or restarting the current signal field.</p>
+        </div>
+        <div>
+          <h3>Stop &amp; Close</h3>
+          <p>Fades every audible layer, closes the AudioContext, clears active state, and leaves the selected profile loaded but silent.</p>
+        </div>
+        <div>
+          <h3>Named Presence</h3>
+          <p>No named Constellation motif plays merely because a world is opened. Presence cues are separately chosen and may remain silent.</p>
+        </div>
+        <div>
+          <h3>Calibration</h3>
+          <p>Change one variable at a time unless a structural migration is declared. Record what helped, what was hard, what is Held, and one requested change.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">Hearthgate: Arkfire · one engine, many worlds, no frequency casserole.</footer>
+  <script src="./js/arkfire-engine.js"></script>
+</body>
+</html>
