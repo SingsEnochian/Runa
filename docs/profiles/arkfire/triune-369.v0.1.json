@@ -1,0 +1,52 @@
+{
+  "schema_version":"1.0",
+  "id":"triune-369-v0-1",
+  "slug":"triune-369",
+  "name":"3.69 Triune Field",
+  "profile_kind":"signal-protocol",
+  "world":null,
+  "world_slug":null,
+  "version":"0.1",
+  "status":"calibration",
+  "route":"/arkfire.html?profile=triune-369",
+  "identity":{
+    "tone":"Layered, architectural, slow-breathing, harmonically recursive",
+    "shape":"Three protected binaural rails inside a 3:6:9 temporal lattice",
+    "intention":"Provide a reusable multi-bus calibration field for world profiles",
+    "arrival_signature":"Three 3.69 Hz binaural pairs stabilise before the 396/963 wings open",
+    "return_signature":"Triad and wings recede, sub-grid releases, pink wind remains briefly, then closes",
+    "palette":["deep indigo","copper","violet","black glass"],
+    "canon_sources":["Rowan frequency stack 2026-07-28"],
+    "must_avoid":["calling every layer binaural","free-running duplicate oscillators at shared frequencies","hard stereo limiting"]
+  },
+  "master_clock":{"base_hz":3.69,"sync_mode":"mixed","macro_cycle_seconds":369},
+  "claims":[
+    {"label":"implementation-task","text":"Each protected left/right pair differs by 3.69 Hz."},
+    {"label":"active-research","text":"Evidence that binaural stimulation reliably entrains brain oscillations or produces specific mental states is inconsistent."},
+    {"label":"subjective-intention","text":"The stack is designed to feel layered, recursive, and spatially coherent."}
+  ],
+  "layers":[
+    {"id":"bb-low","label":"Low 3.69 Dyad","type":"true-binaural","role":"low protected rail","gain_db":-30,"enabled_by_default":true,"signal":{"waveform":"sine","left_hz":90,"right_hz":93.69,"beat_hz":3.69},"routing":{"mode":"protected-stereo"},"phase_continuous":true,"symbolic_meaning":"foundation rail","experiential_intention":"low steady depth","evidence_label":"implementation-task","collision_policy":"none","accessibility_notes":["Headphones required"]},
+    {"id":"bb-mid","label":"Mid 3.69 Dyad","type":"true-binaural","role":"middle protected rail","gain_db":-32,"enabled_by_default":true,"signal":{"waveform":"sine","left_hz":144,"right_hz":147.69,"beat_hz":3.69},"routing":{"mode":"protected-stereo"},"phase_continuous":true,"symbolic_meaning":"central rail","experiential_intention":"coherent middle field","evidence_label":"implementation-task","collision_policy":"phase-locked","accessibility_notes":["Shares 144 Hz source with canonical isochronic carrier"]},
+    {"id":"bb-high","label":"High 3.69 Dyad","type":"true-binaural","role":"upper protected rail","gain_db":-34,"enabled_by_default":true,"signal":{"waveform":"sine","left_hz":222,"right_hz":225.69,"beat_hz":3.69},"routing":{"mode":"protected-stereo"},"phase_continuous":true,"symbolic_meaning":"upper rail","experiential_intention":"clear upper contour","evidence_label":"implementation-task","collision_policy":"intentional-shared-source","accessibility_notes":["222 Hz cycle layer must share source or remain low"]},
+    {"id":"iso-144","label":"11.11 Isochronic 144","type":"isochronic","role":"attention rhythm","gain_db":-36,"enabled_by_default":true,"signal":{"waveform":"triangle","frequency_hz":144},"modulation":{"kind":"isochronic","rate_hz":11.11,"depth":0.75},"routing":{"mode":"center","pan":0},"phase_continuous":true,"symbolic_meaning":"crown pulse","experiential_intention":"distinct rhythmic articulation","evidence_label":"implementation-task","collision_policy":"phase-locked","accessibility_notes":["Locked alternative uses 11.07 Hz","Purist alternative moves carrier to 288 Hz"]},
+    {"id":"pad-396","label":"396 Left Wing","type":"pad","role":"lower harmonic wing","gain_db":-36,"enabled_by_default":true,"signal":{"waveform":"triangle","frequency_hz":396,"filter":{"type":"lowpass","min_hz":300,"max_hz":500,"cycle_seconds":186}},"routing":{"mode":"left-bias","pan":-0.45},"phase_continuous":true,"symbolic_meaning":"foundation and release","experiential_intention":"warm left field","evidence_label":"symbolic-canon","collision_policy":"none","accessibility_notes":[]},
+    {"id":"pad-963","label":"963 Right Wing","type":"pad","role":"upper harmonic wing","gain_db":-38,"enabled_by_default":true,"signal":{"waveform":"triangle","frequency_hz":963,"filter":{"type":"lowpass","min_hz":800,"max_hz":1100,"cycle_seconds":186}},"routing":{"mode":"right-bias","pan":0.45},"phase_continuous":true,"symbolic_meaning":"upper light","experiential_intention":"bright right contour","evidence_label":"symbolic-canon","collision_policy":"none","accessibility_notes":["Migraine-sensitive variant reduces 6 dB"]},
+    {"id":"triad-111","label":"Triad 111","type":"tone","role":"macro-cycle first tone","gain_db":-40,"enabled_by_default":true,"signal":{"waveform":"sine","frequency_hz":111},"modulation":{"kind":"macro-envelope","rate_hz":0.00271003,"depth":1},"routing":{"mode":"center","pan":0},"phase_continuous":true,"symbolic_meaning":"first opening","experiential_intention":"slow phase emergence","evidence_label":"symbolic-canon","collision_policy":"none","accessibility_notes":[]},
+    {"id":"triad-222","label":"Triad 222","type":"tone","role":"macro-cycle second tone","gain_db":-42,"enabled_by_default":true,"signal":{"waveform":"sine","frequency_hz":222},"modulation":{"kind":"macro-envelope","rate_hz":0.00271003,"depth":1,"phase_degrees":120},"routing":{"mode":"center","pan":0},"phase_continuous":true,"symbolic_meaning":"second opening","experiential_intention":"slow phase emergence","evidence_label":"symbolic-canon","collision_policy":"intentional-shared-source","accessibility_notes":[]},
+    {"id":"triad-333","label":"Triad 333","type":"tone","role":"macro-cycle third tone","gain_db":-44,"enabled_by_default":true,"signal":{"waveform":"sine","frequency_hz":333},"modulation":{"kind":"macro-envelope","rate_hz":0.00271003,"depth":1,"phase_degrees":240},"routing":{"mode":"center","pan":0},"phase_continuous":true,"symbolic_meaning":"third opening","experiential_intention":"slow phase emergence","evidence_label":"symbolic-canon","collision_policy":"none","accessibility_notes":[]},
+    {"id":"sub-36-9","label":"36.9 Sub Grid","type":"tone","role":"low somatic grid","gain_db":-42,"enabled_by_default":false,"signal":{"waveform":"sine","frequency_hz":36.9},"modulation":{"kind":"tremolo","rate_hz":0.369,"depth":0.45},"routing":{"mode":"center","pan":0},"phase_continuous":true,"symbolic_meaning":"deep grid","experiential_intention":"low body pulse","evidence_label":"subjective-intention","collision_policy":"none","accessibility_notes":["Optional because headphone reproduction varies"]},
+    {"id":"sub-72","label":"72 Inverse Heartbeat","type":"tone","role":"complementary low pulse","gain_db":-40,"enabled_by_default":false,"signal":{"waveform":"sine","frequency_hz":72},"modulation":{"kind":"tremolo","rate_hz":0.369,"depth":0.35,"phase_degrees":180},"routing":{"mode":"center","pan":0},"phase_continuous":true,"symbolic_meaning":"answering heartbeat","experiential_intention":"complementary somatic pulse","evidence_label":"subjective-intention","collision_policy":"none","accessibility_notes":["Can feed haptic output separately"]},
+    {"id":"pink-wind","label":"Pink Wind","type":"noise","role":"environmental veil","gain_db":-34,"enabled_by_default":true,"signal":{"noise_type":"pink","filter":{"type":"lowpass","min_hz":500,"max_hz":1000,"cycle_seconds":186}},"modulation":{"kind":"stereo-drift","rate_hz":0.369,"depth":0.35},"routing":{"mode":"stereo-drift","pan":0},"phase_continuous":true,"symbolic_meaning":"moving field","experiential_intention":"soft atmospheric cohesion","evidence_label":"subjective-intention","collision_policy":"none","accessibility_notes":["Reduced-motion centres the field"]}
+  ],
+  "phases":[
+    {"id":"baseline","label":"Baseline","duration_seconds":60,"purpose":"Establish pink wind and a quiet low rail.","layer_states":{"pink-wind":{"enabled":true,"gain_db":-40},"bb-low":{"enabled":true,"gain_db":-38}}},
+    {"id":"vestibule","label":"Triune Vestibule","duration_seconds":180,"purpose":"Bring all protected binaural rails into a stable field.","layer_states":{"pink-wind":{"enabled":true},"bb-low":{"enabled":true},"bb-mid":{"enabled":true},"bb-high":{"enabled":true}}},
+    {"id":"arrival","label":"Wing Arrival","duration_seconds":120,"purpose":"Open the 396 and 963 harmonic wings and isochronic rhythm.","layer_states":{"pink-wind":{"enabled":true},"bb-low":{"enabled":true},"bb-mid":{"enabled":true},"bb-high":{"enabled":true},"iso-144":{"enabled":true},"pad-396":{"enabled":true},"pad-963":{"enabled":true}}},
+    {"id":"immersion","label":"369 Immersion","duration_seconds":900,"purpose":"Run the full temporal lattice with optional sub-grid.","layer_states":{"pink-wind":{"enabled":true},"bb-low":{"enabled":true},"bb-mid":{"enabled":true},"bb-high":{"enabled":true},"iso-144":{"enabled":true},"pad-396":{"enabled":true},"pad-963":{"enabled":true},"triad-111":{"enabled":true},"triad-222":{"enabled":true},"triad-333":{"enabled":true},"sub-36-9":{"enabled":false},"sub-72":{"enabled":false}}},
+    {"id":"return","label":"Triune Return","duration_seconds":180,"purpose":"Withdraw triad, wings, and rhythm before closing the rails and wind.","layer_states":{"pink-wind":{"enabled":true,"gain_db":-42},"bb-low":{"enabled":true,"gain_db":-40}}}
+  ],
+  "variants":{"purist":{"description":"Moves the isochronic carrier to 288 Hz and derives 222 from the protected source.","layer_overrides":{"iso-144":{"signal":{"frequency_hz":288}}}},"locked":{"description":"Uses an exact 3:1 relationship at 11.07 Hz.","layer_overrides":{"iso-144":{"modulation":{"rate_hz":11.07}}}},"centre-safe":{"description":"Centres wind and pad wings.","layer_overrides":{}}},
+  "safety":{"default_master_gain_db":-20,"maximum_master_gain_db":-10,"maximum_duration_minutes":45,"fade_seconds":10,"headphones_required":true,"automatic_start_allowed":false,"notes":["Start low","Do not stack all low-frequency layers at high gain","Stereo-linked output limiting only"]},
+  "change_control":{"automatic_changes_allowed":false,"change_one_variable_at_a_time":true,"approval_required":true,"calibration_assumptions":["The symbolic frequency meanings are profile language, not medical claims"],"open_questions":["Canonical 11.11 or ratio-locked 11.07 as default?"]}
+}
