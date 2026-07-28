@@ -24,15 +24,32 @@ on:
 permissions:
   contents: read
 
+env:
+  FORCE_COLOR: '0'
+
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          show-progress: false
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: '24'
       - name: Validate Arkfire profiles and journeys
-        run: node scripts/validate-arkfire.mjs
+        id: validate
+        shell: bash
+        run: |
+          set -o pipefail
+          node scripts/validate-arkfire.mjs 2>&1 | tee arkfire-validation.log
+      - name: Publish validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: arkfire-validation-report
+          path: arkfire-validation.log
+          if-no-files-found: error
+          retention-days: 7
