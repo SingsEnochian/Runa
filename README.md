@@ -13,6 +13,8 @@ The `docs/` folder contains public/static pages such as:
 
 ```text
 index.html
+arkfire.html
+world-reception-loader.html
 project-zero-bridge.html
 council-bell.html
 threshold-mirror.html
@@ -30,6 +32,27 @@ zener-lab.html
 rv-capture.html
 tesla-observatory.html
 ```
+
+## Hearthgate: Arkfire
+
+`docs/arkfire.html` is the on-demand world-native profile loader. It uses one phase-continuous Web Audio engine while preserving each world's own tone, shape, arrival signature, five-phase passage, accessibility variants, and return path.
+
+Arkfire currently registers:
+
+- Terra Aeterna / Hearthweave
+- The Luna Who Called Down the Moon
+- T’averen Vaen
+- Starsong: Friendship Is Magic
+- Feather & Flame
+- Dreaming Grove / Templehouse
+- A Momento Creationis
+- 3.69 Triune Field
+- 6.66 Veilwork
+- Orbital Modes: Suspension & Clarity
+
+Profiles resolve directly through `arkfire.html?profile=<slug>`. Audio never starts automatically. True binaural pairs use protected stereo routing and are not panned, widened, crossfed, or summed to mono. The Ten-State Cognitive Roadmap is stored separately as a journey because a world is a place and a journey is a sequence through states.
+
+The agent workflow is documented in `docs/ARKFIRE_AGENT_UPDATE_WORKFLOW.md`. Static validation runs through `scripts/validate-arkfire.mjs` and `.github/workflows/arkfire-validation.yml`.
 
 ## Council Bell
 
@@ -59,6 +82,8 @@ Use these labels:
 - **Active research** — plausible work still under study or debate.
 - **Speculative theory** — useful internal model, not established fact.
 - **Fringe inspiration** — creative or historical inspiration, not proof.
+- **Symbolic canon** — world, ritual, or narrative meaning without scientific promotion.
+- **Subjective intention** — the designed experiential aim, not a guaranteed result.
 - **Implementation task** — code, UI, build, data, or documentation work.
 - **Evidence-backed finding** — directly observed in code, logs, local storage, exports, measurements, or cited sources.
 
