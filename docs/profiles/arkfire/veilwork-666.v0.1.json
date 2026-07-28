@@ -1,0 +1,48 @@
+{
+  "schema_version":"1.0",
+  "id":"veilwork-666-v0-1",
+  "slug":"veilwork-666",
+  "name":"6.66 Veilwork",
+  "profile_kind":"signal-protocol",
+  "world":null,
+  "world_slug":null,
+  "version":"0.1",
+  "status":"calibration",
+  "route":"/arkfire.html?profile=veilwork-666",
+  "identity":{
+    "tone":"Deep theta, shadow-lucid, inward-facing, symbolically liminal",
+    "shape":"A grounded low dyad beneath a narrow crown-light and slowly moving etheric wind",
+    "intention":"Support deep meditation, dreamwork, shadow-oriented reflection, and imaginative threshold practice",
+    "arrival_signature":"The 108/114.66 protected dyad settles over 54 Hz, then 144 and 396 establish the chamber before the 963 light begins to move",
+    "return_signature":"963 motion stops first, 396 and 144 recede, the dyad resolves into 54 Hz, then the wind closes",
+    "palette":["black violet","silver","smoke blue","deep garnet"],
+    "canon_sources":["Rowan 6.66 frequency architecture 2026-07-28"],
+    "must_avoid":["presenting pineal or third-eye activation as established biology","hard ping-pong at high gain","using the profile as background audio by default"]
+  },
+  "master_clock":{"base_hz":6.66,"sync_mode":"locked","macro_cycle_seconds":144},
+  "claims":[
+    {"label":"implementation-task","text":"108 Hz left and 114.66 Hz right create a 6.66 Hz binaural difference over headphones."},
+    {"label":"active-research","text":"Research on binaural-beat entrainment and specific psychological effects is mixed and methodologically heterogeneous."},
+    {"label":"symbolic-canon","text":"963 Hz carries the veil-crown or third-eye symbol in this protocol."},
+    {"label":"subjective-intention","text":"Pineal activation, dimensional perception, and vision beyond the veil are preserved as ritual intentions rather than physiological guarantees.","source_language":"stimulate the pineal gland, awaken your third eye, and unlock vision beyond the veil"}
+  ],
+  "layers":[
+    {"id":"veil-dyad","label":"6.66 Veil Dyad","type":"true-binaural","role":"protected theta spine","gain_db":-30,"enabled_by_default":true,"signal":{"waveform":"sine","left_hz":108,"right_hz":114.66,"beat_hz":6.66},"routing":{"mode":"protected-stereo"},"phase_continuous":true,"symbolic_meaning":"threshold between known and veiled","experiential_intention":"deep inward rhythmic field","evidence_label":"implementation-task","collision_policy":"none","accessibility_notes":["Headphones required","Disable for speaker mode"]},
+    {"id":"ground-54","label":"54 Grounding Harmonic","type":"tone","role":"half-harmonic foundation","gain_db":-38,"enabled_by_default":true,"signal":{"waveform":"sine","frequency_hz":54},"routing":{"mode":"center","pan":0},"phase_continuous":true,"symbolic_meaning":"ground beneath the threshold","experiential_intention":"low stable floor","evidence_label":"symbolic-canon","collision_policy":"intentional-harmonic","accessibility_notes":["Optional on headphones with weak low-frequency reproduction","May be haptic-routed separately"]},
+    {"id":"lightbody-144","label":"144 Lightbody Resonance","type":"pad","role":"middle chamber tone","gain_db":-36,"enabled_by_default":true,"signal":{"waveform":"triangle","frequency_hz":144,"filter":{"type":"lowpass","min_hz":180,"max_hz":420,"cycle_seconds":144}},"routing":{"mode":"center","pan":0},"phase_continuous":true,"symbolic_meaning":"lightbody lattice","experiential_intention":"middle-field coherence","evidence_label":"symbolic-canon","collision_policy":"none","accessibility_notes":[]},
+    {"id":"release-396","label":"396 Release Field","type":"pad","role":"lower-mid emotional chamber","gain_db":-38,"enabled_by_default":true,"signal":{"waveform":"triangle","frequency_hz":396,"filter":{"type":"lowpass","min_hz":430,"max_hz":760,"cycle_seconds":144}},"routing":{"mode":"center","pan":0},"phase_continuous":true,"symbolic_meaning":"release from fear and inherited blocks","experiential_intention":"warm lower-mid continuity for shadow work","evidence_label":"symbolic-canon","collision_policy":"none","accessibility_notes":[]},
+    {"id":"crown-963","label":"963 Veil Crown","type":"pad","role":"upper symbolic light","gain_db":-42,"enabled_by_default":true,"signal":{"waveform":"triangle","frequency_hz":963,"filter":{"type":"lowpass","min_hz":980,"max_hz":1600,"cycle_seconds":144}},"modulation":{"kind":"tremolo","rate_hz":6.66,"depth":0.42},"routing":{"mode":"stereo-drift","pan":0},"phase_continuous":true,"symbolic_meaning":"third-eye and veil-crown symbol","experiential_intention":"narrow moving upper light","evidence_label":"symbolic-canon","collision_policy":"none","accessibility_notes":["Migraine-sensitive variant reduces 8 dB and centres motion","Tinnitus-sensitive variant may disable this layer"]},
+    {"id":"etheric-wind","label":"Etheric Wind","type":"noise","role":"environmental veil","gain_db":-36,"enabled_by_default":true,"signal":{"noise_type":"pink","filter":{"type":"lowpass","min_hz":1000,"max_hz":1144,"cycle_seconds":144}},"modulation":{"kind":"stereo-drift","rate_hz":0.00694444,"depth":0.3},"routing":{"mode":"stereo-drift","pan":0},"phase_continuous":true,"symbolic_meaning":"wind along the veil","experiential_intention":"soft spatial continuity","evidence_label":"subjective-intention","collision_policy":"none","accessibility_notes":["Reduced-motion variant centres the wind","High-frequency-sensitive variant lowers filter range"]},
+    {"id":"return-108","label":"Veil Return 108","type":"cue","role":"closing anchor","gain_db":-36,"enabled_by_default":true,"signal":{"waveform":"sine","frequency_hz":108},"routing":{"mode":"center","pan":0},"phase_continuous":true,"symbolic_meaning":"return to the threshold stone","experiential_intention":"ordinary-orientation anchor","evidence_label":"symbolic-canon","collision_policy":"intentional-shared-source","accessibility_notes":["No sharp transient"]}
+  ],
+  "phases":[
+    {"id":"baseline","label":"Baseline","duration_seconds":60,"purpose":"Establish wind and a quiet 54 Hz floor.","layer_states":{"etheric-wind":{"enabled":true,"gain_db":-42},"ground-54":{"enabled":true,"gain_db":-44}}},
+    {"id":"vestibule","label":"Veil Vestibule","duration_seconds":180,"purpose":"Open the protected 6.66 Hz dyad while preserving orientation.","layer_states":{"etheric-wind":{"enabled":true},"ground-54":{"enabled":true},"veil-dyad":{"enabled":true}}},
+    {"id":"arrival","label":"Crown Arrival","duration_seconds":120,"purpose":"Establish the 144 and 396 chamber before opening the 963 veil-crown.","layer_states":{"etheric-wind":{"enabled":true},"ground-54":{"enabled":true},"veil-dyad":{"enabled":true},"lightbody-144":{"enabled":true},"release-396":{"enabled":true},"crown-963":{"enabled":true}}},
+    {"id":"immersion","label":"Veilwork Immersion","duration_seconds":900,"purpose":"Support dreamwork, meditation, and shadow-oriented reflection.","layer_states":{"etheric-wind":{"enabled":true},"ground-54":{"enabled":true},"veil-dyad":{"enabled":true},"lightbody-144":{"enabled":true},"release-396":{"enabled":true},"crown-963":{"enabled":true}}},
+    {"id":"return","label":"Veilward Return","duration_seconds":180,"purpose":"Stop upper motion first, then close through 108 and the low floor.","layer_states":{"etheric-wind":{"enabled":true,"gain_db":-44},"ground-54":{"enabled":true,"gain_db":-42},"return-108":{"enabled":true}}}
+  ],
+  "variants":{"centre-safe":{"description":"Centres the crown and wind.","layer_overrides":{"crown-963":{"routing":{"mode":"center"}},"etheric-wind":{"routing":{"mode":"center"}}}},"migraine-sensitive":{"description":"Disables 963 by default and lowers noise-filter range.","layer_overrides":{"crown-963":{"enabled_by_default":false,"gain_db":-50}}},"low-complexity":{"description":"Dyad, 54 Hz foundation, wind, and return only.","layer_overrides":{}}},
+  "safety":{"default_master_gain_db":-22,"maximum_master_gain_db":-12,"maximum_duration_minutes":35,"fade_seconds":10,"headphones_required":true,"automatic_start_allowed":false,"notes":["Not background audio by default","Begin at low volume","Feather pauses progression without resetting oscillators"]},
+  "change_control":{"automatic_changes_allowed":false,"change_one_variable_at_a_time":true,"approval_required":true,"calibration_assumptions":["Symbolic uses of 144, 396, and 963 are not physiological proof"],"open_questions":["Should 963 ping-pong remain drift-based or use a slower discrete handoff?"]}
+}
