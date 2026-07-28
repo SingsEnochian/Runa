@@ -1,0 +1,38 @@
+name: Arkfire Validation
+
+on:
+  push:
+    paths:
+      - 'docs/arkfire.html'
+      - 'docs/js/arkfire-engine.js'
+      - 'docs/css/arkfire.css'
+      - 'docs/profiles/arkfire/**'
+      - 'docs/journeys/**'
+      - 'schemas/arkfire-*.json'
+      - 'scripts/validate-arkfire.mjs'
+      - '.github/workflows/arkfire-validation.yml'
+  pull_request:
+    paths:
+      - 'docs/arkfire.html'
+      - 'docs/js/arkfire-engine.js'
+      - 'docs/css/arkfire.css'
+      - 'docs/profiles/arkfire/**'
+      - 'docs/journeys/**'
+      - 'schemas/arkfire-*.json'
+      - 'scripts/validate-arkfire.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate Arkfire profiles and journeys
+        run: node scripts/validate-arkfire.mjs
