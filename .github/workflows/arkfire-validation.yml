@@ -5,9 +5,12 @@ on:
     paths:
       - 'docs/arkfire.html'
       - 'docs/js/arkfire-engine.js'
+      - 'docs/js/arkfire-shell.js'
       - 'docs/css/arkfire.css'
+      - 'docs/css/arkfire-shell.css'
       - 'docs/profiles/arkfire/**'
       - 'docs/journeys/**'
+      - 'docs/ARKFIRE_*.md'
       - 'schemas/arkfire-*.json'
       - 'scripts/validate-arkfire.mjs'
       - '.github/workflows/arkfire-validation.yml'
@@ -15,9 +18,12 @@ on:
     paths:
       - 'docs/arkfire.html'
       - 'docs/js/arkfire-engine.js'
+      - 'docs/js/arkfire-shell.js'
       - 'docs/css/arkfire.css'
+      - 'docs/css/arkfire-shell.css'
       - 'docs/profiles/arkfire/**'
       - 'docs/journeys/**'
+      - 'docs/ARKFIRE_*.md'
       - 'schemas/arkfire-*.json'
       - 'scripts/validate-arkfire.mjs'
 
@@ -44,7 +50,11 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          node scripts/validate-arkfire.mjs 2>&1 | tee arkfire-validation.log
+          {
+            node --check docs/js/arkfire-engine.js
+            node --check docs/js/arkfire-shell.js
+            node scripts/validate-arkfire.mjs
+          } 2>&1 | tee arkfire-validation.log
       - name: Publish validation report
         if: always()
         uses: actions/upload-artifact@v4
