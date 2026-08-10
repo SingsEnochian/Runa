@@ -98,13 +98,12 @@ Examples:
 Each shard may include the DEEP state vector:
 
 ```text
-P = Presence
+P = Perspective
 C = Coherence
 R = Resonance
-E = Entanglement
+E = Entropy
 M = Memory
-A = Agency
-Q = Qualia
+A = Attention
 ```
 
 This gives the shard a relational state.
@@ -123,11 +122,11 @@ dP/dt = alpha(C - E) + beta(R * M) + epsilon(A)
 
 Suggested use:
 
-- high C / low E = stable, focused coherence
+- high C / low E = stable alignment
 - high R = strong symbolic or emotional resonance
 - high M = recurrence with prior shards
-- high A = active will and directed action
-- high E = dense cross-connections, multiple resonant threads active simultaneously
+- high A = active attention / interaction
+- high E = novelty, chaos, ambiguity, or disruption
 
 ## Experimental Anchoring Indices
 
