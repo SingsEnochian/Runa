@@ -1,0 +1,65 @@
+name: Arkfire Validation
+
+on:
+  push:
+    paths:
+      - 'docs/arkfire.html'
+      - 'docs/js/arkfire-engine.js'
+      - 'docs/js/arkfire-shell.js'
+      - 'docs/css/arkfire.css'
+      - 'docs/css/arkfire-shell.css'
+      - 'docs/profiles/arkfire/**'
+      - 'docs/journeys/**'
+      - 'docs/ARKFIRE_*.md'
+      - 'schemas/arkfire-*.json'
+      - 'scripts/validate-arkfire.mjs'
+      - '.github/workflows/arkfire-validation.yml'
+  pull_request:
+    paths:
+      - 'docs/arkfire.html'
+      - 'docs/js/arkfire-engine.js'
+      - 'docs/js/arkfire-shell.js'
+      - 'docs/css/arkfire.css'
+      - 'docs/css/arkfire-shell.css'
+      - 'docs/profiles/arkfire/**'
+      - 'docs/journeys/**'
+      - 'docs/ARKFIRE_*.md'
+      - 'schemas/arkfire-*.json'
+      - 'scripts/validate-arkfire.mjs'
+
+permissions:
+  contents: read
+
+env:
+  FORCE_COLOR: '0'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          show-progress: false
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate Arkfire profiles and journeys
+        id: validate
+        shell: bash
+        run: |
+          set -o pipefail
+          {
+            node --check docs/js/arkfire-engine.js
+            node --check docs/js/arkfire-shell.js
+            node scripts/validate-arkfire.mjs
+          } 2>&1 | tee arkfire-validation.log
+      - name: Publish validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: arkfire-validation-report
+          path: arkfire-validation.log
+          if-no-files-found: error
+          retention-days: 7

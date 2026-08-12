@@ -1,0 +1,60 @@
+{
+  "schema_version":"1.0",
+  "id":"ten-state-cognitive-roadmap-v0-1",
+  "slug":"ten-state-cognitive-roadmap",
+  "name":"Ten-State Cognitive Roadmap",
+  "version":"0.1",
+  "status":"calibration",
+  "intention":"Provide a programmable long-form sequence that moves from focus through decompression and sleep-oriented states, then returns through reintegration and an optional gamma-range finale.",
+  "claims":[
+    {"label":"implementation-task","text":"The instantaneous binaural difference is the absolute difference between the left and right carrier frequencies."},
+    {"label":"active-research","text":"Binaural-beat entrainment findings are mixed; state names describe design intentions rather than guaranteed EEG or cognitive outcomes."},
+    {"label":"implementation-task","text":"Protected binaural carriers remain hard-routed to their assigned ears. Spatial movement is applied only to background noise or pads."},
+    {"label":"implementation-task","text":"A unilateral +0.5 percent pitch drift changes the target beat. Carrier movement must therefore be specified directly or applied symmetrically around the intended beat."},
+    {"label":"subjective-intention","text":"The transition curves are designed to reduce audible discontinuity. The phrase neural jerk is not treated as a verified physiological mechanism.","source_language":"neural jerk"},
+    {"label":"symbolic-canon","text":"The 7.83 Hz reintegration state is an Earth-reference symbol. In this audio system it is a binaural difference, not the electromagnetic Schumann resonance itself."}
+  ],
+  "shared_layers":[
+    {
+      "id":"journey-pink-field",
+      "type":"noise",
+      "gain_db":-42,
+      "signal":{"noise_type":"pink","filter":{"type":"lowpass","min_hz":450,"max_hz":1200,"cycle_seconds":300}},
+      "modulation":{"kind":"random-envelope","min_gain_db":-50,"max_gain_db":-40,"segment_seconds":[45,240]},
+      "routing":{"mode":"stereo-drift","rate_hz":0.002,"depth":0.14},
+      "notes":["Noise generator must preserve filter and random state across render chunks.","The noise field may move; the binaural carriers may not."]
+    },
+    {
+      "id":"shared-breath-envelope",
+      "type":"modulation",
+      "rate_hz":0.1,
+      "depth":0.15,
+      "phase_relationship":"identical on both protected channels",
+      "notes":["Optional 0.1 to 0.2 Hz amplitude modulation.","It is a breathing-shaped envelope, not a claim that respiration is forced."]
+    }
+  ],
+  "states":[
+    {"index":1,"id":"focus-entry","name":"Focus Entry","phase":"Activation","duration_seconds":10800,"start":{"left_hz":144,"right_hz":158,"beat_hz":14},"end":{"left_hz":222,"right_hz":236,"beat_hz":14},"transition":{"carrier_curve":"smoothstep","beat_curve":"constant","crossfade_seconds":30},"symbolic_name":"Low-Beta Gate","technical_notes":["Carrier rises while the 14 Hz difference remains constant."]},
+    {"index":2,"id":"focus-deep","name":"Focus Deep","phase":"Sustained Focus","duration_seconds":10800,"start":{"left_hz":222,"right_hz":236,"beat_hz":14},"end":{"left_hz":222,"right_hz":240,"beat_hz":18},"transition":{"carrier_curve":"constant","beat_curve":"smoothstep","crossfade_seconds":30},"symbolic_name":"Mid-Beta Forge","technical_notes":["Right carrier changes while left remains fixed, intentionally increasing the beat from 14 to 18 Hz."]},
+    {"index":3,"id":"cognitive-flow","name":"Cognitive Flow","phase":"Creative Flow","duration_seconds":10800,"start":{"left_hz":222,"right_hz":240,"beat_hz":18},"end":{"left_hz":333,"right_hz":345,"beat_hz":12},"transition":{"carrier_curve":"smoothstep","beat_curve":"smoothstep","crossfade_seconds":30},"symbolic_name":"Alpha-Beta River","technical_notes":["Carrier and beat both change; monitor for audible roughness during the early higher-beat portion."]},
+    {"index":4,"id":"open-mode","name":"Open Mode","phase":"Ideation","duration_seconds":10800,"start":{"left_hz":333,"right_hz":345,"beat_hz":12},"end":{"left_hz":444,"right_hz":452,"beat_hz":8},"transition":{"carrier_curve":"smoothstep","beat_curve":"smoothstep","crossfade_seconds":30},"symbolic_name":"Alpha Opening","technical_notes":["Ends at an 8 Hz difference."]},
+    {"index":5,"id":"theta-bridge","name":"Theta Bridge","phase":"Decompression","duration_seconds":10800,"start":{"left_hz":444,"right_hz":452,"beat_hz":8},"end":{"left_hz":555,"right_hz":560.5,"beat_hz":5.5},"transition":{"carrier_curve":"smoothstep","beat_curve":"smoothstep","crossfade_seconds":45},"symbolic_name":"Theta Bridge","technical_notes":["Carrier rises while beat rate falls."]},
+    {"index":6,"id":"calm-system","name":"Calm System","phase":"Recovery","duration_seconds":10800,"start":{"left_hz":555,"right_hz":560.5,"beat_hz":5.5},"end":{"left_hz":666,"right_hz":670,"beat_hz":4},"transition":{"carrier_curve":"smoothstep","beat_curve":"smoothstep","crossfade_seconds":45},"symbolic_name":"Low-Theta Chamber","technical_notes":["The carrier is high for a sleep-adjacent state; a lower-carrier accessibility variant should be auditioned."]},
+    {"index":7,"id":"sleep-descent","name":"Sleep Descent","phase":"Down-Regulation","duration_seconds":10800,"start":{"left_hz":666,"right_hz":670,"beat_hz":4},"end":{"left_hz":777,"right_hz":779.5,"beat_hz":2.5},"transition":{"carrier_curve":"smoothstep","beat_curve":"smoothstep","crossfade_seconds":60},"symbolic_name":"Delta Threshold","technical_notes":["The bright carrier may be unsuitable for some sleepers; provide a lower-carrier variant."]},
+    {"index":8,"id":"deep-sleep","name":"Deep Sleep","phase":"Sleep Initiation","duration_seconds":10800,"start":{"left_hz":777,"right_hz":779.5,"beat_hz":2.5},"end":{"left_hz":100,"right_hz":101,"beat_hz":1},"transition":{"carrier_curve":"dual-dyad-crossfade","beat_curve":"smoothstep","crossfade_seconds":600},"symbolic_name":"Deep-Delta Void","technical_notes":["Do not linearly chirp through the full 777 to 100 Hz drop by default.","Crossfade between a bright 2.5 Hz dyad and a low 1 Hz dyad while lowering the beat smoothly."]},
+    {"index":9,"id":"reintegration","name":"Reintegration","phase":"Waking Transition","duration_seconds":10800,"start":{"left_hz":100,"right_hz":101,"beat_hz":1},"end":{"left_hz":200,"right_hz":207.83,"beat_hz":7.83},"transition":{"carrier_curve":"smoothstep","beat_curve":"smoothstep","crossfade_seconds":60},"symbolic_name":"Earth-Reference Return","technical_notes":["7.83 Hz is used as an audio beat-rate symbol, not an acoustic Schumann tone."]},
+    {"index":10,"id":"full-spectrum","name":"Full Spectrum","phase":"Integration","duration_seconds":10800,"start":{"left_hz":200,"right_hz":207.83,"beat_hz":7.83},"end":{"left_hz":432,"right_hz":472,"beat_hz":40},"transition":{"carrier_curve":"smoothstep","beat_curve":"smoothstep","crossfade_seconds":90},"symbolic_name":"Gamma Lantern","technical_notes":["A 40 Hz dichotic difference may produce roughness and can evoke a measurable auditory steady-state response in some paradigms.","It is not treated as guaranteed hyper-awareness or full-spectrum integration.","Offer a 40 Hz amplitude-modulated alternative."]}
+  ],
+  "transition_rules":{
+    "phase_continuity":true,
+    "curve_default":"smoothstep",
+    "binaural_carriers_may_pan":false,
+    "shared_am_phase":"locked",
+    "noise_motion_only":true,
+    "profile_switch":"fade-current-before-next",
+    "boundary_rule":"End frequencies of one state must equal the next state's start frequencies unless transition is explicitly dual-dyad-crossfade.",
+    "export_recommendation":"Render lossless WAV, RF64, W64, or FLAC. Use MP3 only as a convenience copy, never as the calibration master."
+  },
+  "safety":{"automatic_start_allowed":false,"default_master_gain_db":-24,"maximum_master_gain_db":-14,"fade_seconds":12,"maximum_continuous_minutes":180,"notes":["The 30-hour source roadmap is not approved as one unattended session.","Each three-hour state requires separate consent, stop control, and sleep-aware scheduling.","Do not use focus or sleep-oriented states while driving.","Gamma-range states begin disabled during first calibration."]},
+  "change_control":{"automatic_changes_allowed":false,"approval_required":true,"open_questions":["Should the canonical journey remain ten three-hour states, or should Arkfire provide scaled audition lengths?","Which lower-carrier replacements should be used for states 6 and 7?","Should the final state default to binaural 40 Hz or amplitude modulation?"]}
+}

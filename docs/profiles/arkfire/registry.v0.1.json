@@ -1,0 +1,30 @@
+{
+  "schema_version":"1.0",
+  "version":"0.1",
+  "title":"Hearthgate: Arkfire Profile Registry",
+  "default_profile":"terra-aeterna",
+  "groups":[
+    {
+      "id":"worlds",
+      "label":"World Reception",
+      "entries":[
+        {"slug":"terra-aeterna","name":"Terra Aeterna / Hearthweave","file":"./profiles/arkfire/terra-aeterna.v0.2.json","status":"calibration","tone":"Oceanic, relational, inhabited, warm at cosmic scale","shape":"A ringed moon opening above a Stonewood hearth rooted in sea and black-diamond sand"},
+        {"slug":"luna-mooncalled","name":"The Luna Who Called Down the Moon","file":"./profiles/arkfire/luna-mooncalled.v0.1.json","status":"seed","tone":"Moon-called, protective, emotionally lucid, healing-oriented","shape":"Three moons reflected in Moonmere water around an ivory-and-red wolf companion"},
+        {"slug":"taveren-vaen","name":"T’averen Vaen","file":"./profiles/arkfire/taveren-vaen.v0.1.json","status":"seed","tone":"Pattern-aware, travelled, mending-oriented, dream-capable","shape":"One travelling thread becoming a living loom without losing the road beneath it"},
+        {"slug":"starsong-friendship-is-magic","name":"Starsong: Friendship Is Magic","file":"./profiles/arkfire/starsong-friendship-is-magic.v0.1.json","status":"seed","tone":"Bright, affectionate, adventurous, magical, buoyant without frenzy","shape":"A descending star-chime opening into wing-air, hoofbeat, and a warm friendship chord"},
+        {"slug":"feather-and-flame","name":"Feather & Flame","file":"./profiles/arkfire/feather-and-flame.v0.1.json","status":"seed","tone":"Tender, brave, relational, consent-led, warm","shape":"A feather-soft breath crossing a low ember and returning as a two-voice answer"},
+        {"slug":"dreaming-grove-templehouse","name":"Dreaming Grove / Templehouse","file":"./profiles/arkfire/dreaming-grove-templehouse.v0.1.json","status":"seed","tone":"Held, restorative, relational, consent-aware, imaginative","shape":"A lantern path through living trees toward a hearth that answers without enclosing"},
+        {"slug":"a-momento-creationis","name":"A Momento Creationis","file":"./profiles/arkfire/a-momento-creationis.v0.1.json","status":"seed","tone":"Attentive making, creative threshold, clarity without sterility","shape":"One mark blooming across a blank field while unfinished forms remain welcome"}
+      ]
+    },
+    {
+      "id":"signal-protocols",
+      "label":"Signal Protocols",
+      "entries":[
+        {"slug":"triune-369","name":"3.69 Triune Field","file":"./profiles/arkfire/triune-369.v0.1.json","status":"calibration","tone":"Layered, architectural, slow-breathing, harmonically recursive","shape":"Three protected binaural rails inside a 3:6:9 temporal lattice"},
+        {"slug":"veilwork-666","name":"6.66 Veilwork","file":"./profiles/arkfire/veilwork-666.v0.1.json","status":"calibration","tone":"Deep theta, shadow-lucid, inward-facing, symbolically liminal","shape":"A low grounded dyad beneath a narrow crown-light and slow etheric wind"},
+        {"slug":"orbital-modes","name":"Orbital Modes: Suspension & Clarity","file":"./profiles/arkfire/orbital-modes.v0.1.json","status":"calibration","tone":"Detached, spacious, black-sky quiet, with an optional crystalline attention mode","shape":"A low suspension rail opening into a dark orbital chamber with a separate clarity ring"}
+      ]
+    }
+  ]
+}

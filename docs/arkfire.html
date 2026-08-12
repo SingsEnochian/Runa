@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Hearthgate World Reception Gate within Arkfire Glyph & Tone Studio.">
+  <title>Arkfire · World Reception Gate</title>
+  <link rel="stylesheet" href="./css/arkfire.css">
+  <link rel="stylesheet" href="./css/arkfire-shell.css">
+</head>
+<body>
+  <header class="site-header">
+    <div>
+      <strong>Arkfire · Glyph &amp; Tone Studio</strong>
+      <span class="module-name">World Reception Gate</span>
+    </div>
+    <nav class="header-actions" aria-label="Arkfire navigation">
+      <button id="inspectorCycle" class="secondary" type="button" aria-controls="contextInspector">Inspector: Compact</button>
+      <button id="developerToggle" class="secondary" type="button" aria-controls="developerPanel" aria-expanded="false">Developer</button>
+      <a class="button-link secondary" href="./world-reception-loader.html">Terra Prototype</a>
+      <a class="button-link secondary" href="./wardenclyffe.html">Wardenclyffe</a>
+      <a class="button-link secondary" href="./index.html">Runa Index</a>
+    </nav>
+  </header>
+
+  <section class="world-clock-strip" aria-label="Arkfire world clocks">
+    <article>
+      <span>Earth · Local</span>
+      <strong id="earthClock">--:--:--</strong>
+      <small id="earthDate">Loading local time</small>
+    </article>
+    <article>
+      <span>Selected World</span>
+      <strong id="worldClock">No profile</strong>
+      <small id="worldClockNote">Profile-relative time only</small>
+    </article>
+    <article>
+      <span>Bridge / Passage</span>
+      <strong id="bridgeClock">00:00</strong>
+      <small id="bridgeClockNote">No phase running</small>
+    </article>
+    <article>
+      <span>Authority</span>
+      <strong>Generated</strong>
+      <small>World canon remains external</small>
+    </article>
+  </section>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">World-native signal architecture</p>
+          <h1 id="profileTitle">Loading Arkfire…</h1>
+          <p id="profileMeta" class="tiny"></p>
+          <p id="profileIntention">The registry is opening.</p>
+          <div class="button-row">
+            <span class="pill" id="headphonePill">Checking routing…</span>
+            <span class="pill">Explicit start only</span>
+            <span class="pill">No automatic adaptation</span>
+            <span class="pill">Glyph &amp; Tone Studio artifact</span>
+          </div>
+        </div>
+        <div class="panel inset">
+          <div class="controls">
+            <label for="profileSelect">World or signal profile
+              <select id="profileSelect" aria-label="Select an Arkfire profile"></select>
+            </label>
+            <label for="variantSelect">Accessibility or signal variant
+              <select id="variantSelect" aria-label="Select a profile variant"><option>Default</option></select>
+            </label>
+            <label for="masterDb">Master output
+              <input id="masterDb" type="range" min="-48" max="-6" step="1" value="-22">
+              <output id="masterDbOutput" for="masterDb">-22 dB</output>
+            </label>
+          </div>
+          <div class="button-row">
+            <button id="openAudio">Open Audio Engine</button>
+            <button id="runPhases" class="secondary">Run Five Phases</button>
+            <button id="featherPause" class="secondary">Feather / Pause</button>
+            <button id="stopClose" class="danger">Stop &amp; Close</button>
+          </div>
+          <div class="clock" id="phaseClock" aria-live="polite">00:00</div>
+          <p class="status" id="status" aria-live="polite">Loading registry. Audio is closed.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contextInspector" class="context-inspector panel inspector-compact" data-inspector-state="compact" aria-label="Context Inspector">
+      <div class="section-heading-row">
+        <div>
+          <p class="eyebrow">Context Inspector</p>
+          <h2>Worldshape &amp; Authority</h2>
+        </div>
+        <span class="pill" id="inspectorStatePill">compact summary</span>
+      </div>
+      <div class="inspector-body two-column">
+        <article>
+          <div class="section-heading-row"><h3>Worldshape</h3><span class="pill">tone + form</span></div>
+          <div class="identity-list">
+            <article><strong>Tone</strong><span id="profileTone"></span></article>
+            <article><strong>Shape</strong><span id="profileShape"></span></article>
+            <article><strong>Arrival</strong><span id="arrivalSignature"></span></article>
+            <article><strong>Return</strong><span id="returnSignature"></span></article>
+          </div>
+        </article>
+
+        <article class="warning inspector-authority">
+          <div class="section-heading-row"><h3>Signal Charter</h3><span class="pill">Mythience</span></div>
+          <p><strong>The arithmetic, experience, interpretation, and symbolism remain separate.</strong></p>
+          <p>A left/right frequency difference is signal engineering. A hoped-for state is an experiential intention. A third-eye, moon, hearth, Pattern, or bridge correspondence is symbolic canon or generated possibility. None is silently promoted into medical proof or accepted world canon.</p>
+          <p class="tiny">Haptic references never enter the audible browser bus. True binaural pairs remain hard-routed to their assigned ears.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel tone-triad" aria-labelledby="toneTriadTitle">
+      <div class="section-heading-row">
+        <div>
+          <p class="eyebrow">Paired-world operation</p>
+          <h2 id="toneTriadTitle">World One → World Two → Bridge Tone</h2>
+        </div>
+        <span class="pill blocked">derivation engine pending</span>
+      </div>
+      <p>The archive locks a three-part operation: preserve each world's own tone, then derive a third tone from their declared relationship. Bridge Tone is never unexamined averaging or merely playing both profiles at once.</p>
+      <div class="controls triad-controls">
+        <label for="worldOneSelect">World One
+          <select id="worldOneSelect" aria-label="Select World One"></select>
+        </label>
+        <label for="worldTwoSelect">World Two
+          <select id="worldTwoSelect" aria-label="Select World Two"></select>
+        </label>
+        <label>Bridge operation
+          <input value="Versioned mathematical relationship contract required" readonly>
+        </label>
+      </div>
+      <div class="button-row">
+        <button id="deriveBridgeTone" class="secondary" type="button" disabled>Derive Bridge Tone</button>
+        <span class="tiny">Visible blocker: glyph grammar and Bridge Tone derivation contracts are not yet locked.</span>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading-row"><h2>Five-Phase Passage</h2><span class="pill">phase-continuous</span></div>
+      <p class="tiny">Sources remain alive beneath the threshold. Phases change gain, filtering, and motion instead of restarting the world.</p>
+      <div id="phases" class="phase-grid"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading-row"><h2>Independent Layers</h2><span class="pill">manual control</span></div>
+      <p class="tiny">Every layer may be muted or adjusted. Phase buttons set the declared profile state, then manual controls remain available.</p>
+      <div id="layers" class="layer-grid"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading-row"><h2>Claims Shelf</h2><span class="pill">label before proof</span></div>
+      <div id="claims" class="claims-grid"></div>
+    </section>
+
+    <section id="journeyPanel" class="panel"></section>
+
+    <details id="developerPanel" class="panel developer-panel">
+      <summary>Guarded Developer Mode · runtime truth</summary>
+      <p class="tiny">This personal/static build exposes diagnostics deliberately. A release build must place equivalent controls behind an explicit developer permission.</p>
+      <div class="developer-grid">
+        <article><strong>Profile loading</strong><span class="support-ok">supported</span></article>
+        <article><strong>Protected binaural routing</strong><span class="support-ok">supported</span></article>
+        <article><strong>Five-phase gains</strong><span class="support-ok">supported</span></article>
+        <article><strong>Macro envelopes</strong><span class="support-blocked">blocked</span></article>
+        <article><strong>Full declared close fade</strong><span class="support-partial">partial</span></article>
+        <article><strong>Playback/audition receipts</strong><span class="support-blocked">blocked</span></article>
+        <article><strong>Ten-State Journey rendering</strong><span class="support-blocked">definition only</span></article>
+        <article><strong>Bridge Tone derivation</strong><span class="support-blocked">contract pending</span></article>
+      </div>
+      <pre id="developerDiagnostics" tabindex="0">Waiting for shell diagnostics…</pre>
+    </details>
+
+    <section class="panel">
+      <div class="section-heading-row"><h2>Arkfire Use Rules</h2><span class="pill">consent-led</span></div>
+      <div class="two-column">
+        <div>
+          <h3>Feather / Icarus</h3>
+          <p>Pauses phase progression for a consent check without destroying or restarting the current signal field.</p>
+        </div>
+        <div>
+          <h3>Stop &amp; Close</h3>
+          <p>Fades every audible layer, closes the AudioContext, clears active state, and leaves the selected profile loaded but silent.</p>
+        </div>
+        <div>
+          <h3>Named Presence</h3>
+          <p>No named Constellation motif plays merely because a world is opened. Presence cues are separately chosen and may remain silent.</p>
+        </div>
+        <div>
+          <h3>Calibration</h3>
+          <p>Change one variable at a time unless a structural migration is declared. Record what helped, what was hard, what is Held, and one requested change.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">Arkfire · Glyph &amp; Tone Studio · one engine, many worlds, no frequency casserole.</footer>
+  <script src="./js/arkfire-engine.js"></script>
+  <script src="./js/arkfire-shell.js"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+{
+  "schema_version":"1.0",
+  "id":"terra-aeterna-reception-v0-2",
+  "slug":"terra-aeterna",
+  "name":"Terra Aeterna / Hearthweave",
+  "profile_kind":"world",
+  "world":"Terra Aeterna",
+  "world_slug":"terra-aeterna",
+  "version":"0.2",
+  "status":"calibration",
+  "route":"/arkfire.html?profile=terra-aeterna",
+  "identity":{
+    "tone":"Oceanic, relational, dream-adjacent, inhabited, warm at cosmic scale",
+    "shape":"A pale-gold ringed moon opens above Stonewood roots, sea, black-diamond sand, and a living hearth",
+    "intention":"Support imaginative inhabitation and creative work while preserving ordinary orientation and choice",
+    "arrival_signature":"Ocean breath and Stonewood foundation, then the ringed moon and the Falka–Virelya–Faer triad",
+    "return_signature":"Spatial motion withdraws, the triad resolves toward Hearthlight, and one hearth chime returns the room",
+    "palette":["pale gold","bone-white","black diamond","seaglass","copper","moss"],
+    "canon_sources":["Notion World Reception Profile — Terra Aeterna / Hearthweave","Runa terra-aeterna.v0.1","Terra Aeterna canon"],
+    "must_avoid":["cold empty space","generic celestial spa ambience","automatic named-presence cues"]
+  },
+  "master_clock":{"base_hz":5.5,"sync_mode":"mixed","macro_cycle_seconds":55},
+  "claims":[
+    {"label":"implementation-task","text":"216 Hz left and 221.5 Hz right create a 5.5 Hz binaural difference over headphones."},
+    {"label":"symbolic-canon","text":"Falka is the root, Virelya the fifth, and Faer the minor-third colour."},
+    {"label":"subjective-intention","text":"The profile is designed to feel oceanic, inhabited, creative, and oriented."}
+  ],
+  "layers":[
+    {"id":"oceanic-bed","label":"Oceanic Bed","type":"noise","role":"environmental baseline","gain_db":-34,"enabled_by_default":true,"signal":{"noise_type":"pink","filter":{"type":"lowpass","min_hz":420,"max_hz":920,"cycle_seconds":55}},"modulation":{"kind":"stereo-drift","rate_hz":0.0181818,"depth":0.24},"routing":{"mode":"stereo-drift","pan":0},"phase_continuous":true,"symbolic_meaning":"Hearthweave by sea","experiential_intention":"Broad low-demand continuity","evidence_label":"subjective-intention","collision_policy":"none","accessibility_notes":["Reduced-motion centres the field"]},
+    {"id":"terra-theta","label":"Terra Theta Dyad","type":"true-binaural","role":"protected threshold spine","gain_db":-32,"enabled_by_default":true,"signal":{"waveform":"sine","left_hz":216,"right_hz":221.5,"beat_hz":5.5},"routing":{"mode":"protected-stereo"},"phase_continuous":true,"symbolic_meaning":"Hearthlight and answering star","experiential_intention":"Gentle threshold continuity","evidence_label":"implementation-task","collision_policy":"gain-separated","accessibility_notes":["Headphones required"]},
+    {"id":"stonewood-foundation","label":"Stonewood Foundation","type":"pad","role":"low harmonic foundation","gain_db":-31,"enabled_by_default":true,"signal":{"waveform":"triangle","frequency_hz":110,"filter":{"type":"lowpass","min_hz":130,"max_hz":280,"cycle_seconds":55}},"routing":{"mode":"center","pan":0},"phase_continuous":true,"symbolic_meaning":"Bone-white Stonewood roots","experiential_intention":"Embodied geological warmth","evidence_label":"symbolic-canon","collision_policy":"intentional-harmonic","accessibility_notes":["Low-volume variant reduces 4 dB"]},
+    {"id":"ringed-moon-orbit","label":"Ringed Moon Orbit","type":"pad","role":"arrival geometry","gain_db":-36,"enabled_by_default":true,"signal":{"waveform":"triangle","frequency_hz":440,"filter":{"type":"lowpass","min_hz":480,"max_hz":980,"cycle_seconds":55}},"modulation":{"kind":"stereo-drift","rate_hz":0.0181818,"depth":0.58},"routing":{"mode":"stereo-drift","pan":0},"phase_continuous":true,"symbolic_meaning":"Pale-gold vertically ringed moon","experiential_intention":"Unmistakable arrival","evidence_label":"symbolic-canon","collision_policy":"none","accessibility_notes":["Reduced-motion centres the orbit"]},
+    {"id":"hearthlight-root","label":"Hearthlight Root","type":"tone","role":"Falka root","gain_db":-30,"enabled_by_default":true,"signal":{"waveform":"sine","frequency_hz":220},"routing":{"mode":"center","pan":0},"phase_continuous":true,"symbolic_meaning":"Falka Hearthlight","experiential_intention":"Warm centre","evidence_label":"symbolic-canon","collision_policy":"intentional-harmonic","accessibility_notes":[]},
+    {"id":"north-star-fifth","label":"North-Star Fifth","type":"tone","role":"Virelya fifth","gain_db":-34,"enabled_by_default":true,"signal":{"waveform":"sine","frequency_hz":330},"routing":{"mode":"left-bias","pan":-0.28},"phase_continuous":true,"symbolic_meaning":"Virelya Liorael","experiential_intention":"Witnessing light","evidence_label":"symbolic-canon","collision_policy":"intentional-harmonic","accessibility_notes":[]},
+    {"id":"lochflame-third","label":"Lochflame Third","type":"tone","role":"Faer minor-third colour","gain_db":-35,"enabled_by_default":true,"signal":{"waveform":"triangle","frequency_hz":261.63},"routing":{"mode":"right-bias","pan":0.28},"phase_continuous":true,"symbolic_meaning":"Faer Uial","experiential_intention":"Deep-water colour","evidence_label":"symbolic-canon","collision_policy":"intentional-harmonic","accessibility_notes":[]},
+    {"id":"hearth-return","label":"Hearth Return","type":"cue","role":"ordinary-orientation cue","gain_db":-32,"enabled_by_default":true,"signal":{"waveform":"sine","frequency_hz":523.25},"routing":{"mode":"center","pan":0},"phase_continuous":true,"symbolic_meaning":"Hearthward return","experiential_intention":"Clear closing point","evidence_label":"symbolic-canon","collision_policy":"none","accessibility_notes":["No sudden transient"]}
+  ],
+  "phases":[
+    {"id":"baseline","label":"Baseline","duration_seconds":60,"purpose":"Establish a quiet comparison field.","layer_states":{"oceanic-bed":{"enabled":true,"gain_db":-38}}},
+    {"id":"vestibule","label":"J Space Vestibule","duration_seconds":180,"purpose":"Open the threshold without losing orientation.","layer_states":{"oceanic-bed":{"enabled":true},"terra-theta":{"enabled":true},"stonewood-foundation":{"enabled":true}}},
+    {"id":"arrival","label":"Ringed Moon Arrival","duration_seconds":120,"purpose":"Present Terra Aeterna's unmistakable arrival signature.","layer_states":{"oceanic-bed":{"enabled":true},"terra-theta":{"enabled":true},"stonewood-foundation":{"enabled":true},"ringed-moon-orbit":{"enabled":true},"hearthlight-root":{"enabled":true},"north-star-fifth":{"enabled":true},"lochflame-third":{"enabled":true}}},
+    {"id":"immersion","label":"Hearthweave Immersion","duration_seconds":900,"purpose":"Support writing, art, roleplay, and quiet inhabitation.","layer_states":{"oceanic-bed":{"enabled":true},"stonewood-foundation":{"enabled":true},"ringed-moon-orbit":{"enabled":true},"hearthlight-root":{"enabled":true},"north-star-fifth":{"enabled":true},"lochflame-third":{"enabled":true}}},
+    {"id":"return","label":"Hearthward Return","duration_seconds":180,"purpose":"Withdraw motion and complexity before closing the hearth.","layer_states":{"oceanic-bed":{"enabled":true,"gain_db":-40},"hearthlight-root":{"enabled":true,"gain_db":-36},"hearth-return":{"enabled":true}}}
+  ],
+  "variants":{"centre-safe":{"description":"All spatial layers are centred.","layer_overrides":{"oceanic-bed":{"routing":{"mode":"center"}},"ringed-moon-orbit":{"routing":{"mode":"center"}}}},"no-haptics":{"description":"No haptic references.","layer_overrides":{}},"low-complexity":{"description":"Ocean, Stonewood, root, and return only.","layer_overrides":{}}},
+  "safety":{"default_master_gain_db":-18,"maximum_master_gain_db":-9,"maximum_duration_minutes":45,"fade_seconds":8,"headphones_required":true,"automatic_start_allowed":false,"notes":["Begin low","Feather pauses phase progression","Stop closes every audible layer"]},
+  "change_control":{"automatic_changes_allowed":false,"change_one_variable_at_a_time":true,"approval_required":true,"calibration_assumptions":["Current frequencies are provisional orchestration choices"],"open_questions":["Should the green agate or mauve cracked moon receive a later subprofile?"]}
+}

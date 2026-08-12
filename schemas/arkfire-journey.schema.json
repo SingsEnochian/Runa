@@ -1,0 +1,43 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://singsenochian.github.io/Runa/schemas/arkfire-journey.schema.json",
+  "title":"Hearthgate Arkfire Journey",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["schema_version","id","slug","name","version","status","states","safety","change_control"],
+  "properties":{
+    "schema_version":{"const":"1.0"},
+    "id":{"type":"string"},
+    "slug":{"type":"string","pattern":"^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "name":{"type":"string"},
+    "version":{"type":"string"},
+    "status":{"enum":["seed","calibration","review","stable","retired","blocked"]},
+    "intention":{"type":"string"},
+    "claims":{"type":"array","items":{"type":"object","required":["label","text"],"properties":{"label":{"enum":["established-science","active-research","speculative-theory","symbolic-canon","subjective-intention","implementation-task","evidence-backed-finding"]},"text":{"type":"string"},"source_language":{"type":"string"}}}},
+    "shared_layers":{"type":"array","items":{"type":"object"}},
+    "states":{"type":"array","minItems":2,"items":{"$ref":"#/$defs/state"}},
+    "transition_rules":{"type":"object"},
+    "safety":{"type":"object","required":["automatic_start_allowed","default_master_gain_db","maximum_master_gain_db","fade_seconds"],"properties":{"automatic_start_allowed":{"const":false},"default_master_gain_db":{"type":"number","maximum":0},"maximum_master_gain_db":{"type":"number","maximum":0},"fade_seconds":{"type":"number","minimum":0.1},"maximum_continuous_minutes":{"type":"number","exclusiveMinimum":0},"notes":{"type":"array","items":{"type":"string"}}}},
+    "change_control":{"type":"object","required":["automatic_changes_allowed","approval_required"],"properties":{"automatic_changes_allowed":{"const":false},"approval_required":{"type":"boolean"},"open_questions":{"type":"array","items":{"type":"string"}}}}
+  },
+  "$defs":{
+    "state":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":["index","id","name","phase","duration_seconds","start","end","transition"],
+      "properties":{
+        "index":{"type":"integer","minimum":1},
+        "id":{"type":"string"},
+        "name":{"type":"string"},
+        "phase":{"type":"string"},
+        "duration_seconds":{"type":"integer","minimum":1},
+        "start":{"$ref":"#/$defs/dyad"},
+        "end":{"$ref":"#/$defs/dyad"},
+        "transition":{"type":"object","required":["carrier_curve","beat_curve"],"properties":{"carrier_curve":{"enum":["constant","linear","smoothstep","dual-dyad-crossfade"]},"beat_curve":{"enum":["constant","linear","smoothstep"]},"crossfade_seconds":{"type":"number","minimum":0}}},
+        "symbolic_name":{"type":"string"},
+        "technical_notes":{"type":"array","items":{"type":"string"}}
+      }
+    },
+    "dyad":{"type":"object","additionalProperties":false,"required":["left_hz","right_hz","beat_hz"],"properties":{"left_hz":{"type":"number","exclusiveMinimum":0},"right_hz":{"type":"number","exclusiveMinimum":0},"beat_hz":{"type":"number","exclusiveMinimum":0}}}
+  }
+}
