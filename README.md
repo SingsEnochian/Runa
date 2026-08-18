@@ -17,6 +17,7 @@ project-zero-bridge.html
 council-bell.html
 threshold-mirror.html
 sigil-loom.html
+threadline.html
 hearthweave-altar.html
 flameclyffe-studio.html
 flameclyffe-dyad.html
@@ -48,6 +49,10 @@ It stores only the latest packet in browser local storage unless Rowan chooses t
 `docs/threshold-mirror.html` reflects one shard into labelled views so evidence, resonance, story use, and review stay distinct.
 
 `docs/sigil-loom.html` turns title, scope, direction, motifs, note, and DEEP vector values into a deterministic SVG glyph.
+
+## Threadline
+
+`docs/threadline.html` shows the latest local Council Bell, Threshold Mirror, and Sigil Loom records as one working thread. It is a browser-local view and does not alter the source records.
 
 ## Claims policy
 
